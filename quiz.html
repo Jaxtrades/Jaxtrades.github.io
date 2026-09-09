@@ -16,8 +16,9 @@
   <div class="wrap nav">
     <a href="index.html" class="brand">🧪 JaxTrades Peptides</a>
     <ul class="nav-links">
-      <li><a href="index.html">Shop</a></li>
-      <li><a href="quiz.html">Peptide Matcher</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="quiz.html">Q&amp;A Matcher</a></li>
+      <li><a href="menu.html">Menu</a></li>
       <li><a href="cart.html" class="cart-link">🛒 Cart <span id="cart-count">0</span></a></li>
     </ul>
   </div>
@@ -86,7 +87,7 @@
     const chosen = answers.map((idx, i) => (idx === null ? null : QUIZ_QUESTIONS[i].options[idx]));
     const ranked = scoreProducts(chosen);
     const top = ranked[0];
-    const alts = ranked.slice(1, 3).filter(r => r.score > 0);
+    const alts = ranked.slice(1, 5).filter(r => r.score > 0);
 
     box.innerHTML = `
       <div class="quiz-step-label">Your Match</div>
@@ -108,7 +109,7 @@
 
       ${alts.length ? `
         <div class="alt-matches">
-          <h3>Other peptides worth exploring</h3>
+          <h3>Also matched your answers</h3>
           <div class="grid">
             ${alts.map(a => `
               <a class="card" href="product.html?id=${a.product.id}" style="color:inherit;text-decoration:none;">
@@ -123,8 +124,8 @@
       ` : ""}
 
       <div class="quiz-nav" style="margin-top:20px;">
-        <button class="btn secondary" id="retake-btn">↺ Retake Quiz</button>
-        <a class="btn secondary" href="index.html">Browse All Products</a>
+        <button class="btn secondary" id="retake-btn">↺ Retake Q&amp;A</button>
+        <a class="btn secondary" href="menu.html">Browse Full Menu</a>
       </div>
     `;
 

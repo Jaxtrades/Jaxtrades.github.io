@@ -16,8 +16,9 @@
   <div class="wrap nav">
     <a href="index.html" class="brand">🧪 JaxTrades Peptides</a>
     <ul class="nav-links">
-      <li><a href="index.html">Shop</a></li>
-      <li><a href="quiz.html">Peptide Matcher</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="quiz.html">Q&amp;A Matcher</a></li>
+      <li><a href="menu.html">Menu</a></li>
       <li><a href="cart.html" class="cart-link">🛒 Cart <span id="cart-count">0</span></a></li>
     </ul>
   </div>
@@ -26,12 +27,27 @@
 <main class="wrap">
   <section class="hero">
     <h1>Not sure which peptide fits your goals?</h1>
-    <p>Answer a short 7-question quiz and we'll match you to the research peptide that best fits what you're looking to study.</p>
-    <a href="quiz.html" class="btn">Take the Peptide Matcher →</a>
+    <p>Answer a short 7-question Q&amp;A and we'll tell you exactly which research peptides match what you're looking to study — no browsing required.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <a href="quiz.html" class="btn">Take the Q&amp;A →</a>
+      <a href="menu.html" class="btn secondary">Browse the Menu</a>
+    </div>
   </section>
 
-  <div class="section-title"><span>All Products</span></div>
-  <div class="grid" id="product-grid"></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:20px;">
+    <div class="card">
+      <div class="icon">🧭</div>
+      <h3>Take the Q&amp;A</h3>
+      <div class="tagline">Answer a few quick questions about your goals, activity, sleep and stress — we'll tell you which peptide(s) match.</div>
+      <a href="quiz.html" class="btn" style="margin-top:auto;text-align:center;">Start Q&amp;A</a>
+    </div>
+    <div class="card">
+      <div class="icon">📋</div>
+      <h3>Browse the Menu</h3>
+      <div class="tagline">Already know what you're looking for? See every peptide we carry, on its own, with pricing and details.</div>
+      <a href="menu.html" class="btn secondary" style="margin-top:auto;text-align:center;">View Menu</a>
+    </div>
+  </div>
 
   <section class="info-section">
     <h2>Research Use Only</h2>
@@ -47,24 +63,10 @@
 
 <footer class="site-footer">
   <p>© 2026 JaxTrades Peptides. All products are for research use only. Not for human consumption.</p>
-  <p>This site does not provide medical advice. The Peptide Matcher quiz is for informational and research-interest purposes only and is not a substitute for professional guidance.</p>
+  <p>This site does not provide medical advice. The Q&amp;A Matcher is for informational and research-interest purposes only and is not a substitute for professional guidance.</p>
 </footer>
 
 <script src="js/products.js"></script>
 <script src="js/store.js"></script>
-<script>
-  const grid = document.getElementById("product-grid");
-  grid.innerHTML = PRODUCTS.map(p => `
-    <a class="card" href="product.html?id=${p.id}" style="color:inherit;text-decoration:none;">
-      <div class="icon">${p.icon}</div>
-      <h3>${p.name}</h3>
-      <div class="tagline">${p.tagline}</div>
-      <div class="price-row">
-        <span class="price">${formatPrice(p.price)}</span>
-        <span class="size">${p.size}</span>
-      </div>
-    </a>
-  `).join("");
-</script>
 </body>
 </html>
