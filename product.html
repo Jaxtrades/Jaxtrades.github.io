@@ -16,8 +16,9 @@
   <div class="wrap nav">
     <a href="index.html" class="brand">🧪 JaxTrades Peptides</a>
     <ul class="nav-links">
-      <li><a href="index.html">Shop</a></li>
-      <li><a href="quiz.html">Peptide Matcher</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="quiz.html">Q&amp;A Matcher</a></li>
+      <li><a href="menu.html">Menu</a></li>
       <li><a href="cart.html" class="cart-link">🛒 Cart <span id="cart-count">0</span></a></li>
     </ul>
   </div>
@@ -39,7 +40,7 @@
   const main = document.getElementById("main-content");
 
   if (!product) {
-    main.innerHTML = `<div class="empty-state"><h2>Product not found</h2><a href="index.html" class="btn">Back to shop</a></div>`;
+    main.innerHTML = `<div class="empty-state"><h2>Product not found</h2><a href="menu.html" class="btn">Back to menu</a></div>`;
   } else {
     document.title = product.name + " — JaxTrades Peptides";
     const tagsHtml = Object.keys(product.tags).map(t => `<span class="tag-pill">${CATEGORY_LABELS[t]}</span>`).join("");
