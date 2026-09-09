@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product — JaxTrades Peptides</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="disclaimer-banner">
+  <strong>For laboratory research use only.</strong> Not for human consumption. Not evaluated by the FDA. Must be 18+ to purchase.
+</div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="index.html" class="brand">🧪 JaxTrades Peptides</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Shop</a></li>
+      <li><a href="quiz.html">Peptide Matcher</a></li>
+      <li><a href="cart.html" class="cart-link">🛒 Cart <span id="cart-count">0</span></a></li>
+    </ul>
+  </div>
+</header>
+
+<main class="wrap" id="main-content">
+  <!-- populated by js -->
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 JaxTrades Peptides. All products are for research use only. Not for human consumption.</p>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/store.js"></script>
+<script>
+  const params = new URLSearchParams(location.search);
+  const product = getProduct(params.get("id"));
+  const main = document.getElementById("main-content");
+
+  if (!product) {
+    main.innerHTML = `<div class="empty-state"><h2>Product not found</h2><a href="index.html" class="btn">Back to shop</a></div>`;
+  } else {
+    document.title = product.name + " — JaxTrades Peptides";
+    const tagsHtml = Object.keys(product.tags).map(t => `<span class="tag-pill">${CATEGORY_LABELS[t]}</span>`).join("");
+    main.innerHTML = `
+      <div class="product-detail">
+        <div class="icon-hero">${product.icon}</div>
+        <div class="info">
+          <h1>${product.name}</h1>
+          <p style="color:var(--text-dim)">${product.tagline}</p>
+          <p>${product.description}</p>
+          <div class="tags-row">${tagsHtml}</div>
+          <div style="font-size:1.4rem;font-weight:700;">${formatPrice(product.price)} <span style="font-size:0.9rem;color:var(--text-dim);font-weight:400;">/ ${product.size}</span></div>
+          <div class="qty-row">
+            <label for="qty">Qty</label>
+            <input type="number" id="qty" value="1" min="1" max="20">
+            <button class="btn" id="add-btn">Add to Cart</button>
+          </div>
+          <p id="added-msg" style="color:var(--accent);display:none;">Added to cart ✓ &nbsp;<a href="cart.html">View cart</a></p>
+        </div>
+      </div>
+    `;
+    document.getElementById("add-btn").addEventListener("click", () => {
+      const qty = Math.max(1, parseInt(document.getElementById("qty").value) || 1);
+      addToCart(product.id, qty);
+      document.getElementById("added-msg").style.display = "block";
+    });
+  }
+</script>
+</body>
+</html>

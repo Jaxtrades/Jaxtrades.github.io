@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JaxTrades Peptides — Research Peptide Store</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="disclaimer-banner">
+  <strong>For laboratory research use only.</strong> Not for human consumption. Not evaluated by the FDA. Must be 18+ to purchase.
+</div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="index.html" class="brand">🧪 JaxTrades Peptides</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Shop</a></li>
+      <li><a href="quiz.html">Peptide Matcher</a></li>
+      <li><a href="cart.html" class="cart-link">🛒 Cart <span id="cart-count">0</span></a></li>
+    </ul>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Not sure which peptide fits your goals?</h1>
+    <p>Answer a short 7-question quiz and we'll match you to the research peptide that best fits what you're looking to study.</p>
+    <a href="quiz.html" class="btn">Take the Peptide Matcher →</a>
+  </section>
+
+  <div class="section-title"><span>All Products</span></div>
+  <div class="grid" id="product-grid"></div>
+
+  <section class="info-section">
+    <h2>Research Use Only</h2>
+    <p>
+      All products sold by JaxTrades Peptides are intended strictly for in-vitro laboratory research and educational
+      purposes. They are not drugs, dietary supplements, or cosmetics, and are not intended to diagnose, treat, cure,
+      or prevent any disease. Products must be handled only by qualified individuals in a controlled research
+      environment. By purchasing, you confirm you are 18 years of age or older and agree not to use these products
+      for human or veterinary consumption.
+    </p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 JaxTrades Peptides. All products are for research use only. Not for human consumption.</p>
+  <p>This site does not provide medical advice. The Peptide Matcher quiz is for informational and research-interest purposes only and is not a substitute for professional guidance.</p>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/store.js"></script>
+<script>
+  const grid = document.getElementById("product-grid");
+  grid.innerHTML = PRODUCTS.map(p => `
+    <a class="card" href="product.html?id=${p.id}" style="color:inherit;text-decoration:none;">
+      <div class="icon">${p.icon}</div>
+      <h3>${p.name}</h3>
+      <div class="tagline">${p.tagline}</div>
+      <div class="price-row">
+        <span class="price">${formatPrice(p.price)}</span>
+        <span class="size">${p.size}</span>
+      </div>
+    </a>
+  `).join("");
+</script>
+</body>
+</html>

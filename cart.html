@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart — JaxTrades Peptides</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="disclaimer-banner">
+  <strong>For laboratory research use only.</strong> Not for human consumption. Not evaluated by the FDA. Must be 18+ to purchase.
+</div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="index.html" class="brand">🧪 JaxTrades Peptides</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Shop</a></li>
+      <li><a href="quiz.html">Peptide Matcher</a></li>
+      <li><a href="cart.html" class="cart-link">🛒 Cart <span id="cart-count">0</span></a></li>
+    </ul>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Your Cart</h1>
+  <div id="cart-content"></div>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 JaxTrades Peptides. All products are for research use only. Not for human consumption.</p>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/store.js"></script>
+<script>
+  function render() {
+    const cart = getCart();
+    const ids = Object.keys(cart);
+    const content = document.getElementById("cart-content");
+
+    if (ids.length === 0) {
+      content.innerHTML = `
+        <div class="empty-state">
+          <p>Your cart is empty.</p>
+          <a href="index.html" class="btn">Browse products</a>
+        </div>`;
+      return;
+    }
+
+    const rows = ids.map(id => {
+      const p = getProduct(id);
+      if (!p) return "";
+      const qty = cart[id];
+      return `
+        <tr>
+          <td class="cart-item-name">${p.icon} ${p.name}</td>
+          <td>${formatPrice(p.price)}</td>
+          <td><input type="number" min="1" max="20" value="${qty}" data-id="${id}" class="qty-input"></td>
+          <td>${formatPrice(p.price * qty)}</td>
+          <td><span class="remove-link" data-id="${id}">Remove</span></td>
+        </tr>`;
+    }).join("");
+
+    content.innerHTML = `
+      <table class="cart-table">
+        <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="cart-summary">
+        <div class="row"><span>Subtotal</span><span>${formatPrice(cartTotal())}</span></div>
+        <div class="row total"><span>Total</span><span>${formatPrice(cartTotal())}</span></div>
+        <a href="checkout.html" class="btn" style="display:block;text-align:center;margin-top:16px;">Proceed to Checkout</a>
+      </div>
+    `;
+
+    content.querySelectorAll(".qty-input").forEach(input => {
+      input.addEventListener("change", (e) => {
+        const val = Math.max(1, parseInt(e.target.value) || 1);
+        setCartQty(e.target.dataset.id, val);
+        render();
+      });
+    });
+    content.querySelectorAll(".remove-link").forEach(el => {
+      el.addEventListener("click", (e) => {
+        removeFromCart(e.target.dataset.id);
+        render();
+      });
+    });
+  }
+  render();
+</script>
+</body>
+</html>
