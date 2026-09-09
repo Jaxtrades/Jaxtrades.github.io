@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — JaxTrades Peptides</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="disclaimer-banner">
+  <strong>For laboratory research use only.</strong> Not for human consumption. Not evaluated by the FDA. Must be 18+ to purchase.
+</div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="index.html" class="brand">🧪 JaxTrades Peptides</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Shop</a></li>
+      <li><a href="quiz.html">Peptide Matcher</a></li>
+      <li><a href="cart.html" class="cart-link">🛒 Cart <span id="cart-count">0</span></a></li>
+    </ul>
+  </div>
+</header>
+
+<main class="wrap" id="main-content"></main>
+
+<footer class="site-footer">
+  <p>© 2026 JaxTrades Peptides. All products are for research use only. Not for human consumption.</p>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/store.js"></script>
+<script>
+  const main = document.getElementById("main-content");
+  const cart = getCart();
+  const ids = Object.keys(cart);
+
+  if (ids.length === 0) {
+    main.innerHTML = `
+      <div class="empty-state">
+        <p>Your cart is empty — nothing to check out.</p>
+        <a href="index.html" class="btn">Browse products</a>
+      </div>`;
+  } else {
+    const lines = ids.map(id => {
+      const p = getProduct(id);
+      const qty = cart[id];
+      return `<div class="order-line"><span>${p.icon} ${p.name} × ${qty}</span><span>${formatPrice(p.price * qty)}</span></div>`;
+    }).join("");
+    const total = cartTotal();
+
+    main.innerHTML = `
+      <h1>Checkout</h1>
+      <div class="checkout-grid">
+        <form class="checkout-form" id="checkout-form">
+          <h2 style="margin-bottom:0;">Shipping Details</h2>
+          <label>Full Name
+            <input type="text" name="name" required>
+          </label>
+          <label>Email
+            <input type="email" name="email" required>
+          </label>
+          <label>Shipping Address
+            <input type="text" name="address" required placeholder="Street address">
+          </label>
+          <div class="form-row">
+            <label>City
+              <input type="text" name="city" required>
+            </label>
+            <label>State
+              <input type="text" name="state" required>
+            </label>
+            <label>ZIP
+              <input type="text" name="zip" required>
+            </label>
+          </div>
+          <label>
+            <input type="checkbox" required style="width:auto;">
+            I confirm I am 18+ and purchasing for laboratory research use only, not for human or animal consumption.
+          </label>
+          <h2 style="margin-bottom:0;margin-top:10px;">Payment</h2>
+          <label>Payment Method
+            <select name="payment">
+              <option>Credit / Debit Card</option>
+              <option>Bank Transfer</option>
+              <option>Cryptocurrency</option>
+            </select>
+          </label>
+          <p style="font-size:0.78rem;color:var(--text-dim);">
+            This is a demo storefront — no real payment is processed. In production this step would connect to a
+            licensed payment provider (e.g. Stripe).
+          </p>
+          <button type="submit" class="btn">Place Order — ${formatPrice(total)}</button>
+        </form>
+
+        <div class="order-summary">
+          <h3 style="margin-top:0;">Order Summary</h3>
+          ${lines}
+          <div class="order-line" style="border-bottom:none;font-weight:700;"><span>Total</span><span>${formatPrice(total)}</span></div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("checkout-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const orderNumber = "JT-" + Math.floor(100000 + Math.random() * 900000);
+      const name = e.target.name.value;
+      clearCart();
+      main.innerHTML = `
+        <div class="confirmation">
+          <div class="check">✓</div>
+          <h1>Order Placed</h1>
+          <p>Thanks, ${name.split(" ")[0] || "there"} — your order <strong>${orderNumber}</strong> has been received.</p>
+          <p style="color:var(--text-dim);max-width:500px;margin:0 auto;">
+            A confirmation would normally be emailed to you here. Remember: all items are strictly for research use only.
+          </p>
+          <a href="index.html" class="btn" style="margin-top:20px;">Continue Shopping</a>
+        </div>
+      `;
+    });
+  }
+</script>
+</body>
+</html>

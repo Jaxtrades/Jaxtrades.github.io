@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peptide Matcher — JaxTrades Peptides</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="disclaimer-banner">
+  <strong>For laboratory research use only.</strong> Not for human consumption. Not evaluated by the FDA. Must be 18+ to purchase.
+</div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="index.html" class="brand">🧪 JaxTrades Peptides</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Shop</a></li>
+      <li><a href="quiz.html">Peptide Matcher</a></li>
+      <li><a href="cart.html" class="cart-link">🛒 Cart <span id="cart-count">0</span></a></li>
+    </ul>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="quiz-box" id="quiz-box"></div>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 JaxTrades Peptides. All products are for research use only. Not for human consumption.</p>
+  <p>The Peptide Matcher is an informational tool that compares your stated interests against product categories. It is not medical advice and does not diagnose or treat anything.</p>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/store.js"></script>
+<script src="js/quiz.js"></script>
+<script>
+  const box = document.getElementById("quiz-box");
+  let step = 0;
+  const answers = new Array(QUIZ_QUESTIONS.length).fill(null);
+
+  function renderQuestion() {
+    const q = QUIZ_QUESTIONS[step];
+    const pct = Math.round((step / QUIZ_QUESTIONS.length) * 100);
+    box.innerHTML = `
+      <div class="quiz-step-label">Question ${step + 1} of ${QUIZ_QUESTIONS.length}</div>
+      <div class="quiz-progress"><div class="quiz-progress-bar" style="width:${pct}%"></div></div>
+      <h2>${q.text}</h2>
+      <div class="quiz-options">
+        ${q.options.map((opt, i) => `
+          <button type="button" class="quiz-option${answers[step] === i ? " selected" : ""}" data-i="${i}">
+            ${opt.label}
+          </button>
+        `).join("")}
+      </div>
+      <div class="quiz-nav">
+        <button class="btn secondary" id="back-btn" ${step === 0 ? "disabled" : ""}>← Back</button>
+        <button class="btn" id="next-btn" ${answers[step] === null ? "disabled" : ""}>
+          ${step === QUIZ_QUESTIONS.length - 1 ? "See My Match →" : "Next →"}
+        </button>
+      </div>
+    `;
+
+    box.querySelectorAll(".quiz-option").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        answers[step] = parseInt(btn.dataset.i);
+        renderQuestion();
+      });
+    });
+    document.getElementById("back-btn").addEventListener("click", () => {
+      if (step > 0) { step--; renderQuestion(); }
+    });
+    document.getElementById("next-btn").addEventListener("click", () => {
+      if (answers[step] === null) return;
+      if (step < QUIZ_QUESTIONS.length - 1) {
+        step++;
+        renderQuestion();
+      } else {
+        renderResult();
+      }
+    });
+  }
+
+  function renderResult() {
+    const chosen = answers.map((idx, i) => (idx === null ? null : QUIZ_QUESTIONS[i].options[idx]));
+    const ranked = scoreProducts(chosen);
+    const top = ranked[0];
+    const alts = ranked.slice(1, 3).filter(r => r.score > 0);
+
+    box.innerHTML = `
+      <div class="quiz-step-label">Your Match</div>
+      <h2>Based on your answers, we recommend:</h2>
+      <div class="result-card">
+        <div class="icon" style="font-size:3rem;">${top.product.icon}</div>
+        <div>
+          <div class="match-badge">Best Match</div>
+          <h3 style="margin:0 0 4px;">${top.product.name}</h3>
+          <p style="color:var(--text-dim);margin:0 0 10px;">${top.product.tagline}</p>
+          <p style="margin:0 0 14px;">${top.product.description}</p>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <span style="font-weight:700;">${formatPrice(top.product.price)}</span>
+            <a class="btn" href="product.html?id=${top.product.id}">View Product</a>
+            <button class="btn secondary" id="add-top-btn">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      ${alts.length ? `
+        <div class="alt-matches">
+          <h3>Other peptides worth exploring</h3>
+          <div class="grid">
+            ${alts.map(a => `
+              <a class="card" href="product.html?id=${a.product.id}" style="color:inherit;text-decoration:none;">
+                <div class="icon">${a.product.icon}</div>
+                <h3>${a.product.name}</h3>
+                <div class="tagline">${a.product.tagline}</div>
+                <div class="price-row"><span class="price">${formatPrice(a.product.price)}</span></div>
+              </a>
+            `).join("")}
+          </div>
+        </div>
+      ` : ""}
+
+      <div class="quiz-nav" style="margin-top:20px;">
+        <button class="btn secondary" id="retake-btn">↺ Retake Quiz</button>
+        <a class="btn secondary" href="index.html">Browse All Products</a>
+      </div>
+    `;
+
+    document.getElementById("add-top-btn").addEventListener("click", () => {
+      addToCart(top.product.id, 1);
+      document.getElementById("add-top-btn").textContent = "Added ✓";
+    });
+    document.getElementById("retake-btn").addEventListener("click", () => {
+      step = 0;
+      answers.fill(null);
+      renderQuestion();
+    });
+  }
+
+  renderQuestion();
+</script>
+</body>
+</html>
