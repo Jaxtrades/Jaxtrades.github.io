@@ -1,5 +1,15 @@
-/* Shared cart utilities + nav/footer rendering used on every page. */
+/* Shared cart utilities + nav rendering used on every page.
+   Cart keys are "<productId>::<sizeCode>" so each size is its own line item. */
 const CART_KEY = "jaxtrades_cart";
+
+function cartKey(productId, sizeCode) {
+  return productId + "::" + sizeCode;
+}
+
+function parseCartKey(key) {
+  const [productId, sizeCode] = key.split("::");
+  return { productId, sizeCode };
+}
 
 function getCart() {
   try {
@@ -14,26 +24,27 @@ function saveCart(cart) {
   updateCartBadge();
 }
 
-function addToCart(id, qty) {
+function addToCart(productId, sizeCode, qty) {
   qty = qty || 1;
+  const key = cartKey(productId, sizeCode);
   const cart = getCart();
-  cart[id] = (cart[id] || 0) + qty;
+  cart[key] = (cart[key] || 0) + qty;
   saveCart(cart);
 }
 
-function setCartQty(id, qty) {
+function setCartQty(key, qty) {
   const cart = getCart();
   if (qty <= 0) {
-    delete cart[id];
+    delete cart[key];
   } else {
-    cart[id] = qty;
+    cart[key] = qty;
   }
   saveCart(cart);
 }
 
-function removeFromCart(id) {
+function removeFromCart(key) {
   const cart = getCart();
-  delete cart[id];
+  delete cart[key];
   saveCart(cart);
 }
 
@@ -42,19 +53,29 @@ function clearCart() {
   updateCartBadge();
 }
 
+/* Resolves cart keys to {key, product, size, qty, lineTotal}, skipping any
+   line items whose product/size no longer exists in the catalog. */
+function getCartLines() {
+  const cart = getCart();
+  const lines = [];
+  for (const key in cart) {
+    const { productId, sizeCode } = parseCartKey(key);
+    const product = getProduct(productId);
+    const size = product && getSize(product, sizeCode);
+    if (!product || !size) continue;
+    const qty = cart[key];
+    lines.push({ key, product, size, qty, lineTotal: size.price * qty });
+  }
+  return lines;
+}
+
 function cartCount() {
   const cart = getCart();
   return Object.values(cart).reduce((a, b) => a + b, 0);
 }
 
 function cartTotal() {
-  const cart = getCart();
-  let total = 0;
-  for (const id in cart) {
-    const p = getProduct(id);
-    if (p) total += p.price * cart[id];
-  }
-  return total;
+  return getCartLines().reduce((sum, line) => sum + line.lineTotal, 0);
 }
 
 function updateCartBadge() {

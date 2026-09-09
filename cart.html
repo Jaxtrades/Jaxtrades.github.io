@@ -37,11 +37,10 @@
 <script src="js/store.js"></script>
 <script>
   function render() {
-    const cart = getCart();
-    const ids = Object.keys(cart);
+    const lines = getCartLines();
     const content = document.getElementById("cart-content");
 
-    if (ids.length === 0) {
+    if (lines.length === 0) {
       content.innerHTML = `
         <div class="empty-state">
           <p>Your cart is empty.</p>
@@ -50,19 +49,15 @@
       return;
     }
 
-    const rows = ids.map(id => {
-      const p = getProduct(id);
-      if (!p) return "";
-      const qty = cart[id];
-      return `
-        <tr>
-          <td class="cart-item-name">${p.icon} ${p.name}</td>
-          <td>${formatPrice(p.price)}</td>
-          <td><input type="number" min="1" max="20" value="${qty}" data-id="${id}" class="qty-input"></td>
-          <td>${formatPrice(p.price * qty)}</td>
-          <td><span class="remove-link" data-id="${id}">Remove</span></td>
-        </tr>`;
-    }).join("");
+    const rows = lines.map(line => `
+      <tr>
+        <td class="cart-item-name">${line.product.icon} ${line.product.name}<br><span style="font-weight:400;color:var(--text-dim);font-size:0.82rem;">${line.size.spec}</span></td>
+        <td>${formatPrice(line.size.price)}</td>
+        <td><input type="number" min="1" max="20" value="${line.qty}" data-key="${line.key}" class="qty-input"></td>
+        <td>${formatPrice(line.lineTotal)}</td>
+        <td><span class="remove-link" data-key="${line.key}">Remove</span></td>
+      </tr>`
+    ).join("");
 
     content.innerHTML = `
       <table class="cart-table">
@@ -79,13 +74,13 @@
     content.querySelectorAll(".qty-input").forEach(input => {
       input.addEventListener("change", (e) => {
         const val = Math.max(1, parseInt(e.target.value) || 1);
-        setCartQty(e.target.dataset.id, val);
+        setCartQty(e.target.dataset.key, val);
         render();
       });
     });
     content.querySelectorAll(".remove-link").forEach(el => {
       el.addEventListener("click", (e) => {
-        removeFromCart(e.target.dataset.id);
+        removeFromCart(e.target.dataset.key);
         render();
       });
     });
