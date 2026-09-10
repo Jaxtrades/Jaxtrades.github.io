@@ -416,6 +416,16 @@ header.site-header {
 }
 .bundle-card h3 { margin: 0 0 2px; font-size: 1.05rem; }
 .bundle-card .bundle-sub { color: var(--text-dim); font-size: 0.85rem; margin: 0 0 6px; }
+.bundle-card .bundle-note {
+  background: var(--bg);
+  border-left: 3px solid var(--teal);
+  color: var(--text-dim);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin: 14px 0;
+}
 .bundle-row {
   display: flex;
   align-items: center;
@@ -443,7 +453,8 @@ header.site-header {
   flex-shrink: 0;
 }
 .bundle-row .bundle-info { flex: 1; min-width: 0; }
-.bundle-row .bundle-name { font-weight: 600; font-size: 0.94rem; }
+.bundle-row .bundle-name { display: block; font-weight: 600; font-size: 0.94rem; color: var(--text); text-decoration: none; }
+.bundle-row .bundle-name:hover { color: var(--accent); text-decoration: underline; }
 .bundle-row .bundle-tagline { color: var(--text-dim); font-size: 0.83rem; margin: 2px 0; }
 .bundle-row .bundle-meta { color: var(--text-dim); font-size: 0.76rem; }
 .bundle-row .bundle-price { font-weight: 700; color: var(--accent-dark); white-space: nowrap; }
