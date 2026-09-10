@@ -1,4 +1,4 @@
-# JaxTrades Peptides
+# Pepes.au
 
 A static, front-end-only storefront for research peptides, built for GitHub Pages (no server/build step required).
 
