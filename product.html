@@ -44,6 +44,11 @@
   } else {
     document.title = product.name + " — JaxTrades Peptides";
     const tagsHtml = Object.keys(product.tags).map(t => `<span class="tag-pill">${CATEGORY_LABELS[t]}</span>`).join("");
+    const requestedSize = params.get("size");
+    const sizeOptions = product.sizes.map(s =>
+      `<option value="${s.code}" ${s.code === requestedSize ? "selected" : ""}>${s.spec} — ${formatPrice(s.price)}</option>`
+    ).join("");
+
     main.innerHTML = `
       <div class="product-detail">
         <div class="icon-hero">${product.icon}</div>
@@ -52,7 +57,11 @@
           <p style="color:var(--text-dim)">${product.tagline}</p>
           <p>${product.description}</p>
           <div class="tags-row">${tagsHtml}</div>
-          <div style="font-size:1.4rem;font-weight:700;">${formatPrice(product.price)} <span style="font-size:0.9rem;color:var(--text-dim);font-weight:400;">/ ${product.size}</span></div>
+          <div class="qty-row" style="margin-bottom:0;">
+            <label for="size-select">Size</label>
+            <select id="size-select">${sizeOptions}</select>
+          </div>
+          <div id="price-display" style="font-size:1.4rem;font-weight:700;margin:14px 0;"></div>
           <div class="qty-row">
             <label for="qty">Qty</label>
             <input type="number" id="qty" value="1" min="1" max="20">
@@ -62,9 +71,21 @@
         </div>
       </div>
     `;
+
+    const sizeSelect = document.getElementById("size-select");
+    const priceDisplay = document.getElementById("price-display");
+    function currentSize() {
+      return getSize(product, sizeSelect.value) || product.sizes[0];
+    }
+    function renderPrice() {
+      priceDisplay.textContent = formatPrice(currentSize().price) + " / vial";
+    }
+    renderPrice();
+    sizeSelect.addEventListener("change", renderPrice);
+
     document.getElementById("add-btn").addEventListener("click", () => {
       const qty = Math.max(1, parseInt(document.getElementById("qty").value) || 1);
-      addToCart(product.id, qty);
+      addToCart(product.id, currentSize().code, qty);
       document.getElementById("added-msg").style.display = "block";
     });
   }

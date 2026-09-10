@@ -87,6 +87,7 @@
     const chosen = answers.map((idx, i) => (idx === null ? null : QUIZ_QUESTIONS[i].options[idx]));
     const ranked = scoreProducts(chosen);
     const top = ranked[0];
+    const topCheapest = cheapestSize(top.product);
     const alts = ranked.slice(1, 5).filter(r => r.score > 0);
 
     box.innerHTML = `
@@ -100,7 +101,7 @@
           <p style="color:var(--text-dim);margin:0 0 10px;">${top.product.tagline}</p>
           <p style="margin:0 0 14px;">${top.product.description}</p>
           <div style="display:flex;gap:10px;align-items:center;">
-            <span style="font-weight:700;">${formatPrice(top.product.price)}</span>
+            <span style="font-weight:700;">From ${formatPrice(topCheapest.price)}</span>
             <a class="btn" href="product.html?id=${top.product.id}">View Product</a>
             <button class="btn secondary" id="add-top-btn">Add to Cart</button>
           </div>
@@ -111,14 +112,17 @@
         <div class="alt-matches">
           <h3>Also matched your answers</h3>
           <div class="grid">
-            ${alts.map(a => `
+            ${alts.map(a => {
+              const c = cheapestSize(a.product);
+              return `
               <a class="card" href="product.html?id=${a.product.id}" style="color:inherit;text-decoration:none;">
                 <div class="icon">${a.product.icon}</div>
                 <h3>${a.product.name}</h3>
                 <div class="tagline">${a.product.tagline}</div>
-                <div class="price-row"><span class="price">${formatPrice(a.product.price)}</span></div>
+                <div class="price-row"><span class="price">From ${formatPrice(c.price)}</span></div>
               </a>
-            `).join("")}
+            `;
+            }).join("")}
           </div>
         </div>
       ` : ""}
@@ -130,7 +134,7 @@
     `;
 
     document.getElementById("add-top-btn").addEventListener("click", () => {
-      addToCart(top.product.id, 1);
+      addToCart(top.product.id, topCheapest.code, 1);
       document.getElementById("add-top-btn").textContent = "Added ✓";
     });
     document.getElementById("retake-btn").addEventListener("click", () => {

@@ -34,21 +34,18 @@
 <script src="js/store.js"></script>
 <script>
   const main = document.getElementById("main-content");
-  const cart = getCart();
-  const ids = Object.keys(cart);
+  const lines = getCartLines();
 
-  if (ids.length === 0) {
+  if (lines.length === 0) {
     main.innerHTML = `
       <div class="empty-state">
         <p>Your cart is empty — nothing to check out.</p>
         <a href="menu.html" class="btn">Browse the menu</a>
       </div>`;
   } else {
-    const lines = ids.map(id => {
-      const p = getProduct(id);
-      const qty = cart[id];
-      return `<div class="order-line"><span>${p.icon} ${p.name} × ${qty}</span><span>${formatPrice(p.price * qty)}</span></div>`;
-    }).join("");
+    const lineHtml = lines.map(line =>
+      `<div class="order-line"><span>${line.product.icon} ${line.product.name} (${line.size.spec}) × ${line.qty}</span><span>${formatPrice(line.lineTotal)}</span></div>`
+    ).join("");
     const total = cartTotal();
 
     main.innerHTML = `
@@ -72,7 +69,7 @@
             <label>State
               <input type="text" name="state" required>
             </label>
-            <label>ZIP
+            <label>Postcode
               <input type="text" name="zip" required>
             </label>
           </div>
@@ -97,7 +94,7 @@
 
         <div class="order-summary">
           <h3 style="margin-top:0;">Order Summary</h3>
-          ${lines}
+          ${lineHtml}
           <div class="order-line" style="border-bottom:none;font-weight:700;"><span>Total</span><span>${formatPrice(total)}</span></div>
         </div>
       </div>
