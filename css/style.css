@@ -444,7 +444,8 @@ header.site-header {
 }
 .bundle-row .bundle-info { flex: 1; min-width: 0; }
 .bundle-row .bundle-name { font-weight: 600; font-size: 0.94rem; }
-.bundle-row .bundle-meta { color: var(--text-dim); font-size: 0.78rem; }
+.bundle-row .bundle-tagline { color: var(--text-dim); font-size: 0.83rem; margin: 2px 0; }
+.bundle-row .bundle-meta { color: var(--text-dim); font-size: 0.76rem; }
 .bundle-row .bundle-price { font-weight: 700; color: var(--accent-dark); white-space: nowrap; }
 .bundle-total-row {
   display: flex;
