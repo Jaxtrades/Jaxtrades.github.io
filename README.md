@@ -7,14 +7,18 @@ A static, front-end-only storefront for research peptides, built for GitHub Page
 - `index.html` — Landing page: leads with the Q&A matcher, links out to the Menu
 - `menu.html` — Full product catalog, browsable on its own
 - `product.html?id=<slug>` — Product detail with a size/price selector + add to cart
-- `quiz.html` — 10-question Q&A that recommends peptides based on the shopper's answers. Question 1 is a heavily-weighted "what's your main focus" pick across all categories; questions 2-10 each refine one specific category.
+- `quiz.html` — 7-question Q&A that recommends peptides based on the shopper's answers. Question 1 is a heavily-weighted "what's your main focus" pick across the catalog's categories; questions 2-7 each refine one specific category.
 - `cart.html` — Cart (stored in `localStorage`)
 - `checkout.html` — Shipping form + simulated order placement
 
 ## Catalog & pricing
 
-`js/products.js` holds 36 products, each with one or more `sizes` (e.g. different mg strengths), sourced
-from a supplier wholesale price list (USD, priced per box of 10 vials, tiered by order volume). Each size's
+`js/products.js` holds a curated catalog of 15 of the current best-selling research peptides, focused on
+muscle & performance, skin & hair, and anti-aging, plus the weight-management GLP-1 compounds (Tirzepatide,
+Retatrutide, Semaglutide) that are the single biggest sellers in the category and the recovery peptides
+(BPC-157, TB-500) most often bought alongside them. Each product has one or more `sizes` (e.g. different mg
+strengths), sourced from a supplier wholesale price list (USD, priced per box of 10 vials, tiered by order
+volume). Each size's
 `price` here is a **per-vial AUD price**, computed as: lowest available box-quantity tier (USD) ÷ 10 vials,
 converted at ~1 USD = 1.38 AUD, rounded to the nearest dollar. That means these are close to the raw
 wholesale cost per vial with **no retail margin added** — adjust `price` in `js/products.js` per size once
