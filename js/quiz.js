@@ -4,6 +4,7 @@
 
 const QUIZ_QUESTIONS = [
   {
+    icon: "🎯",
     text: "What's your main area of research interest right now?",
     options: [
       { label: "Injury / tissue recovery", points: { recovery: 3 } },
@@ -18,6 +19,7 @@ const QUIZ_QUESTIONS = [
     ],
   },
   {
+    icon: "🔍",
     text: "Is there a secondary area you're interested in?",
     options: [
       { label: "Injury / tissue recovery", points: { recovery: 2 } },
@@ -33,6 +35,7 @@ const QUIZ_QUESTIONS = [
     ],
   },
   {
+    icon: "🏃",
     text: "How active are you day to day?",
     options: [
       { label: "Mostly sedentary", points: { weight: 1, sleep: 1 } },
@@ -41,6 +44,7 @@ const QUIZ_QUESTIONS = [
     ],
   },
   {
+    icon: "🌙",
     text: "How would you describe your recent sleep quality?",
     options: [
       { label: "Poor — I struggle to fall or stay asleep", points: { sleep: 3 } },
@@ -49,6 +53,7 @@ const QUIZ_QUESTIONS = [
     ],
   },
   {
+    icon: "🧘",
     text: "How would you rate your current stress levels?",
     options: [
       { label: "Low", points: {} },
@@ -57,6 +62,7 @@ const QUIZ_QUESTIONS = [
     ],
   },
   {
+    icon: "🎂",
     text: "What age range are you in?",
     options: [
       { label: "18–29", points: {} },
@@ -66,6 +72,7 @@ const QUIZ_QUESTIONS = [
     ],
   },
   {
+    icon: "🔬",
     text: "Any specific research focus you'd like to prioritize?",
     options: [
       { label: "Joint & tissue repair", points: { recovery: 2 } },
