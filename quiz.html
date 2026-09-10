@@ -92,6 +92,48 @@
     });
   }
 
+  /* Builds a note describing how the peptides actually in this bundle relate
+     to each other — only mentions combinations/cautions that apply to the
+     specific items present, rather than a fixed blurb. Falls back to a
+     generic "these matched independently" line when no known pairing or
+     caution applies to this particular bundle. */
+  function buildBundleNote(bundleItems) {
+    if (bundleItems.length < 2) return "";
+    const ids = bundleItems.map((i) => i.product.id);
+    const has = (id) => ids.includes(id);
+    const notes = [];
+
+    if (has("bpc-157") && has("tb-500")) {
+      notes.push('BPC-157 + TB-500 (often called the "Wolverine stack") is one of the most common pairings studied together for tissue-repair research.');
+    }
+    if (has("cjc-1295") && has("ipamorelin")) {
+      notes.push("CJC-1295 + Ipamorelin is the most widely studied growth-hormone-axis pairing — CJC-1295 extends the GH pulse while Ipamorelin triggers it more frequently.");
+    }
+    if (has("cjc-ipamorelin-blend")) {
+      notes.push("The CJC-1295/Ipamorelin blend combines both halves of that same growth-hormone-axis pairing in a single vial.");
+    }
+    if (has("ghk-cu") && (has("bpc-157") || has("tb-500"))) {
+      notes.push("GHK-Cu is often studied alongside BPC-157/TB-500-style recovery peptides, pairing skin/collagen research with deeper tissue-repair research.");
+    }
+    if (has("epithalon") && has("nad")) {
+      notes.push("Epithalon and NAD+ are frequently included together in longevity-focused research, targeting different mechanisms — telomerase activity vs. cellular energy metabolism.");
+    }
+
+    const metabolicIds = ["tirzepatide", "retatrutide", "semaglutide", "aod-9604"];
+    const metabolicCount = ids.filter((id) => metabolicIds.includes(id)).length;
+    if (metabolicCount >= 2) {
+      notes.push("Note: Tirzepatide, Retatrutide, Semaglutide and AOD-9604 are generally studied as alternatives to each other rather than combined — most research protocols focus on one metabolic compound at a time, not several together.");
+    }
+
+    if (notes.length === 0) {
+      const cats = [...new Set(bundleItems.flatMap((i) => Object.keys(i.product.tags)))];
+      const labels = cats.map((c) => CATEGORY_LABELS[c] || c).join(", ");
+      notes.push(`These matched independently rather than as a typical combination — each is generally studied on its own for its specific focus (${labels}).`);
+    }
+
+    return notes.join(" ");
+  }
+
   function renderResult() {
     const chosen = answers.map((idx, i) => (idx === null ? null : QUIZ_QUESTIONS[i].options[idx]));
     const ranked = scoreProducts(chosen);
@@ -101,6 +143,7 @@
     const bundleMatches = ranked.filter(r => r.score > 0).slice(0, 4);
     if (bundleMatches.length === 0) bundleMatches.push(top);
     const bundleItems = bundleMatches.map(r => ({ product: r.product, size: cheapestSize(r.product) }));
+    const bundleNote = buildBundleNote(bundleItems);
 
     const alts = ranked.slice(1, 5).filter(r => r.score > 0);
 
@@ -119,13 +162,11 @@
       <div class="bundle-card">
         <h3>Your Personalized Bundle</h3>
         <p class="bundle-sub">Everything matched to your answers — untick anything you don't want, then add the rest in one go.</p>
-        ${bundleItems.length > 1 ? `
+        ${bundleNote ? `
           <p class="bundle-note">
-            These are commonly studied together rather than on their own — e.g. BPC-157 + TB-500 for combined
-            tissue-repair research, CJC-1295 + Ipamorelin for growth-hormone-axis research, and GHK-Cu alongside
-            either for skin/collagen research. This is general background only, not a usage protocol —
-            frequency, dosing and combination decisions are outside the scope of this site; that's a
-            conversation for a qualified professional.
+            ${bundleNote}
+            This is general background only, not a usage protocol — frequency, dosing and combination
+            decisions are outside the scope of this site; that's a conversation for a qualified professional.
           </p>
         ` : ""}
         ${bundleItems.map(item => `
