@@ -1,64 +1,72 @@
-/* Q&A matcher: each question option contributes weighted points to one or
-   more categories. Products are scored by summing (option weight * product's
-   own tag weight for that category). Highest total score wins. */
+/* Q&A matcher: each question targets one research category with its own
+   specific, natural-language question and graded answers (rather than
+   asking the shopper to repeatedly pick from one big list of categories).
+   Each answer option awards weighted points to one or more categories.
+   Products are scored by summing (option weight * product's own tag
+   weight for that category). Highest total score wins. */
 
 const QUIZ_QUESTIONS = [
   {
-    icon: "🎯",
-    text: "What's your main area of research interest right now?",
+    icon: "🩹",
+    text: "Do you have any nagging injuries, joint pain, or areas that heal slowly?",
     options: [
-      { label: "Injury / tissue recovery", points: { recovery: 3 } },
-      { label: "Muscle growth & performance", points: { muscle: 3 } },
-      { label: "Anti-aging & longevity", points: { antiaging: 3 } },
-      { label: "Cognitive focus & mental clarity", points: { cognitive: 3 } },
-      { label: "Skin, hair & appearance", points: { skin: 3 } },
-      { label: "Weight & metabolism", points: { weight: 3 } },
-      { label: "Sleep quality", points: { sleep: 3 } },
-      { label: "Stress & mood", points: { stress: 3 } },
-      { label: "Immune resilience", points: { immune: 3 } },
+      { label: "No issues at the moment", points: {} },
+      { label: "Some minor stiffness or soreness", points: { recovery: 1 } },
+      { label: "Yes — ongoing pain or an injury", points: { recovery: 3 } },
     ],
   },
   {
-    icon: "🔍",
-    text: "Is there a secondary area you're interested in?",
+    icon: "💪",
+    text: "How active is your training or exercise routine?",
     options: [
-      { label: "No secondary interest", points: {} },
-      { label: "Injury / tissue recovery", points: { recovery: 2 } },
-      { label: "Muscle growth & performance", points: { muscle: 2 } },
-      { label: "Anti-aging & longevity", points: { antiaging: 2 } },
-      { label: "Cognitive focus & mental clarity", points: { cognitive: 2 } },
-      { label: "Skin, hair & appearance", points: { skin: 2 } },
-      { label: "Weight & metabolism", points: { weight: 2 } },
-      { label: "Sleep quality", points: { sleep: 2 } },
-      { label: "Stress & mood", points: { stress: 2 } },
-      { label: "Immune resilience", points: { immune: 2 } },
+      { label: "Sedentary — I rarely exercise", points: {} },
+      { label: "Moderate — active a few times a week", points: { muscle: 1 } },
+      { label: "Intense — athletic training or performance-focused", points: { muscle: 3, recovery: 1 } },
     ],
   },
   {
-    icon: "🏃",
-    text: "How active are you day to day?",
+    icon: "⚖️",
+    text: "Is managing your weight or metabolism a priority right now?",
     options: [
-      { label: "Mostly sedentary", points: { weight: 1, sleep: 1 } },
-      { label: "Lightly active", points: { recovery: 1 } },
-      { label: "Very active / athletic training", points: { recovery: 2, muscle: 2 } },
+      { label: "Not really", points: {} },
+      { label: "Somewhat", points: { weight: 1 } },
+      { label: "Yes — it's a main focus", points: { weight: 3 } },
     ],
   },
   {
     icon: "🌙",
-    text: "How would you describe your recent sleep quality?",
+    text: "How would you describe your sleep lately?",
     options: [
-      { label: "Poor — I struggle to fall or stay asleep", points: { sleep: 3 } },
-      { label: "Okay — could be better", points: { sleep: 1 } },
       { label: "Great — no complaints", points: {} },
+      { label: "Okay — could be better", points: { sleep: 1 } },
+      { label: "Poor — I struggle to fall or stay asleep", points: { sleep: 3 } },
     ],
   },
   {
     icon: "🧘",
-    text: "How would you rate your current stress levels?",
+    text: "How would you rate your everyday stress levels?",
     options: [
       { label: "Low", points: {} },
       { label: "Moderate", points: { stress: 1 } },
       { label: "High", points: { stress: 3 } },
+    ],
+  },
+  {
+    icon: "🧠",
+    text: "Do you experience brain fog or trouble concentrating?",
+    options: [
+      { label: "Rarely", points: {} },
+      { label: "Sometimes", points: { cognitive: 1 } },
+      { label: "Often", points: { cognitive: 3 } },
+    ],
+  },
+  {
+    icon: "✨",
+    text: "Any concerns about your skin, hair, or signs of aging skin?",
+    options: [
+      { label: "Not really", points: {} },
+      { label: "A little", points: { skin: 1 } },
+      { label: "Yes — it's something I'd like to improve", points: { skin: 3 } },
     ],
   },
   {
@@ -72,13 +80,12 @@ const QUIZ_QUESTIONS = [
     ],
   },
   {
-    icon: "🔬",
-    text: "Any specific research focus you'd like to prioritize?",
+    icon: "🛡️",
+    text: "Do you get sick often, or want extra immune support?",
     options: [
-      { label: "Joint & tissue repair", points: { recovery: 2 } },
-      { label: "Skin & hair appearance", points: { skin: 2 } },
-      { label: "Cognitive performance", points: { cognitive: 2 } },
-      { label: "None in particular", points: {} },
+      { label: "Rarely get sick — not a priority", points: {} },
+      { label: "Sometimes", points: { immune: 1 } },
+      { label: "Often, or it's a priority for me", points: { immune: 3 } },
     ],
   },
 ];
