@@ -7,7 +7,7 @@ A static, front-end-only storefront for research peptides, built for GitHub Page
 - `index.html` — Landing page: leads with the Q&A matcher, links out to the Menu
 - `menu.html` — Full product catalog, browsable on its own
 - `product.html?id=<slug>` — Product detail with a size/price selector + add to cart
-- `quiz.html` — 7-question Q&A that recommends peptides based on the shopper's answers
+- `quiz.html` — 9-question Q&A that recommends peptides based on the shopper's answers
 - `cart.html` — Cart (stored in `localStorage`)
 - `checkout.html` — Shipping form + simulated order placement
 
