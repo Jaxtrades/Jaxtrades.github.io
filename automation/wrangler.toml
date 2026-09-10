@@ -1,0 +1,8 @@
+name = "jaxtrades-auto-responder"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Non-secret config. Secrets (TWILIO_AUTH_TOKEN, SENDGRID_API_KEY) are set via
+# `wrangler secret put <NAME>` — see README.md in this folder.
+[vars]
+FROM_EMAIL = "support@yourdomain.com"
