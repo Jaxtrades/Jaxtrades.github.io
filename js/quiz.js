@@ -1,11 +1,33 @@
-/* Q&A matcher: each question targets one research category with its own
-   specific, natural-language question and graded answers (rather than
-   asking the shopper to repeatedly pick from one big list of categories).
+/* Q&A matcher.
+   Question 1 asks the shopper's single main focus directly — a broad
+   pick from all 9 categories, weighted heavily (5x) so whatever they
+   say they care about most clearly drives the top match and bundle
+   (e.g. picking "Weight & metabolism" should surface Retatrutide /
+   Tirzepatide / Semaglutide, not get buried under recovery peptides).
+   Questions 2-10 each dig into one specific category on its own, with
+   natural, graded answers (none/mild/significant) rather than another
+   flat list of category names — these refine the primary pick rather
+   than override it.
    Each answer option awards weighted points to one or more categories.
    Products are scored by summing (option weight * product's own tag
    weight for that category). Highest total score wins. */
 
 const QUIZ_QUESTIONS = [
+  {
+    icon: "🎯",
+    text: "What would you like to focus on most?",
+    options: [
+      { label: "Injury / tissue recovery", points: { recovery: 5 } },
+      { label: "Muscle growth & performance", points: { muscle: 5 } },
+      { label: "Weight & metabolism", points: { weight: 5 } },
+      { label: "Sleep quality", points: { sleep: 5 } },
+      { label: "Stress & mood", points: { stress: 5 } },
+      { label: "Cognitive focus & mental clarity", points: { cognitive: 5 } },
+      { label: "Skin, hair & appearance", points: { skin: 5 } },
+      { label: "Anti-aging & longevity", points: { antiaging: 5 } },
+      { label: "Immune resilience", points: { immune: 5 } },
+    ],
+  },
   {
     icon: "🩹",
     text: "Do you have any nagging injuries, joint pain, or areas that heal slowly?",
