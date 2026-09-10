@@ -38,27 +38,36 @@
 <script src="js/quiz.js"></script>
 <script>
   const box = document.getElementById("quiz-box");
+  const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
   let step = 0;
   const answers = new Array(QUIZ_QUESTIONS.length).fill(null);
 
+  function renderSteps() {
+    return QUIZ_QUESTIONS.map((_, i) => {
+      const cls = i < step ? "done" : i === step ? "current" : "";
+      return `<div class="quiz-step-dot ${cls}"></div>`;
+    }).join("");
+  }
+
   function renderQuestion() {
     const q = QUIZ_QUESTIONS[step];
-    const pct = Math.round((step / QUIZ_QUESTIONS.length) * 100);
     box.innerHTML = `
+      <div class="quiz-steps">${renderSteps()}</div>
       <div class="quiz-step-label">Question ${step + 1} of ${QUIZ_QUESTIONS.length}</div>
-      <div class="quiz-progress"><div class="quiz-progress-bar" style="width:${pct}%"></div></div>
+      <div class="quiz-question-icon">${q.icon}</div>
       <h2>${q.text}</h2>
       <div class="quiz-options">
         ${q.options.map((opt, i) => `
           <button type="button" class="quiz-option${answers[step] === i ? " selected" : ""}" data-i="${i}">
-            ${opt.label}
+            <span class="option-letter">${letters[i]}</span>
+            <span>${opt.label}</span>
           </button>
         `).join("")}
       </div>
       <div class="quiz-nav">
         <button class="btn secondary" id="back-btn" ${step === 0 ? "disabled" : ""}>← Back</button>
         <button class="btn" id="next-btn" ${answers[step] === null ? "disabled" : ""}>
-          ${step === QUIZ_QUESTIONS.length - 1 ? "See My Match →" : "Next →"}
+          ${step === QUIZ_QUESTIONS.length - 1 ? "See My Matches →" : "Next →"}
         </button>
       </div>
     `;
@@ -88,11 +97,26 @@
     const ranked = scoreProducts(chosen);
     const top = ranked[0];
     const topCheapest = cheapestSize(top.product);
+
+    // Bundle = top match + up to 3 alternates that actually scored.
+    const bundleMatches = ranked.filter(r => r.score > 0).slice(0, 4);
+    if (bundleMatches.length === 0) bundleMatches.push(top);
+    const bundleItems = bundleMatches.map(r => ({ product: r.product, size: cheapestSize(r.product) }));
+
     const alts = ranked.slice(1, 5).filter(r => r.score > 0);
 
+    function bundleTotal() {
+      let total = 0;
+      box.querySelectorAll(".bundle-row input[type=checkbox]:checked").forEach(cb => {
+        total += parseFloat(cb.dataset.price);
+      });
+      return total;
+    }
+
     box.innerHTML = `
-      <div class="quiz-step-label">Your Match</div>
-      <h2>Based on your answers, we recommend:</h2>
+      <div class="quiz-step-label">Your Results</div>
+      <h2>We matched ${bundleItems.length} peptide${bundleItems.length > 1 ? "s" : ""} to your answers</h2>
+
       <div class="result-card">
         <div class="icon" style="font-size:3rem;">${top.product.icon}</div>
         <div>
@@ -100,27 +124,50 @@
           <h3 style="margin:0 0 4px;">${top.product.name}</h3>
           <p style="color:var(--text-dim);margin:0 0 10px;">${top.product.tagline}</p>
           <p style="margin:0 0 14px;">${top.product.description}</p>
-          <div style="display:flex;gap:10px;align-items:center;">
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
             <span style="font-weight:700;">From ${formatPrice(topCheapest.price)}</span>
-            <a class="btn" href="product.html?id=${top.product.id}">View Product</a>
-            <button class="btn secondary" id="add-top-btn">Add to Cart</button>
+            <a class="btn secondary" href="product.html?id=${top.product.id}">View Product</a>
           </div>
         </div>
       </div>
 
+      <div class="bundle-card">
+        <h3>Your Personalized Bundle</h3>
+        <p class="bundle-sub">Everything matched to your answers — untick anything you don't want, then add the rest in one go.</p>
+        ${bundleItems.map(item => `
+          <label class="bundle-row">
+            <input type="checkbox" checked data-price="${item.size.price}" data-id="${item.product.id}" data-code="${item.size.code}">
+            <span class="bundle-icon">${item.product.icon}</span>
+            <span class="bundle-info">
+              <div class="bundle-name">${item.product.name}</div>
+              <div class="bundle-meta">${item.size.spec}</div>
+            </span>
+            <span class="bundle-price">${formatPrice(item.size.price)}</span>
+          </label>
+        `).join("")}
+        <div class="bundle-total-row">
+          <span class="label">Bundle total</span>
+          <span class="amount" id="bundle-total">${formatPrice(bundleItems.reduce((s, i) => s + i.size.price, 0))}</span>
+        </div>
+        <button class="btn" id="add-bundle-btn" style="width:100%;margin-top:16px;">Add Bundle to Cart</button>
+      </div>
+
       ${alts.length ? `
         <div class="alt-matches">
-          <h3>Also matched your answers</h3>
-          <div class="grid">
+          <h3>Or add individually</h3>
+          <div class="grid individual-grid">
             ${alts.map(a => {
               const c = cheapestSize(a.product);
               return `
-              <a class="card" href="product.html?id=${a.product.id}" style="color:inherit;text-decoration:none;">
-                <div class="icon">${a.product.icon}</div>
-                <h3>${a.product.name}</h3>
-                <div class="tagline">${a.product.tagline}</div>
+              <div class="card">
+                <a href="product.html?id=${a.product.id}" style="color:inherit;text-decoration:none;">
+                  <div class="icon">${a.product.icon}</div>
+                  <h3>${a.product.name}</h3>
+                  <div class="tagline">${a.product.tagline}</div>
+                </a>
                 <div class="price-row"><span class="price">From ${formatPrice(c.price)}</span></div>
-              </a>
+                <button class="btn secondary card-add-btn" data-id="${a.product.id}" data-code="${c.code}">Add to Cart</button>
+              </div>
             `;
             }).join("")}
           </div>
@@ -133,10 +180,29 @@
       </div>
     `;
 
-    document.getElementById("add-top-btn").addEventListener("click", () => {
-      addToCart(top.product.id, topCheapest.code, 1);
-      document.getElementById("add-top-btn").textContent = "Added ✓";
+    box.querySelectorAll(".bundle-row input[type=checkbox]").forEach(cb => {
+      cb.addEventListener("change", () => {
+        document.getElementById("bundle-total").textContent = formatPrice(bundleTotal());
+      });
     });
+
+    document.getElementById("add-bundle-btn").addEventListener("click", () => {
+      let count = 0;
+      box.querySelectorAll(".bundle-row input[type=checkbox]:checked").forEach(cb => {
+        addToCart(cb.dataset.id, cb.dataset.code, 1);
+        count++;
+      });
+      const btn = document.getElementById("add-bundle-btn");
+      btn.textContent = count > 0 ? `Added ${count} item${count > 1 ? "s" : ""} to cart ✓` : "Select at least one item";
+    });
+
+    box.querySelectorAll(".card-add-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        addToCart(btn.dataset.id, btn.dataset.code, 1);
+        btn.textContent = "Added ✓";
+      });
+    });
+
     document.getElementById("retake-btn").addEventListener("click", () => {
       step = 0;
       answers.fill(null);
