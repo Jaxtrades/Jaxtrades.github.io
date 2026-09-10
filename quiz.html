@@ -96,7 +96,6 @@
     const chosen = answers.map((idx, i) => (idx === null ? null : QUIZ_QUESTIONS[i].options[idx]));
     const ranked = scoreProducts(chosen);
     const top = ranked[0];
-    const topCheapest = cheapestSize(top.product);
 
     // Bundle = top match + up to 3 alternates that actually scored.
     const bundleMatches = ranked.filter(r => r.score > 0).slice(0, 4);
@@ -117,29 +116,24 @@
       <div class="quiz-step-label">Your Results</div>
       <h2>We matched ${bundleItems.length} peptide${bundleItems.length > 1 ? "s" : ""} to your answers</h2>
 
-      <div class="result-card">
-        <div class="icon" style="font-size:3rem;">${top.product.icon}</div>
-        <div>
-          <div class="match-badge">Best Match</div>
-          <h3 style="margin:0 0 4px;">${top.product.name}</h3>
-          <p style="color:var(--text-dim);margin:0 0 10px;">${top.product.tagline}</p>
-          <p style="margin:0 0 14px;">${top.product.description}</p>
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-            <span style="font-weight:700;">From ${formatPrice(topCheapest.price)}</span>
-            <a class="btn secondary" href="product.html?id=${top.product.id}">View Product</a>
-          </div>
-        </div>
-      </div>
-
       <div class="bundle-card">
         <h3>Your Personalized Bundle</h3>
         <p class="bundle-sub">Everything matched to your answers — untick anything you don't want, then add the rest in one go.</p>
+        ${bundleItems.length > 1 ? `
+          <p class="bundle-note">
+            These are commonly studied together rather than on their own — e.g. BPC-157 + TB-500 for combined
+            tissue-repair research, CJC-1295 + Ipamorelin for growth-hormone-axis research, and GHK-Cu alongside
+            either for skin/collagen research. This is general background only, not a usage protocol —
+            frequency, dosing and combination decisions are outside the scope of this site; that's a
+            conversation for a qualified professional.
+          </p>
+        ` : ""}
         ${bundleItems.map(item => `
           <label class="bundle-row">
             <input type="checkbox" checked data-price="${item.size.price}" data-id="${item.product.id}" data-code="${item.size.code}">
             <span class="bundle-icon">${item.product.icon}</span>
             <span class="bundle-info">
-              <div class="bundle-name">${item.product.name}</div>
+              <a class="bundle-name" href="product.html?id=${item.product.id}">${item.product.name}</a>
               <div class="bundle-tagline">${item.product.tagline}</div>
               <div class="bundle-meta">${item.size.spec}</div>
             </span>
