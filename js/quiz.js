@@ -22,6 +22,7 @@ const QUIZ_QUESTIONS = [
     icon: "🔍",
     text: "Is there a secondary area you're interested in?",
     options: [
+      { label: "No secondary interest", points: {} },
       { label: "Injury / tissue recovery", points: { recovery: 2 } },
       { label: "Muscle growth & performance", points: { muscle: 2 } },
       { label: "Anti-aging & longevity", points: { antiaging: 2 } },
@@ -31,7 +32,6 @@ const QUIZ_QUESTIONS = [
       { label: "Sleep quality", points: { sleep: 2 } },
       { label: "Stress & mood", points: { stress: 2 } },
       { label: "Immune resilience", points: { immune: 2 } },
-      { label: "No secondary interest", points: {} },
     ],
   },
   {
