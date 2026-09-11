@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Product — JaxTrades Peptides</title>
+<title>Product — Cozzy</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🫶</text></svg>">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<div class="disclaimer-banner">
-  <strong>For laboratory research use only.</strong> Not for human consumption. Not evaluated by the FDA. Must be 18+ to purchase.
-</div>
+<div class="announce">✨ <strong>Free shipping</strong> on orders $40+ &nbsp;·&nbsp; 30-day Happy Period Guarantee</div>
 
 <header class="site-header">
   <div class="wrap nav">
-    <a href="index.html" class="brand">🧪 JaxTrades Peptides</a>
+    <a href="index.html" class="brand">Cozzy<span class="dot">.</span></a>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
-      <li><a href="quiz.html">Q&amp;A Matcher</a></li>
-      <li><a href="menu.html">Menu</a></li>
-      <li><a href="cart.html" class="cart-link">🛒 Cart <span id="cart-count">0</span></a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="about.html">Our Story</a></li>
+      <li><a href="about.html#faq">FAQ</a></li>
+      <li><a href="cart.html" class="cart-link">Cart <span id="cart-count">0</span></a></li>
     </ul>
   </div>
 </header>
@@ -29,63 +29,100 @@
 </main>
 
 <footer class="site-footer">
-  <p>© 2026 JaxTrades Peptides. All products are for research use only. Not for human consumption.</p>
+  <div class="wrap">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>© 2026 Cozzy. All rights reserved.</span>
+      <span>Made with warmth, wherever you are.</span>
+    </div>
+  </div>
 </footer>
 
 <script src="js/products.js"></script>
+<script src="js/illustrations.js"></script>
 <script src="js/store.js"></script>
 <script>
   const params = new URLSearchParams(location.search);
   const product = getProduct(params.get("id"));
   const main = document.getElementById("main-content");
 
+  const artBg = { hero: "bg-blush", bundle: "bg-coral", accessory: "bg-sage" };
+
   if (!product) {
-    main.innerHTML = `<div class="empty-state"><h2>Product not found</h2><a href="menu.html" class="btn">Back to menu</a></div>`;
+    main.innerHTML = `<div class="empty-state"><div class="emoji-ish">🤔</div><h2>Hmm, we can't find that one</h2><a href="shop.html" class="btn" style="margin-top:14px;">Back to shop</a></div>`;
   } else {
-    document.title = product.name + " — JaxTrades Peptides";
-    const tagsHtml = Object.keys(product.tags).map(t => `<span class="tag-pill">${CATEGORY_LABELS[t]}</span>`).join("");
-    const requestedSize = params.get("size");
-    const sizeOptions = product.sizes.map(s =>
-      `<option value="${s.code}" ${s.code === requestedSize ? "selected" : ""}>${s.spec} — ${formatPrice(s.price)}</option>`
+    document.title = product.name + " — Cozzy";
+    const requestedVariant = params.get("variant");
+    const initialVariant = getVariant(product, requestedVariant) || product.variants[0];
+
+    const bulletsHtml = (product.bullets || []).map(b => `<li>${b}</li>`).join("");
+    const variantOptions = product.variants.map(v =>
+      `<span class="variant-swatch ${v.code === initialVariant.code ? "selected" : ""}" style="background:${v.hex}" data-code="${v.code}" data-label="${v.label}" title="${v.label}"></span>`
     ).join("");
 
     main.innerHTML = `
       <div class="product-detail">
-        <div class="icon-hero">${product.icon}</div>
+        <div class="product-art ${artBg[product.kind] || "bg-blush"}" id="product-art"></div>
         <div class="info">
+          <div class="stars-row"><span class="stars">★★★★★</span><span>${product.rating} · ${product.reviewCount} reviews</span></div>
           <h1>${product.name}</h1>
-          <p style="color:var(--text-dim)">${product.tagline}</p>
+          <p class="tagline">${product.tagline}</p>
           <p>${product.description}</p>
-          <div class="tags-row">${tagsHtml}</div>
-          <div class="qty-row" style="margin-bottom:0;">
-            <label for="size-select">Size</label>
-            <select id="size-select">${sizeOptions}</select>
+
+          <ul class="bullet-list">${bulletsHtml}</ul>
+
+          <div class="price-block">
+            <span class="price">${formatPrice(product.price)}</span>
+            ${product.compareAt ? `<span class="compare-at">${formatPrice(product.compareAt)}</span>` : ""}
           </div>
-          <div id="price-display" style="font-size:1.4rem;font-weight:700;margin:14px 0;"></div>
+
+          <div class="variant-block">
+            <div class="label">Color — <span class="chosen" id="variant-label">${initialVariant.label}</span></div>
+            <div class="variant-options" id="variant-options">${variantOptions}</div>
+          </div>
+
           <div class="qty-row">
-            <label for="qty">Qty</label>
-            <input type="number" id="qty" value="1" min="1" max="20">
-            <button class="btn" id="add-btn">Add to Cart</button>
+            <div class="qty-stepper">
+              <button type="button" id="qty-minus">−</button>
+              <input type="number" id="qty" value="1" min="1" max="20">
+              <button type="button" id="qty-plus">+</button>
+            </div>
+            <button class="btn" id="add-btn">Add to Cart — ${formatPrice(product.price)}</button>
           </div>
-          <p id="added-msg" style="color:var(--accent);display:none;">Added to cart ✓ &nbsp;<a href="cart.html">View cart</a></p>
+          <p id="added-msg" style="display:none;">Added to cart ✓ &nbsp;<a href="cart.html" style="text-decoration:underline;">View cart</a></p>
         </div>
       </div>
     `;
 
-    const sizeSelect = document.getElementById("size-select");
-    const priceDisplay = document.getElementById("price-display");
-    function currentSize() {
-      return getSize(product, sizeSelect.value) || product.sizes[0];
+    const artEl = document.getElementById("product-art");
+    const variantLabel = document.getElementById("variant-label");
+    let currentVariant = initialVariant;
+
+    function renderArt() {
+      artEl.innerHTML = cozzyIllustration(currentVariant.hex, { spark: product.kind === "hero" });
     }
-    function renderPrice() {
-      priceDisplay.textContent = formatPrice(currentSize().price) + " / vial";
-    }
-    renderPrice();
-    sizeSelect.addEventListener("change", renderPrice);
+    renderArt();
+
+    document.getElementById("variant-options").addEventListener("click", (e) => {
+      const el = e.target.closest(".variant-swatch");
+      if (!el) return;
+      document.querySelectorAll(".variant-swatch").forEach(s => s.classList.remove("selected"));
+      el.classList.add("selected");
+      currentVariant = getVariant(product, el.dataset.code);
+      variantLabel.textContent = el.dataset.label;
+      renderArt();
+    });
+
+    const qtyInput = document.getElementById("qty");
+    document.getElementById("qty-minus").addEventListener("click", () => {
+      qtyInput.value = Math.max(1, (parseInt(qtyInput.value) || 1) - 1);
+    });
+    document.getElementById("qty-plus").addEventListener("click", () => {
+      qtyInput.value = Math.min(20, (parseInt(qtyInput.value) || 1) + 1);
+    });
 
     document.getElementById("add-btn").addEventListener("click", () => {
-      const qty = Math.max(1, parseInt(document.getElementById("qty").value) || 1);
-      addToCart(product.id, currentSize().code, qty);
+      const qty = Math.max(1, parseInt(qtyInput.value) || 1);
+      addToCart(product.id, currentVariant.code, qty);
       document.getElementById("added-msg").style.display = "block";
     });
   }

@@ -1,14 +1,14 @@
-/* Shared cart utilities + nav rendering used on every page.
-   Cart keys are "<productId>::<sizeCode>" so each size is its own line item. */
-const CART_KEY = "jaxtrades_cart";
+/* Shared cart utilities + nav badge used on every page.
+   Cart keys are "<productId>::<variantCode>" so each color is its own line item. */
+const CART_KEY = "cozzy_cart";
 
-function cartKey(productId, sizeCode) {
-  return productId + "::" + sizeCode;
+function cartKey(productId, variantCode) {
+  return productId + "::" + variantCode;
 }
 
 function parseCartKey(key) {
-  const [productId, sizeCode] = key.split("::");
-  return { productId, sizeCode };
+  const [productId, variantCode] = key.split("::");
+  return { productId, variantCode };
 }
 
 function getCart() {
@@ -24,9 +24,9 @@ function saveCart(cart) {
   updateCartBadge();
 }
 
-function addToCart(productId, sizeCode, qty) {
+function addToCart(productId, variantCode, qty) {
   qty = qty || 1;
-  const key = cartKey(productId, sizeCode);
+  const key = cartKey(productId, variantCode);
   const cart = getCart();
   cart[key] = (cart[key] || 0) + qty;
   saveCart(cart);
@@ -53,18 +53,18 @@ function clearCart() {
   updateCartBadge();
 }
 
-/* Resolves cart keys to {key, product, size, qty, lineTotal}, skipping any
-   line items whose product/size no longer exists in the catalog. */
+/* Resolves cart keys to {key, product, variant, qty, lineTotal}, skipping any
+   line items whose product/variant no longer exists in the catalog. */
 function getCartLines() {
   const cart = getCart();
   const lines = [];
   for (const key in cart) {
-    const { productId, sizeCode } = parseCartKey(key);
+    const { productId, variantCode } = parseCartKey(key);
     const product = getProduct(productId);
-    const size = product && getSize(product, sizeCode);
-    if (!product || !size) continue;
+    const variant = product && getVariant(product, variantCode);
+    if (!product || !variant) continue;
     const qty = cart[key];
-    lines.push({ key, product, size, qty, lineTotal: size.price * qty });
+    lines.push({ key, product, variant, qty, lineTotal: product.price * qty });
   }
   return lines;
 }

@@ -1,55 +1,44 @@
-# JaxTrades Peptides
+# Cozzy
 
-A static, front-end-only storefront for research peptides, built for GitHub Pages (no server/build step required).
+A static, front-end-only storefront for **Cozzy** — a plush, cordless electric heating pillow built to ease
+period cramps (and just be a really good hot-water-bottle replacement). Built for GitHub Pages, no
+server/build step required.
 
 ## Pages
 
-- `index.html` — Landing page: leads with the Q&A matcher, links out to the Menu
-- `menu.html` — Full product catalog, browsable on its own
-- `product.html?id=<slug>` — Product detail with a size/price selector + add to cart
-- `quiz.html` — 7-question Q&A that recommends peptides based on the shopper's answers. Question 1 is a heavily-weighted "what's your main focus" pick across the catalog's categories; questions 2-7 each refine one specific category.
+- `index.html` — Home: hero, "why Cozzy" features, product grid, how-it-works, reviews, newsletter
+- `shop.html` — Full product grid (pillow, bundle, accessories)
+- `product.html?id=<slug>` — Product detail with a color selector + add to cart
 - `cart.html` — Cart (stored in `localStorage`)
 - `checkout.html` — Shipping form + simulated order placement
+- `about.html` — Brand story, "why heat helps," and FAQ
 
-## Catalog & pricing
+## Design
 
-`js/products.js` holds a curated catalog of 15 of the current best-selling research peptides, focused on
-muscle & performance, skin & hair, and anti-aging, plus the weight-management GLP-1 compounds (Tirzepatide,
-Retatrutide, Semaglutide) that are the single biggest sellers in the category and the recovery peptides
-(BPC-157, TB-500) most often bought alongside them. Each product has one or more `sizes` (e.g. different mg
-strengths), sourced from a supplier wholesale price list (USD, priced per box of 10 vials, tiered by order
-volume). Each size's
-`price` here is a **per-vial AUD price**, computed as: lowest available box-quantity tier (USD) ÷ 10 vials,
-converted at ~1 USD = 1.38 AUD, rounded to the nearest dollar. That means these are close to the raw
-wholesale cost per vial with **no retail margin added** — adjust `price` in `js/products.js` per size once
-you decide on markup, shipping, and payment-processing costs.
+Warm, editorial DTC aesthetic aimed at women: cream background, a coral "pop" accent, soft blush/sage
+supporting colors, `Fraunces` for display type paired with `Poppins` for body/UI. There's no product
+photography — the brand mark is a reusable inline-SVG illustration of the pillow (`js/illustrations.js`,
+`cozzyIllustration(hex, opts)`) recolored per product variant, used everywhere a "photo" would normally go
+(hero, product cards, product detail, cart thumbnails).
 
-Cart line items are keyed as `"<productId>::<sizeCode>"` (see `js/store.js`) so the same product can appear
-as multiple cart lines at different sizes.
+## Catalog
 
-## How the matcher works
+`js/products.js` holds the catalog: the core Cozzy Pillow, a Duo Bundle, and two small accessories (spare
+cover, travel pouch). Each product has a flat `price` (no per-size pricing) and a `variants` array of color
+options (`{ code, label, hex }`) used for swatches and the illustration recolor.
 
-`js/quiz.js` defines the questions. Each answer option awards weighted points to one or more categories
-(e.g. `recovery`, `muscle`, `sleep`). Each product in `js/products.js` has its own per-category weights (`tags`).
-Scoring multiplies the answer's points by each product's weight for that category and sums across all
-answers — the highest-scoring product is the recommended match, shown alongside up to 4 runner-ups.
+Cart line items are keyed as `"<productId>::<variantCode>"` (see `js/store.js`) so the same product can
+appear as multiple cart lines at different colors.
 
 ## Editing the catalog
 
-Add or edit products directly in `js/products.js`. Each product needs an `id`, `name`, `icon`, `tagline`,
-`description`, a `tags` object mapping category → relevance (0–3), and a `sizes` array of `{ code, spec, price }`.
-Categories used by the quiz live in `CATEGORY_LABELS` in the same file — add a new category there and to
-`QUIZ_QUESTIONS` in `js/quiz.js` if you introduce one.
+Add or edit products directly in `js/products.js`. Each product needs an `id`, `name`, `kind`
+(`hero` | `bundle` | `accessory`, used for card styling), `tagline`, `description`, `bullets`, a `price`
+(+ optional `compareAt`), and a `variants` array of `{ code, label, hex }`.
 
 ## Checkout
 
 There is no backend, so `checkout.html` simulates order placement client-side (collects shipping info,
 generates an order number, clears the cart) rather than processing real payment. To take real payments,
 wire the form submit handler in `checkout.html` to a hosted payment processor (e.g. Stripe Checkout /
-Payment Links) or a serverless function.
-
-## Compliance note
-
-All copy on the site frames products as research-use-only (RUO) with disclaimers against human/animal
-consumption. If you change the product list or copy, keep those disclaimers intact/accurate for your
-jurisdiction — this is not legal advice.
+Payment Links or Shopify) or a serverless function.

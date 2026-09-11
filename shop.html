@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop — Cozzy</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🫶</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="announce">✨ <strong>Free shipping</strong> on orders $40+ &nbsp;·&nbsp; 30-day Happy Period Guarantee</div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="index.html" class="brand">Cozzy<span class="dot">.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="about.html">Our Story</a></li>
+      <li><a href="about.html#faq">FAQ</a></li>
+      <li><a href="cart.html" class="cart-link">Cart <span id="cart-count">0</span></a></li>
+    </ul>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="section tight" style="text-align:center;">
+    <span class="pill-tag">Shop</span>
+    <h1>Everything Cozzy</h1>
+    <p style="color:var(--ink-soft);max-width:520px;margin:0 auto;">The pillow, the bundle, and the little extras that keep it going.</p>
+  </section>
+
+  <div class="grid" id="product-grid" style="padding-bottom:60px;"></div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="brand">Cozzy<span class="dot">.</span></div>
+        <p>Cordless heat therapy for period cramps and cozy days — designed by women, for women.</p>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="product.html?id=cozzy-pillow">Cozzy Pillow</a></li>
+          <li><a href="product.html?id=cozzy-duo">Duo Bundle</a></li>
+          <li><a href="shop.html">All products</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">Our Story</a></li>
+          <li><a href="about.html#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li><a href="about.html#faq">Shipping &amp; Returns</a></li>
+          <li><a href="cart.html">Your Cart</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Cozzy. All rights reserved.</span>
+      <span>Made with warmth, wherever you are.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/illustrations.js"></script>
+<script src="js/store.js"></script>
+<script>
+  const grid = document.getElementById("product-grid");
+  grid.innerHTML = PRODUCTS.map(p => {
+    const bgClass = p.kind === "hero" ? "bg-blush" : p.kind === "bundle" ? "bg-coral" : "bg-sage";
+    const badge = p.kind === "hero" ? '<span class="badge">Bestseller</span>' : p.kind === "bundle" ? '<span class="badge">Save $19</span>' : "";
+    const swatches = p.variants.slice(0,4).map(v => `<span class="swatch" style="background:${v.hex}"></span>`).join("");
+    return `
+    <a href="product.html?id=${p.id}" class="card">
+      ${badge}
+      <div class="card-art ${bgClass}">${cozzyIllustration(p.variants[0].hex, {spark: p.kind === "hero"})}</div>
+      <h3>${p.name}</h3>
+      <div class="tagline">${p.tagline}</div>
+      <div class="stars">★★★★★ <span class="count">(${p.reviewCount})</span></div>
+      <div class="swatches">${swatches}</div>
+      <div class="price-row">
+        <span class="price">${formatPrice(p.price)}</span>
+        ${p.compareAt ? `<span class="compare-at">${formatPrice(p.compareAt)}</span>` : ""}
+      </div>
+    </a>`;
+  }).join("");
+</script>
+</body>
+</html>
