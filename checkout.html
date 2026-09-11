@@ -3,23 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout — JaxTrades Peptides</title>
+<title>Checkout — Cozzy</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🫶</text></svg>">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<div class="disclaimer-banner">
-  <strong>For laboratory research use only.</strong> Not for human consumption. Not evaluated by the FDA. Must be 18+ to purchase.
-</div>
+<div class="announce">✨ <strong>Free shipping</strong> on orders $40+ &nbsp;·&nbsp; 30-day Happy Period Guarantee</div>
 
 <header class="site-header">
   <div class="wrap nav">
-    <a href="index.html" class="brand">🧪 JaxTrades Peptides</a>
+    <a href="index.html" class="brand">Cozzy<span class="dot">.</span></a>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
-      <li><a href="quiz.html">Q&amp;A Matcher</a></li>
-      <li><a href="menu.html">Menu</a></li>
-      <li><a href="cart.html" class="cart-link">🛒 Cart <span id="cart-count">0</span></a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="about.html">Our Story</a></li>
+      <li><a href="cart.html" class="cart-link">Cart <span id="cart-count">0</span></a></li>
     </ul>
   </div>
 </header>
@@ -27,10 +26,16 @@
 <main class="wrap" id="main-content"></main>
 
 <footer class="site-footer">
-  <p>© 2026 JaxTrades Peptides. All products are for research use only. Not for human consumption.</p>
+  <div class="wrap">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>© 2026 Cozzy. All rights reserved.</span>
+      <span>Made with warmth, wherever you are.</span>
+    </div>
+  </div>
 </footer>
 
 <script src="js/products.js"></script>
+<script src="js/illustrations.js"></script>
 <script src="js/store.js"></script>
 <script>
   const main = document.getElementById("main-content");
@@ -39,17 +44,21 @@
   if (lines.length === 0) {
     main.innerHTML = `
       <div class="empty-state">
+        <div class="emoji-ish">🫙</div>
         <p>Your cart is empty — nothing to check out.</p>
-        <a href="menu.html" class="btn">Browse the menu</a>
+        <a href="shop.html" class="btn" style="margin-top:10px;">Browse the shop</a>
       </div>`;
   } else {
+    const subtotal = cartTotal();
+    const shipping = subtotal >= 40 ? 0 : 6;
+    const total = subtotal + shipping;
+
     const lineHtml = lines.map(line =>
-      `<div class="order-line"><span>${line.product.icon} ${line.product.name} (${line.size.spec}) × ${line.qty}</span><span>${formatPrice(line.lineTotal)}</span></div>`
+      `<div class="order-line"><span>${line.product.name} (${line.variant.label}) × ${line.qty}</span><span>${formatPrice(line.lineTotal)}</span></div>`
     ).join("");
-    const total = cartTotal();
 
     main.innerHTML = `
-      <h1>Checkout</h1>
+      <section class="section tight"><span class="pill-tag">Checkout</span><h1>Almost there</h1></section>
       <div class="checkout-grid">
         <form class="checkout-form" id="checkout-form">
           <h2 style="margin-bottom:0;">Shipping Details</h2>
@@ -69,51 +78,48 @@
             <label>State
               <input type="text" name="state" required>
             </label>
-            <label>Postcode
+            <label>ZIP
               <input type="text" name="zip" required>
             </label>
           </div>
-          <label>
-            <input type="checkbox" required style="width:auto;">
-            I confirm I am 18+ and purchasing for laboratory research use only, not for human or animal consumption.
-          </label>
           <h2 style="margin-bottom:0;margin-top:10px;">Payment</h2>
           <label>Payment Method
             <select name="payment">
               <option>Credit / Debit Card</option>
-              <option>Bank Transfer</option>
-              <option>Cryptocurrency</option>
+              <option>PayPal</option>
+              <option>Shop Pay</option>
             </select>
           </label>
-          <p style="font-size:0.78rem;color:var(--text-dim);">
+          <p style="font-size:0.78rem;color:var(--ink-soft);">
             This is a demo storefront — no real payment is processed. In production this step would connect to a
-            licensed payment provider (e.g. Stripe).
+            hosted payment provider (e.g. Stripe or Shopify).
           </p>
-          <button type="submit" class="btn">Place Order — ${formatPrice(total)}</button>
+          <button type="submit" class="btn block">Place Order — ${formatPrice(total)}</button>
         </form>
 
         <div class="order-summary">
           <h3 style="margin-top:0;">Order Summary</h3>
           ${lineHtml}
-          <div class="order-line" style="border-bottom:none;font-weight:700;"><span>Total</span><span>${formatPrice(total)}</span></div>
+          <div class="order-line"><span>Shipping</span><span>${shipping === 0 ? "Free" : formatPrice(shipping)}</span></div>
+          <div class="order-line" style="border-bottom:none;font-weight:800;font-size:1.05rem;"><span>Total</span><span>${formatPrice(total)}</span></div>
         </div>
       </div>
     `;
 
     document.getElementById("checkout-form").addEventListener("submit", (e) => {
       e.preventDefault();
-      const orderNumber = "JT-" + Math.floor(100000 + Math.random() * 900000);
+      const orderNumber = "COZY-" + Math.floor(100000 + Math.random() * 900000);
       const name = e.target.name.value;
       clearCart();
       main.innerHTML = `
         <div class="confirmation">
           <div class="check">✓</div>
-          <h1>Order Placed</h1>
-          <p>Thanks, ${name.split(" ")[0] || "there"} — your order <strong>${orderNumber}</strong> has been received.</p>
-          <p style="color:var(--text-dim);max-width:500px;margin:0 auto;">
-            A confirmation would normally be emailed to you here. Remember: all items are strictly for research use only.
+          <h1>You're all set, ${name.split(" ")[0] || "friend"}</h1>
+          <p>Your order <strong>${orderNumber}</strong> has been received — warmth is on its way.</p>
+          <p style="color:var(--ink-soft);max-width:460px;margin:0 auto;">
+            A confirmation would normally be emailed to you here.
           </p>
-          <a href="index.html" class="btn" style="margin-top:20px;">Continue Shopping</a>
+          <a href="index.html" class="btn" style="margin-top:22px;">Continue Shopping</a>
         </div>
       `;
     });
