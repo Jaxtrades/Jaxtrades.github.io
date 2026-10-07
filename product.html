@@ -3,129 +3,117 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Product — Cozzy</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🫶</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2246%22 fill=%22%234F6552%22/><text x=%2250%22 y=%2268%22 text-anchor=%22middle%22 font-family=%22Georgia%22 font-size=%2252%22 fill=%22%23F6F1E9%22>C</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<title>Cozy Collectives</title>
 </head>
 <body>
+<div id="site-header"></div>
 
-<div class="announce">✨ <strong>Free shipping</strong> on orders $40+ &nbsp;·&nbsp; 30-day Happy Period Guarantee</div>
+<main class="wrap" id="pdp"></main>
 
-<header class="site-header">
-  <div class="wrap nav">
-    <a href="index.html" class="brand">Cozzy<span class="dot">.</span></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="about.html">Our Story</a></li>
-      <li><a href="about.html#faq">FAQ</a></li>
-      <li><a href="cart.html" class="cart-link">Cart <span id="cart-count">0</span></a></li>
-    </ul>
-  </div>
-</header>
+<div class="sticky-atc" id="sticky-atc" aria-hidden="true"></div>
 
-<main class="wrap" id="main-content">
-  <!-- populated by js -->
-</main>
-
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-bottom" style="border-top:none;padding-top:0;">
-      <span>© 2026 Cozzy. All rights reserved.</span>
-      <span>Made with warmth, wherever you are.</span>
-    </div>
-  </div>
-</footer>
+<div id="site-footer"></div>
 
 <script src="js/products.js"></script>
-<script src="js/illustrations.js"></script>
 <script src="js/store.js"></script>
 <script>
   const params = new URLSearchParams(location.search);
-  const product = getProduct(params.get("id"));
-  const main = document.getElementById("main-content");
+  const p = getProduct(params.get("id")) || PRODUCTS[0];
+  const d = PRODUCT_DETAILS;
+  const onSale = p.compareAt && p.compareAt > p.price;
+  const shots = p.images.length ? p.images.map((_, i) => i) : [0];
+  let qty = 1;
 
-  const artBg = { hero: "bg-blush", bundle: "bg-coral", accessory: "bg-sage" };
+  document.title = p.name + " | Cozy Collectives";
 
-  if (!product) {
-    main.innerHTML = `<div class="empty-state"><div class="emoji-ish">🤔</div><h2>Hmm, we can't find that one</h2><a href="shop.html" class="btn" style="margin-top:14px;">Back to shop</a></div>`;
-  } else {
-    document.title = product.name + " — Cozzy";
-    const requestedVariant = params.get("variant");
-    const initialVariant = getVariant(product, requestedVariant) || product.variants[0];
+  const specs = d.specs.map(([k, v]) => {
+    if (k === "Weight" && p.weight) v = p.weight;
+    if (k === "Size" && p.size) v = p.size;
+    return `<tr><td>${k}</td><td>${v}</td></tr>`;
+  }).join("");
 
-    const bulletsHtml = (product.bullets || []).map(b => `<li>${b}</li>`).join("");
-    const variantOptions = product.variants.map(v =>
-      `<span class="variant-swatch ${v.code === initialVariant.code ? "selected" : ""}" style="background:${v.hex}" data-code="${v.code}" data-label="${v.label}" title="${v.label}"></span>`
-    ).join("");
-
-    main.innerHTML = `
-      <div class="product-detail">
-        <div class="product-art ${artBg[product.kind] || "bg-blush"}" id="product-art"></div>
-        <div class="info">
-          <div class="stars-row"><span class="stars">★★★★★</span><span>${product.rating} · ${product.reviewCount} reviews</span></div>
-          <h1>${product.name}</h1>
-          <p class="tagline">${product.tagline}</p>
-          <p>${product.description}</p>
-
-          <ul class="bullet-list">${bulletsHtml}</ul>
-
-          <div class="price-block">
-            <span class="price">${formatPrice(product.price)}</span>
-            ${product.compareAt ? `<span class="compare-at">${formatPrice(product.compareAt)}</span>` : ""}
-          </div>
-
-          <div class="variant-block">
-            <div class="label">Color — <span class="chosen" id="variant-label">${initialVariant.label}</span></div>
-            <div class="variant-options" id="variant-options">${variantOptions}</div>
-          </div>
-
-          <div class="qty-row">
-            <div class="qty-stepper">
-              <button type="button" id="qty-minus">−</button>
-              <input type="number" id="qty" value="1" min="1" max="20">
-              <button type="button" id="qty-plus">+</button>
-            </div>
-            <button class="btn" id="add-btn">Add to Cart — ${formatPrice(product.price)}</button>
-          </div>
-          <p id="added-msg" style="display:none;">Added to cart ✓ &nbsp;<a href="cart.html" style="text-decoration:underline;">View cart</a></p>
+  document.getElementById("pdp").innerHTML = `
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / <a href="shop.html">All pals</a> / ${p.name}</nav>
+    <div class="pdp">
+      <div class="gallery">
+        <div class="gallery-main" id="main-img">${productMedia(p, 0)}</div>
+        <div class="thumbs">
+          ${shots.map(i => `<button data-shot="${i}" aria-label="Show image ${i + 1}" aria-current="${i === 0}">${productMedia(p, i)}</button>`).join("")}
         </div>
       </div>
-    `;
 
-    const artEl = document.getElementById("product-art");
-    const variantLabel = document.getElementById("variant-label");
-    let currentVariant = initialVariant;
+      <div class="pdp-info">
+        <div class="eyebrow">Weighted plush</div>
+        <h1>${p.name}</h1>
+        <div class="pdp-price">
+          <span class="price">${formatPrice(p.price)}</span>
+          ${onSale ? `<span class="compare">${formatPrice(p.compareAt)}</span><span class="badge sale" style="position:static">Save ${formatPrice(p.compareAt - p.price)}</span>` : ""}
+        </div>
+        <p class="pdp-instal">or ${STORE.instalments} interest-free payments of <b>${formatPrice(p.price / STORE.instalments)}</b></p>
+        <p class="pdp-tagline">${p.tagline}</p>
 
-    function renderArt() {
-      artEl.innerHTML = cozzyIllustration(currentVariant.hex, { spark: product.kind === "hero" });
-    }
-    renderArt();
+        <div class="opt-label">Choose your pal: <span>${p.animal}</span></div>
+        <div class="pal-picker">
+          ${PRODUCTS.map(o => `<a href="product.html?id=${o.id}"${o.id === p.id ? ' aria-current="page"' : ""}><span class="pick-img">${productMedia(o)}</span>${o.animal}</a>`).join("")}
+        </div>
 
-    document.getElementById("variant-options").addEventListener("click", (e) => {
-      const el = e.target.closest(".variant-swatch");
-      if (!el) return;
-      document.querySelectorAll(".variant-swatch").forEach(s => s.classList.remove("selected"));
-      el.classList.add("selected");
-      currentVariant = getVariant(product, el.dataset.code);
-      variantLabel.textContent = el.dataset.label;
-      renderArt();
-    });
+        <div class="opt-label">Quantity</div>
+        <div class="buy-row">
+          <div class="stepper">
+            <button id="q-minus" aria-label="Decrease quantity">${ICON.minus}</button>
+            <span id="q-val" aria-live="polite">1</span>
+            <button id="q-plus" aria-label="Increase quantity">${ICON.plus}</button>
+          </div>
+          <button class="btn dark" id="add-btn">Add to cart</button>
+        </div>
+        <button class="btn block" id="buy-now">Buy it now</button>
 
-    const qtyInput = document.getElementById("qty");
-    document.getElementById("qty-minus").addEventListener("click", () => {
-      qtyInput.value = Math.max(1, (parseInt(qtyInput.value) || 1) - 1);
-    });
-    document.getElementById("qty-plus").addEventListener("click", () => {
-      qtyInput.value = Math.min(20, (parseInt(qtyInput.value) || 1) + 1);
-    });
+        <ul class="perks">
+          <li>${ICON.truck} Free shipping on orders over $${STORE.freeShippingThreshold}</li>
+          <li>${ICON.lock} Secure checkout</li>
+        </ul>
 
-    document.getElementById("add-btn").addEventListener("click", () => {
-      const qty = Math.max(1, parseInt(qtyInput.value) || 1);
-      addToCart(product.id, currentVariant.code, qty);
-      document.getElementById("added-msg").style.display = "block";
-    });
-  }
+        <div class="acc">
+          <details open><summary>Description</summary><div class="acc-body"><p style="margin-top:0">${d.description}</p><ul>${d.features.map(f => `<li>${f}</li>`).join("")}</ul></div></details>
+          <details><summary>Specifications</summary><div class="acc-body"><table class="spec">${specs}</table></div></details>
+          <details><summary>Care</summary><div class="acc-body">${d.care}</div></details>
+          <details><summary>Shipping &amp; returns</summary><div class="acc-body">${d.shipping}</div></details>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById("sticky-atc").innerHTML = `
+    <div class="wrap">
+      <div><div class="s-name">${p.name}</div><div>${formatPrice(p.price)}</div></div>
+      <button class="btn dark" id="sticky-add">Add to cart</button>
+    </div>`;
+
+  const setQty = n => { qty = Math.max(1, n); document.getElementById("q-val").textContent = qty; };
+  document.getElementById("q-minus").onclick = () => setQty(qty - 1);
+  document.getElementById("q-plus").onclick = () => setQty(qty + 1);
+  document.getElementById("add-btn").onclick = () => { addToCart(p.id, qty); openCart(); };
+  document.getElementById("sticky-add").onclick = () => { addToCart(p.id, qty); openCart(); };
+  document.getElementById("buy-now").onclick = () => { addToCart(p.id, qty); location.href = "checkout.html"; };
+
+  document.querySelector(".thumbs").addEventListener("click", e => {
+    const b = e.target.closest("[data-shot]");
+    if (!b) return;
+    document.getElementById("main-img").innerHTML = productMedia(p, Number(b.dataset.shot));
+    document.querySelectorAll(".thumbs button").forEach(t => t.setAttribute("aria-current", t === b));
+  });
+
+  // Sticky add-to-cart bar appears once the main button scrolls out of view.
+  const sticky = document.getElementById("sticky-atc");
+  new IntersectionObserver(([entry]) => {
+    const show = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+    sticky.classList.toggle("show", show);
+    sticky.setAttribute("aria-hidden", !show);
+  }).observe(document.getElementById("add-btn"));
 </script>
 </body>
 </html>

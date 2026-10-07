@@ -1,44 +1,42 @@
-# Cozzy
+# Cozy Collectives
 
-A static, front-end-only storefront for **Cozzy** — a plush, cordless electric heating pillow built to ease
-period cramps (and just be a really good hot-water-bottle replacement). Built for GitHub Pages, no
-server/build step required.
+A static storefront for **Cozy Collectives** weighted plushies, built for GitHub Pages (no build step).
+The look follows the Cozy Collective mockup canvas: Fraunces + DM Sans, cream ground, sage accent.
 
 ## Pages
 
-- `index.html` — Home: hero, "why Cozzy" features, product grid, how-it-works, reviews, newsletter
-- `shop.html` — Full product grid (pillow, bundle, accessories)
-- `product.html?id=<slug>` — Product detail with a color selector + add to cart
-- `cart.html` — Cart (stored in `localStorage`)
-- `checkout.html` — Shipping form + simulated order placement
-- `about.html` — Brand story, "why heat helps," and FAQ
+- `index.html`: home (hero, Meet the Pals grid, How it works, reviews, story, sign-up)
+- `shop.html`: all pals
+- `product.html?id=<id>`: product page with gallery, pal picker, quantity, Add to cart / Buy it now,
+  accordions and a sticky add-to-cart bar
+- `cart.html`: full cart page
+- `checkout.html`: demo checkout (no payment taken)
+- `about.html`: story + FAQ
 
-## Design
+## Cart
 
-Warm, editorial DTC aesthetic aimed at women: cream background, a coral "pop" accent, soft blush/sage
-supporting colors, `Fraunces` for display type paired with `Poppins` for body/UI. There's no product
-photography — the brand mark is a reusable inline-SVG illustration of the pillow (`js/illustrations.js`,
-`cozzyIllustration(hex, opts)`) recolored per product variant, used everywhere a "photo" would normally go
-(hero, product cards, product detail, cart thumbnails).
+`js/store.js` holds the cart (in `localStorage`) and injects the announcement bar, header, footer and the
+slide-out cart drawer on every page. Adding a product opens the drawer, which has:
 
-## Catalog
+- free-shipping progress bar ("You're $X away from free shipping")
+- line items with quantity stepper and remove
+- "Add a friend to the collective" upsells
+- gift note, savings, subtotal, Checkout button, instalment line and payment badges
+- Esc / overlay click to close
 
-`js/products.js` holds the catalog: the core Cozzy Pillow, a Duo Bundle, and two small accessories (spare
-cover, travel pouch). Each product has a flat `price` (no per-size pricing) and a `variants` array of color
-options (`{ code, label, hex }`) used for swatches and the illustration recolor.
+## Editing products
 
-Cart line items are keyed as `"<productId>::<variantCode>"` (see `js/store.js`) so the same product can
-appear as multiple cart lines at different colors.
+Everything is in `js/products.js`:
 
-## Editing the catalog
+- `STORE`: currency, free-shipping threshold, flat shipping rate, contact email
+- `PRODUCTS`: one entry per pal (name, price, compare-at price, weight, size, badge, `images`)
+- `PRODUCT_DETAILS`: description, features, specifications, care and shipping copy shared by every
+  product page; replace the `[BRACKETED]` placeholders
 
-Add or edit products directly in `js/products.js`. Each product needs an `id`, `name`, `kind`
-(`hero` | `bundle` | `accessory`, used for card styling), `tagline`, `description`, `bullets`, a `price`
-(+ optional `compareAt`), and a `variants` array of `{ code, label, hex }`.
+To add photos, put them in `images/<product-id>/` and list the paths in that product's `images` array,
+first image first. Products with no images show a coloured placeholder tile.
 
-## Checkout
+## Going live
 
-There is no backend, so `checkout.html` simulates order placement client-side (collects shipping info,
-generates an order number, clears the cart) rather than processing real payment. To take real payments,
-wire the form submit handler in `checkout.html` to a hosted payment processor (e.g. Stripe Checkout /
-Payment Links or Shopify) or a serverless function.
+Checkout is simulated. To take payments, point the Checkout button at Shopify, Stripe Checkout / Payment
+Links or PayPal.

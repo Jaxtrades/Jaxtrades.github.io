@@ -3,106 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Cart — Cozzy</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🫶</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2246%22 fill=%22%234F6552%22/><text x=%2250%22 y=%2268%22 text-anchor=%22middle%22 font-family=%22Georgia%22 font-size=%2252%22 fill=%22%23F6F1E9%22>C</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<title>Your cart | Cozy Collectives</title>
 </head>
 <body>
+<div id="site-header"></div>
 
-<div class="announce">✨ <strong>Free shipping</strong> on orders $40+ &nbsp;·&nbsp; 30-day Happy Period Guarantee</div>
-
-<header class="site-header">
-  <div class="wrap nav">
-    <a href="index.html" class="brand">Cozzy<span class="dot">.</span></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="about.html">Our Story</a></li>
-      <li><a href="about.html#faq">FAQ</a></li>
-      <li><a href="cart.html" class="cart-link">Cart <span id="cart-count">0</span></a></li>
-    </ul>
-  </div>
-</header>
-
-<main class="wrap" style="padding-bottom:60px;">
-  <section class="section tight">
-    <span class="pill-tag">Cart</span>
-    <h1>Your Cart</h1>
-  </section>
-  <div id="cart-content"></div>
+<main class="wrap">
+  <h1 class="page-title">Your cart</h1>
+  <div id="cart-page"></div>
 </main>
 
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-bottom" style="border-top:none;padding-top:0;">
-      <span>© 2026 Cozzy. All rights reserved.</span>
-      <span>Made with warmth, wherever you are.</span>
-    </div>
-  </div>
-</footer>
+<div id="site-footer"></div>
 
 <script src="js/products.js"></script>
-<script src="js/illustrations.js"></script>
 <script src="js/store.js"></script>
 <script>
-  function render() {
+  // Full-page view of the same cart the drawer shows; re-renders whenever the cart changes.
+  function renderCartPage() {
+    const el = document.getElementById("cart-page");
     const lines = getCartLines();
-    const content = document.getElementById("cart-content");
-
-    if (lines.length === 0) {
-      content.innerHTML = `
-        <div class="empty-state">
-          <div class="emoji-ish">🫙</div>
-          <p>Your cart is empty — let's fix that.</p>
-          <a href="shop.html" class="btn" style="margin-top:10px;">Browse the shop</a>
-        </div>`;
+    if (!lines.length) {
+      el.innerHTML = `<div class="empty"><p>Your cart is empty.</p><a href="shop.html" class="btn">Shop the pals</a></div>`;
       return;
     }
-
-    const rows = lines.map(line => `
-      <tr>
-        <td class="cart-item-name">
-          <span class="thumb" style="background:${line.variant.hex}22;">${cozzyIllustration(line.variant.hex, {heat:false, spark:false})}</span>
-          <span>${line.product.name}<br><span style="font-weight:400;color:var(--ink-soft);font-size:0.82rem;">${line.variant.label}</span></span>
-        </td>
-        <td>${formatPrice(line.product.price)}</td>
-        <td><input type="number" min="1" max="20" value="${line.qty}" data-key="${line.key}" class="qty-input"></td>
-        <td>${formatPrice(line.lineTotal)}</td>
-        <td><span class="remove-link" data-key="${line.key}">Remove</span></td>
-      </tr>`
-    ).join("");
-
-    const subtotal = cartTotal();
-    const shipping = subtotal >= 40 ? 0 : 6;
-
-    content.innerHTML = `
-      <table class="cart-table">
-        <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th><th></th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-      <div class="cart-summary">
-        <div class="row"><span>Subtotal</span><span>${formatPrice(subtotal)}</span></div>
-        <div class="row"><span>Shipping</span><span>${shipping === 0 ? "Free" : formatPrice(shipping)}</span></div>
-        <div class="row total"><span>Total</span><span>${formatPrice(subtotal + shipping)}</span></div>
-        <a href="checkout.html" class="btn block" style="text-align:center;margin-top:16px;">Proceed to Checkout</a>
-      </div>
-    `;
-
-    content.querySelectorAll(".qty-input").forEach(input => {
-      input.addEventListener("change", (e) => {
-        const val = Math.max(1, parseInt(e.target.value) || 1);
-        setCartQty(e.target.dataset.key, val);
-        render();
-      });
-    });
-    content.querySelectorAll(".remove-link").forEach(el => {
-      el.addEventListener("click", (e) => {
-        removeFromCart(e.target.dataset.key);
-        render();
-      });
-    });
+    const subtotal = cartSubtotal();
+    el.innerHTML = `
+      <div class="cart-page">
+        <div>
+          <div class="ship-bar">${shipBarHtml(subtotal)}</div>
+          ${lines.map(lineHtml).join("")}
+          ${upsellHtml(lines)}
+        </div>
+        <div class="panel">
+          <div class="sum-row"><span>Subtotal</span><span>${formatPrice(subtotal)}</span></div>
+          <div class="sum-row"><span>Shipping</span><span>${shippingFor(subtotal) ? formatPrice(shippingFor(subtotal)) : "Free"}</span></div>
+          <div class="sum-row total" style="border-top:1px solid var(--line);padding-top:12px;margin-top:6px"><span>Total</span><span>${formatPrice(subtotal + shippingFor(subtotal))} ${STORE.currency}</span></div>
+          <p class="fine">Taxes included.</p>
+          <a href="checkout.html" class="btn block checkout-btn">${ICON.lock} Checkout</a>
+          <p class="instal">or ${STORE.instalments} interest-free payments of <b>${formatPrice((subtotal + shippingFor(subtotal)) / STORE.instalments)}</b></p>
+          <a href="shop.html" class="view-cart">Continue shopping</a>
+        </div>
+      </div>`;
   }
-  render();
+
+  const baseRender = renderCart;
+  renderCart = function () { baseRender(); renderCartPage(); };
 </script>
 </body>
 </html>

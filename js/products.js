@@ -1,102 +1,101 @@
-/* Cozzy product catalog.
-   Each product has `variants` (color options, all the same price unless
-   noted) and a `kind` used for card styling / badges. */
+/* Cozy Collectives store settings + product catalog.
+
+   STORE holds the numbers the cart drawer and checkout use.
+   PRODUCTS holds the pals. To add the AliExpress photos, save them into
+   images/<product-id>/ and list the file paths in that product's `images`
+   array (first image = the main/card photo). A product with no images shows
+   a soft placeholder tile instead. Fields left as "" are hidden on the site. */
+const STORE = {
+  name: "Cozy Collectives",
+  currency: "AUD",
+  freeShippingThreshold: 100, // cart drawer progress bar unlocks free shipping at this subtotal
+  flatShipping: 9.95,         // shipping charged below the threshold
+  instalments: 4,             // "or 4 interest-free payments of $X"
+  email: "hello@cozycollectives.com.au",
+};
+
 const PRODUCTS = [
   {
-    id: "cozzy-pillow",
-    name: "The Cozzy Pillow",
-    kind: "hero",
-    tagline: "Cordless heat therapy for period cramps, on demand.",
-    description:
-      "Our signature electric heating pillow — a plush, huggable companion that pumps out soothing, even heat exactly where you need it. Three heat settings, a 90-minute auto shut-off, and a velvet-soft removable cover you can machine wash. Cordless after charging, so it moves with you from the couch to bed to your desk.",
-    bullets: [
-      "3 heat settings (95°F / 110°F / 122°F)",
-      "USB-C rechargeable, 2+ hrs cordless heat per charge",
-      "Auto shut-off at 90 minutes — fall asleep worry-free",
-      "Removable, machine-washable plush cover",
-      "Gentle vibration soothe mode",
-    ],
-    price: 59,
-    compareAt: 74,
-    variants: [
-      { code: "terracotta", label: "Terracotta", hex: "#D97A52" },
-      { code: "blush", label: "Blush", hex: "#F3B7C0" },
-      { code: "sage", label: "Sage", hex: "#93A683" },
-      { code: "midnight", label: "Midnight", hex: "#332722" },
-    ],
-    reviewCount: 2148,
-    rating: 4.9,
+    id: "kip-the-koala",
+    name: "Kip the Koala",
+    animal: "Koala",
+    tagline: "The sleepy one. Always up for a cuddle.",
+    price: 79.0,
+    compareAt: 99.0,
+    weight: "",          // e.g. "1.5kg"
+    size: "",            // e.g. "40cm"
+    tone: "#D9D4CC",     // placeholder tile colour until photos are added
+    images: [],
+    badge: "Bestseller",
   },
   {
-    id: "cozzy-duo",
-    name: "Cozzy Duo Bundle",
-    kind: "bundle",
-    tagline: "Two pillows, one for you, one for your bestie (or your bag).",
-    description:
-      "Keep one at home and one in your tote — or split the set with someone who needs a little warmth this week. Comes with two full Cozzy Pillows in the colors of your choice, at a sweeter price than buying twice.",
-    bullets: [
-      "2× Cozzy Pillow, mix & match colors",
-      "Save $19 vs. buying separately",
-      "Ships in one gift-ready box",
-    ],
-    price: 99,
-    compareAt: 118,
-    variants: [
-      { code: "terracotta", label: "Terracotta", hex: "#D97A52" },
-      { code: "blush", label: "Blush", hex: "#F3B7C0" },
-      { code: "sage", label: "Sage", hex: "#93A683" },
-      { code: "midnight", label: "Midnight", hex: "#332722" },
-    ],
-    reviewCount: 612,
-    rating: 4.9,
+    id: "sully-the-sloth",
+    name: "Sully the Sloth",
+    animal: "Sloth",
+    tagline: "Slow, steady and in no rush to let go.",
+    price: 79.0,
+    compareAt: 99.0,
+    weight: "",
+    size: "",
+    tone: "#D8C7B0",
+    images: [],
+    badge: "",
   },
   {
-    id: "cozzy-cover",
-    name: "Spare Plush Cover",
-    kind: "accessory",
-    tagline: "A fresh cuddle layer for your Cozzy.",
-    description:
-      "Life happens. Keep a backup cover on hand so your Cozzy is always ready — soft, quick-dry, and easy to swap on and off in seconds.",
-    bullets: ["Fits all Cozzy Pillows", "Machine washable", "Quick-dry fabric"],
-    price: 19,
-    compareAt: null,
-    variants: [
-      { code: "terracotta", label: "Terracotta", hex: "#D97A52" },
-      { code: "blush", label: "Blush", hex: "#F3B7C0" },
-      { code: "sage", label: "Sage", hex: "#93A683" },
-      { code: "midnight", label: "Midnight", hex: "#332722" },
-    ],
-    reviewCount: 341,
-    rating: 4.8,
+    id: "juno-the-giraffe",
+    name: "Juno the Giraffe",
+    animal: "Giraffe",
+    tagline: "Tall on comfort, long on hugs.",
+    price: 79.0,
+    compareAt: 99.0,
+    weight: "",
+    size: "",
+    tone: "#E8D3A8",
+    images: [],
+    badge: "New",
   },
   {
-    id: "cozzy-pouch",
-    name: "Cozzy Travel Pouch",
-    kind: "accessory",
-    tagline: "For dorm rooms, desks, and everywhere in between.",
-    description:
-      "A cute quilted pouch sized just for your Cozzy Pillow and charging cable, so comfort fits in any bag.",
-    bullets: ["Fits Cozzy Pillow + cable", "Quilted, wipeable exterior", "Drawstring close"],
-    price: 15,
-    compareAt: null,
-    variants: [
-      { code: "terracotta", label: "Terracotta", hex: "#D97A52" },
-      { code: "blush", label: "Blush", hex: "#F3B7C0" },
-      { code: "sage", label: "Sage", hex: "#93A683" },
-    ],
-    reviewCount: 158,
-    rating: 4.7,
+    id: "biscuit-the-puppy",
+    name: "Biscuit the Puppy",
+    animal: "Puppy",
+    tagline: "Loyal, floppy-eared and very good at listening.",
+    price: 79.0,
+    compareAt: 99.0,
+    weight: "",
+    size: "",
+    tone: "#E2C9B4",
+    images: [],
+    badge: "",
   },
 ];
 
-function getProduct(id) {
-  return PRODUCTS.find((p) => p.id === id);
-}
+/* Shared copy for every pal's product page. Replace the [BRACKETED] parts with
+   the details from the supplier listing. */
+const PRODUCT_DETAILS = {
+  description:
+    "A soft, gently weighted plush made to be held. The weight is spread through the body and limbs, so it settles over your lap or chest like a long, steady hug. Bring it to bed, keep it on the couch, or take it to your desk.",
+  features: [
+    "Gently weighted for an even, hug-like feel",
+    "Super-soft plush fabric",
+    "Weight spread through the body and limbs",
+    "Arrives gift-ready",
+  ],
+  specs: [
+    ["Material", "[FABRIC, e.g. short plush polyester]"],
+    ["Filling", "[FILLING, e.g. PP cotton + sealed glass beads]"],
+    ["Weight", "[WEIGHT]"],
+    ["Size", "[SIZE]"],
+    ["Recommended age", "[AGE, e.g. 3+]"],
+  ],
+  care: "[CARE INSTRUCTIONS, e.g. spot clean with a damp cloth and mild soap; air dry]",
+  shipping:
+    "Free shipping on orders over $" + STORE.freeShippingThreshold + ". Orders are packed within [X] business days; delivery usually takes [X–X] business days across Australia. Not in love? Return unused pals within [30] days.",
+};
 
-function getVariant(product, code) {
-  return product.variants.find((v) => v.code === code) || product.variants[0];
+function getProduct(id) {
+  return PRODUCTS.find(p => p.id === id);
 }
 
 function formatPrice(n) {
-  return "$" + n.toFixed(2).replace(/\.00$/, "");
+  return "$" + n.toFixed(2);
 }
