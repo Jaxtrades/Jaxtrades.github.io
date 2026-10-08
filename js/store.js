@@ -92,6 +92,7 @@ function renderChrome() {
         <nav class="nav-links" aria-label="Main">
           <a href="shop.html">Shop</a>
           <a href="index.html#why">Why Weighted?</a>
+          <a href="index.html#calm">Anxiety &amp; Calm</a>
           <a href="about.html">Our Story</a>
           <a href="about.html#faq">FAQ</a>
           <a href="#contact">Contact</a>
