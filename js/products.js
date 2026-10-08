@@ -25,7 +25,7 @@ const PRODUCTS = [
     weight: "",          // e.g. "1.5kg"
     size: "",            // e.g. "40cm"
     tone: "#D9D4CC",     // placeholder tile colour until photos are added
-    images: [],
+    images: ["images/kip-the-koala/1.webp"],
     badge: "Bestseller",
   },
   {
@@ -38,7 +38,7 @@ const PRODUCTS = [
     weight: "",
     size: "",
     tone: "#D8C7B0",
-    images: [],
+    images: ["images/sully-the-sloth/1.webp"],
     badge: "",
   },
   {
@@ -51,7 +51,7 @@ const PRODUCTS = [
     weight: "",
     size: "",
     tone: "#E8D3A8",
-    images: [],
+    images: ["images/juno-the-giraffe/1.webp"],
     badge: "New",
   },
   {
@@ -64,7 +64,7 @@ const PRODUCTS = [
     weight: "",
     size: "",
     tone: "#E2C9B4",
-    images: [],
+    images: ["images/biscuit-the-puppy/1.webp"],
     badge: "",
   },
 ];
