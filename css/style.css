@@ -117,7 +117,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .feature { background: var(--sand); border-radius: var(--radius); padding: 36px; }
 .feature h3 { font-size: 28px; margin: 0 0 12px; }
 .feature p { margin: 0; }
-.reviews { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; }
+.reviews { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
 .review { background: var(--white); border-radius: var(--radius); padding: 32px; }
 .review p { margin: 10px 0 18px; }
 .review .who { font-size: 15px; color: var(--ink-soft); }
