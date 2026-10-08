@@ -1,0 +1,67 @@
+{
+  "sections": {
+    "story": {
+      "type": "story",
+      "settings": {
+        "button_label": "",
+        "text": "<p>[YOUR BRAND STORY: why you started Cozy Collectives, who it is for, and what you want every pal to feel like.]</p><p>[OPTIONAL: GIVING-BACK OR COMMUNITY COMMITMENT]</p>"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q0": {
+          "type": "question",
+          "settings": {
+            "question": "What is a weighted plushie?",
+            "answer": "<p>A soft toy with gentle, evenly distributed weight inside, designed to feel like a comforting hug.</p>",
+            "anchor": ""
+          }
+        },
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Who are they for?",
+            "answer": "<p>[AGE RANGE AND SAFETY NOTE, e.g. suitable for ages X and up]</p>",
+            "anchor": ""
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "How heavy are they?",
+            "answer": "<p>Each pal weighs [X]kg, with weight placed through the body and limbs.</p>",
+            "anchor": ""
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "How do I care for my pal?",
+            "answer": "<p>[CARE INSTRUCTIONS]</p>",
+            "anchor": ""
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Shipping, returns and warranty?",
+            "answer": "<p>[SHIPPING TIMES, RETURN WINDOW, WARRANTY TERMS]</p>",
+            "anchor": "shipping"
+          }
+        }
+      },
+      "block_order": [
+        "q0",
+        "q1",
+        "q2",
+        "q3",
+        "q4"
+      ]
+    }
+  },
+  "order": [
+    "story",
+    "faq"
+  ]
+}

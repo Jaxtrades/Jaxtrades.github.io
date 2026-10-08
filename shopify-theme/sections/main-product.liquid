@@ -1,0 +1,181 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign on_sale = false -%}
+{%- if current_variant.compare_at_price > current_variant.price -%}{%- assign on_sale = true -%}{%- endif -%}
+{%- assign picker = section.settings.picker_collection | default: collections.all -%}
+
+<div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="{{ routes.root_url }}">Home</a> / <a href="{{ routes.all_products_collection_url }}">All pals</a> / {{ product.title }}
+  </nav>
+  <div class="pdp">
+    <div class="gallery">
+      <div class="gallery-main" id="main-img">
+        {%- if product.featured_media -%}
+          {{ product.featured_media | image_url: width: 1200 | image_tag: alt: product.title, sizes: '(min-width: 960px) 50vw, 100vw', widths: '600, 900, 1200' }}
+        {%- endif -%}
+      </div>
+      <div class="thumbs">
+        {%- for media in product.media -%}
+          <button type="button" data-shot="{{ media | image_url: width: 1200 }}" aria-label="Show image {{ forloop.index }}" aria-current="{% if forloop.first %}true{% else %}false{% endif %}">
+            {{ media | image_url: width: 200 | image_tag: alt: media.alt, loading: 'lazy' }}
+          </button>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <div class="pdp-info">
+      <div class="eyebrow">{{ section.settings.eyebrow | escape }}</div>
+      <h1>{{ product.title }}</h1>
+      <div class="pdp-price">
+        <span class="price">{{ current_variant.price | money }}</span>
+        {%- if on_sale -%}
+          <span class="compare">{{ current_variant.compare_at_price | money }}</span>
+          <span class="badge sale" style="position:static">Save {{ current_variant.compare_at_price | minus: current_variant.price | money }}</span>
+        {%- endif -%}
+      </div>
+      <p class="pdp-instal">or 4 interest-free payments of <b>{{ current_variant.price | divided_by: 4 | money }}</b></p>
+      {%- if product.metafields.custom.tagline != blank -%}
+        <p class="pdp-tagline">{{ product.metafields.custom.tagline }}</p>
+      {%- endif -%}
+
+      {%- if picker.products.size > 1 -%}
+        <div class="opt-label">Choose your pal: <span>{{ product.title }}</span></div>
+        <div class="pal-picker">
+          {%- for p in picker.products limit: 12 -%}
+            <a href="{{ p.url }}"{% if p.id == product.id %} aria-current="page"{% endif %}>
+              <span class="pick-img">
+                {%- if p.featured_image -%}{{ p.featured_image | image_url: width: 160 | image_tag: alt: p.title, loading: 'lazy' }}{%- endif -%}
+              </span>
+              {{ p.title | split: ' the ' | last }}
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- form 'product', product, id: 'product-form', data-product-form: '' -%}
+        {%- unless product.has_only_default_variant -%}
+          <label class="opt-label" for="variant-select">Option</label>
+          <select id="variant-select" name="id" class="variant-select">
+            {%- for variant in product.variants -%}
+              <option value="{{ variant.id }}" {% if variant == current_variant %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
+                {{ variant.title }} – {{ variant.price | money }}{% unless variant.available %} (sold out){% endunless %}
+              </option>
+            {%- endfor -%}
+          </select>
+        {%- else -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+        {%- endunless -%}
+
+        <div class="opt-label">Quantity</div>
+        <div class="buy-row">
+          <div class="stepper">
+            <button type="button" data-step="-1" aria-label="Decrease quantity">{% render 'icon', name: 'minus' %}</button>
+            <input type="number" name="quantity" value="1" min="1" class="qty-input" aria-label="Quantity" id="qty">
+            <button type="button" data-step="1" aria-label="Increase quantity">{% render 'icon', name: 'plus' %}</button>
+          </div>
+          <button type="submit" class="btn dark" id="add-btn" {% unless current_variant.available %}disabled{% endunless %}>
+            {%- if current_variant.available -%}Add to cart{%- else -%}Sold out{%- endif -%}
+          </button>
+        </div>
+        {%- if current_variant.available -%}
+          <button type="button" class="btn block" id="buy-now">Buy it now</button>
+        {%- endif -%}
+      {%- endform -%}
+
+      <ul class="perks">
+        <li>{% render 'icon', name: 'truck' %} Free shipping on orders over {{ settings.free_shipping_threshold | times: 100 | money_without_trailing_zeros }}</li>
+        <li>{% render 'icon', name: 'lock' %} Secure checkout</li>
+      </ul>
+
+      <div class="acc">
+        <details open>
+          <summary>Description</summary>
+          <div class="acc-body rte">{{ product.description }}</div>
+        </details>
+        {%- if section.settings.specs != blank or product.metafields.custom.specs != blank -%}
+          <details>
+            <summary>Specifications</summary>
+            <div class="acc-body rte">{{ product.metafields.custom.specs | metafield_tag | default: section.settings.specs }}</div>
+          </details>
+        {%- endif -%}
+        {%- if section.settings.care != blank -%}
+          <details><summary>Care</summary><div class="acc-body rte">{{ section.settings.care }}</div></details>
+        {%- endif -%}
+        {%- if section.settings.shipping != blank -%}
+          <details><summary>Shipping &amp; returns</summary><div class="acc-body rte">{{ section.settings.shipping }}</div></details>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- if current_variant.available -%}
+  <div class="sticky-atc" id="sticky-atc" aria-hidden="true">
+    <div class="wrap">
+      <div><div class="s-name">{{ product.title }}</div><div>{{ current_variant.price | money }}</div></div>
+      <button type="button" class="btn dark" id="sticky-add">Add to cart</button>
+    </div>
+  </div>
+{%- endif -%}
+
+<script>
+  (function () {
+    var form = document.getElementById('product-form');
+    var qty = document.getElementById('qty');
+    form.querySelectorAll('[data-step]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        qty.value = Math.max(1, (parseInt(qty.value, 10) || 1) + Number(b.dataset.step));
+      });
+    });
+
+    function item() {
+      return { id: Number(form.querySelector('[name="id"]').value), quantity: Math.max(1, parseInt(qty.value, 10) || 1) };
+    }
+
+    form.addEventListener('submit', function (e) {
+      if (!window.cozyCart) return;
+      e.preventDefault();
+      window.cozyCart.add([item()]);
+    });
+
+    var buy = document.getElementById('buy-now');
+    if (buy) buy.addEventListener('click', function () {
+      var i = item();
+      location.href = '/cart/' + i.id + ':' + i.quantity;
+    });
+
+    var sticky = document.getElementById('sticky-atc');
+    var stickyAdd = document.getElementById('sticky-add');
+    if (stickyAdd) stickyAdd.addEventListener('click', function () { window.cozyCart && window.cozyCart.add([item()]); });
+    if (sticky && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        var e = entries[0];
+        var show = !e.isIntersecting && e.boundingClientRect.top < 0;
+        sticky.classList.toggle('show', show);
+        sticky.setAttribute('aria-hidden', !show);
+      }).observe(document.getElementById('add-btn'));
+    }
+
+    var main = document.getElementById('main-img');
+    document.querySelectorAll('[data-shot]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var img = main.querySelector('img');
+        if (img) { img.srcset = ''; img.src = b.dataset.shot; }
+        document.querySelectorAll('[data-shot]').forEach(function (t) { t.setAttribute('aria-current', t === b); });
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Weighted plush" },
+    { "type": "collection", "id": "picker_collection", "label": "\"Choose your pal\" collection", "info": "Leave empty to use all products." },
+    { "type": "richtext", "id": "specs", "label": "Specifications (all products)", "info": "A product's own custom.specs metafield overrides this.", "default": "<p>Material: [FABRIC]<br>Filling: [FILLING]<br>Weight: [WEIGHT]<br>Size: [SIZE]<br>Recommended age: [AGE]</p>" },
+    { "type": "richtext", "id": "care", "label": "Care", "default": "<p>[CARE INSTRUCTIONS, e.g. spot clean with a damp cloth and mild soap; air dry]</p>" },
+    { "type": "richtext", "id": "shipping", "label": "Shipping & returns", "default": "<p>Free shipping on orders over $100. Orders are packed within [X] business days; delivery usually takes [X–X] business days across Australia. Not in love? Return unused pals within [30] days.</p>" }
+  ]
+}
+{% endschema %}

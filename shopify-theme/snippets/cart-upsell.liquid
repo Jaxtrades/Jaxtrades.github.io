@@ -1,0 +1,33 @@
+{%- comment -%} "Add a friend" suggestions: up to 3 products from All that aren't in the cart. {%- endcomment -%}
+{%- assign in_cart = cart.items | map: 'product_id' | join: ',' | prepend: ',' | append: ',' -%}
+{%- capture picks -%}
+  {%- assign shown = 0 -%}
+  {%- for product in collections.all.products -%}
+    {%- assign needle = product.id | prepend: ',' | append: ',' -%}
+    {%- if shown < 3 and product.available -%}
+      {%- unless in_cart contains needle -%}
+        {%- assign shown = shown | plus: 1 -%}
+        <div class="upsell-card">
+          <a href="{{ product.url }}" class="upsell-img">
+            {%- if product.featured_image -%}
+              {{ product.featured_image | image_url: width: 240 | image_tag: alt: product.title, loading: 'lazy' }}
+            {%- endif -%}
+          </a>
+          <div class="upsell-name">{{ product.title }}</div>
+          <div class="upsell-price">{{ product.price | money }}</div>
+          <form action="{{ routes.cart_add_url }}" method="post" data-add-form>
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+            <input type="hidden" name="quantity" value="1">
+            <button type="submit" class="btn-mini">Add</button>
+          </form>
+        </div>
+      {%- endunless -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- if picks != blank -%}
+  <div class="upsell">
+    <h3>Add a friend to the collective</h3>
+    <div class="upsell-row">{{ picks }}</div>
+  </div>
+{%- endif -%}

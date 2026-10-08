@@ -1,0 +1,36 @@
+<section class="wrap hero" id="top">
+  <div class="hero-media">
+    {%- if section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 2400 | image_tag: alt: section.settings.image.alt, fetchpriority: 'high', sizes: '(min-width: 1360px) 1248px, 100vw', widths: '800, 1200, 1600, 2000, 2400' }}
+    {%- endif -%}
+    <div class="hero-title">
+      {%- if section.settings.eyebrow != blank -%}<div class="eyebrow">{{ section.settings.eyebrow | escape }}</div>{%- endif -%}
+      <h1>{{ section.settings.heading | escape }}</h1>
+    </div>
+  </div>
+  <div class="hero-copy">
+    <p>{{ section.settings.text | escape }}</p>
+    <div class="hero-cta">
+      <div class="hero-actions">
+        <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="btn">{{ section.settings.button_label | escape }}</a>
+        <a href="#why" class="btn outline">How it works</a>
+      </div>
+      <div class="hero-note">Free shipping over {{ settings.free_shipping_threshold | times: 100 | money_without_trailing_zeros }} &nbsp;·&nbsp; Gift-ready packaging</div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image", "info": "Wide photo with open space on the left for the headline." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Weighted plush, made for calm" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "A soft, steady hug you can keep." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Cozy Collectives weighted plushies bring comfort to bedtime, quiet evenings and busy days. Gently weighted, made to be held." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop the pals" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "Hero" }]
+}
+{% endschema %}

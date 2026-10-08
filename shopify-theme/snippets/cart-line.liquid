@@ -1,0 +1,27 @@
+{%- comment -%} One cart line with quantity stepper. Accepts: item {%- endcomment -%}
+<div class="line">
+  <a href="{{ item.url }}" class="line-img">
+    {%- if item.image -%}
+      {{ item.image | image_url: width: 200 | image_tag: alt: item.product.title, loading: 'lazy' }}
+    {%- endif -%}
+  </a>
+  <div class="line-info">
+    <a href="{{ item.url }}" class="line-name">{{ item.product.title }}</a>
+    {%- unless item.product.has_only_default_variant -%}
+      <div class="line-price">{{ item.variant.title }}</div>
+    {%- endunless -%}
+    <div class="line-price">
+      {{ item.final_price | money }}
+      {%- if item.variant.compare_at_price > item.final_price %} <s>{{ item.variant.compare_at_price | money }}</s>{% endif -%}
+    </div>
+    <div class="line-actions">
+      <div class="stepper">
+        <button type="button" data-qty="{{ item.quantity | minus: 1 }}" data-key="{{ item.key }}" aria-label="Decrease quantity of {{ item.product.title | escape }}">{% render 'icon', name: 'minus' %}</button>
+        <span aria-live="polite">{{ item.quantity }}</span>
+        <button type="button" data-qty="{{ item.quantity | plus: 1 }}" data-key="{{ item.key }}" aria-label="Increase quantity of {{ item.product.title | escape }}">{% render 'icon', name: 'plus' %}</button>
+      </div>
+      <button type="button" class="remove" data-qty="0" data-key="{{ item.key }}" aria-label="Remove {{ item.product.title | escape }}">{% render 'icon', name: 'trash' %}</button>
+    </div>
+  </div>
+  <div class="line-total">{{ item.final_line_price | money }}</div>
+</div>

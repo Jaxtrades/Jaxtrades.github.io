@@ -1,0 +1,55 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Cozy Collectives",
+    "theme_version": "1.0.0",
+    "theme_author": "Cozy Collectives",
+    "theme_documentation_url": "https://github.com/Jaxtrades/Jaxtrades.github.io",
+    "theme_support_url": "https://github.com/Jaxtrades/Jaxtrades.github.io"
+  },
+  {
+    "name": "Colours",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_ground",
+        "label": "Background",
+        "default": "#F6F1E9"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent",
+        "default": "#4F6552"
+      },
+      {
+        "type": "color",
+        "id": "color_ink",
+        "label": "Text",
+        "default": "#2B2A28"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold (dollars)",
+        "default": 100,
+        "info": "Drives the progress bar in the cart. Set the matching free-shipping rate in Settings › Shipping."
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon"
+      }
+    ]
+  }
+]

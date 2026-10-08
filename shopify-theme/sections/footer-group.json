@@ -1,0 +1,14 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "about": "Weighted plush comfort, made to be held.",
+        "email": "hello@cozycollectives.com.au"
+      }
+    }
+  },
+  "order": ["footer"]
+}
