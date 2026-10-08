@@ -16,17 +16,21 @@
 
 <main>
   <section class="wrap hero" id="top">
-    <div>
-      <div class="eyebrow">Weighted plush, made for calm</div>
-      <h1>A soft, steady hug you can keep.</h1>
-      <p>Cozy Collectives weighted plushies bring comfort to bedtime, quiet evenings and busy days. Gently weighted, made to be held.</p>
-      <div class="hero-actions">
-        <a href="shop.html" class="btn">Shop the pals</a>
-        <a href="#why" class="btn outline">How it works</a>
+    <div class="hero-media"><img src="images/hero.webp" alt="A woman on a bed hugging Biscuit the Puppy, with Kip the Koala, Juno the Giraffe and Sully the Sloth beside her" fetchpriority="high"></div>
+    <div class="hero-copy">
+      <div>
+        <div class="eyebrow">Weighted plush, made for calm</div>
+        <h1>A soft, steady hug you can keep.</h1>
       </div>
-      <div class="hero-note">Free shipping over $<span class="threshold"></span> &nbsp;·&nbsp; Gift-ready packaging</div>
+      <div>
+        <p>Cozy Collectives weighted plushies bring comfort to bedtime, quiet evenings and busy days. Gently weighted, made to be held.</p>
+        <div class="hero-actions">
+          <a href="shop.html" class="btn">Shop the pals</a>
+          <a href="#why" class="btn outline">How it works</a>
+        </div>
+        <div class="hero-note">Free shipping over $<span class="threshold"></span> &nbsp;·&nbsp; Gift-ready packaging</div>
+      </div>
     </div>
-    <div class="hero-media" id="hero-media"></div>
   </section>
 
   <div class="strip">
@@ -141,7 +145,6 @@
 <script src="js/cards.js"></script>
 <script>
   document.querySelector(".threshold").textContent = STORE.freeShippingThreshold;
-  document.getElementById("hero-media").innerHTML = productMedia(PRODUCTS[0]);
   document.getElementById("product-grid").innerHTML = PRODUCTS.map(productCard).join("");
 </script>
 </body>

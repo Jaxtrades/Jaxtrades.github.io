@@ -69,15 +69,15 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .ph span { font-family: var(--serif); font-size: 22px; color: rgba(43,42,40,.55); }
 
 /* ---------- Hero ---------- */
-.hero { display: flex; flex-wrap: wrap; align-items: center; gap: 56px; padding-top: 56px; padding-bottom: 88px; }
-.hero > * { flex: 1 1 440px; min-width: 0; }
-.hero h1 { font-size: clamp(42px, 6vw, 68px); line-height: 1.05; letter-spacing: -.02em; margin: 18px 0 22px; }
-.hero p { font-size: 20px; max-width: 520px; margin: 0 0 34px; }
+.hero { padding-top: 32px; padding-bottom: 88px; }
+.hero-media { aspect-ratio: 16 / 9; max-width: 100%; border-radius: 28px; overflow: hidden; background: var(--tile); }
+.hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 35%; }
+.hero-copy { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 24px 56px; margin-top: 48px; }
+.hero-copy > * { flex: 1 1 440px; min-width: 0; }
+.hero h1 { font-size: clamp(42px, 6vw, 68px); line-height: 1.05; letter-spacing: -.02em; margin: 18px 0 0; text-wrap: balance; }
+.hero p { font-size: 20px; max-width: 520px; margin: 0 0 28px; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
-.hero-note { margin-top: 30px; font-size: 15px; color: var(--ink-soft); }
-.hero-media { height: 520px; border-radius: 28px; overflow: hidden; background: var(--tile); }
-.hero-media img { width: 100%; height: 100%; object-fit: cover; }
-.hero-media .ph span { font-size: 28px; }
+.hero-note { margin-top: 24px; font-size: 15px; color: var(--ink-soft); }
 
 .strip { background: var(--sand); padding: 26px 0; }
 .strip-row { display: flex; flex-wrap: wrap; gap: 14px 40px; justify-content: center; font-size: 15px; font-weight: 500; color: var(--ink-soft); }
@@ -305,8 +305,9 @@ body.cart-open .cart-drawer { transform: none; visibility: visible; }
   .brand { font-size: 22px; }
   .cart-btn span { display: none; }
   .cart-btn { padding: 10px 14px; }
-  .hero { padding-top: 32px; padding-bottom: 56px; gap: 32px; }
-  .hero-media { height: 360px; }
+  .hero { padding-top: 16px; padding-bottom: 56px; }
+  .hero-media { aspect-ratio: 3 / 2; border-radius: 20px; }
+  .hero-copy { margin-top: 28px; }
   .section { padding: 64px 0; }
   .gallery { grid-template-columns: 1fr; }
   .gallery-main { grid-column: 1; }
