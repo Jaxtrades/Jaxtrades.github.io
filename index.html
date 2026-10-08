@@ -21,7 +21,6 @@
         <div class="eyebrow">Weighted plush, made for calm</div>
         <h1>A soft, steady hug you can keep.</h1>
         <p>Gently weighted plush pals that settle on your lap like a long, steady hug. Made for bedtime, quiet evenings and busy days.</p>
-        <div class="hero-price"><span class="price" id="hero-from"></span><span class="compare" id="hero-was"></span></div>
         <div class="hero-actions">
           <a href="shop.html" class="btn">Shop the pals</a>
           <a href="#why" class="btn outline">How it works</a>
@@ -148,9 +147,6 @@
 <script>
   document.querySelector(".threshold").textContent = STORE.freeShippingThreshold;
   document.querySelectorAll(".hero-perks li").forEach((li, i) => li.insertAdjacentHTML("afterbegin", i ? ICON.gift : ICON.truck));
-  const lowest = PRODUCTS.reduce((a, p) => p.price < a.price ? p : a);
-  document.getElementById("hero-from").textContent = "From " + formatPrice(lowest.price);
-  document.getElementById("hero-was").textContent = lowest.compareAt > lowest.price ? formatPrice(lowest.compareAt) : "";
   document.getElementById("product-grid").innerHTML = PRODUCTS.map(productCard).join("");
 </script>
 </body>

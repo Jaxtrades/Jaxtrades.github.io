@@ -3,7 +3,8 @@
     "hero": {
       "type": "hero",
       "settings": {
-        "image": "shopify://shop_images/cozy-collectives-hero.webp"
+        "image": "shopify://shop_images/cozy-collectives-hero.webp",
+        "show_price": false
       }
     },
     "strip": {
