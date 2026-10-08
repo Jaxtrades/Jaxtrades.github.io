@@ -16,22 +16,22 @@
 
 <main>
   <section class="wrap hero" id="top">
-    <div class="hero-media">
-      <img src="images/hero.webp" alt="A woman on a bed hugging Biscuit the Puppy, with Kip the Koala, Juno the Giraffe and Sully the Sloth beside her" fetchpriority="high">
-      <div class="hero-title">
+    <div class="hero-card">
+      <div class="hero-text">
         <div class="eyebrow">Weighted plush, made for calm</div>
         <h1>A soft, steady hug you can keep.</h1>
-      </div>
-    </div>
-    <div class="hero-copy">
-      <p>Cozy Collectives weighted plushies bring comfort to bedtime, quiet evenings and busy days. Gently weighted, made to be held.</p>
-      <div class="hero-cta">
+        <p>Gently weighted plush pals that settle on your lap like a long, steady hug. Made for bedtime, quiet evenings and busy days.</p>
+        <div class="hero-price"><span class="price" id="hero-from"></span><span class="compare" id="hero-was"></span></div>
         <div class="hero-actions">
           <a href="shop.html" class="btn">Shop the pals</a>
           <a href="#why" class="btn outline">How it works</a>
         </div>
-        <div class="hero-note">Free shipping over $<span class="threshold"></span> &nbsp;·&nbsp; Gift-ready packaging</div>
+        <ul class="hero-perks">
+          <li>Free shipping over $<span class="threshold"></span></li>
+          <li>Gift-ready packaging</li>
+        </ul>
       </div>
+      <div class="hero-media"><img src="images/hero.webp" alt="A woman on a bed hugging Biscuit the Puppy, with Kip the Koala, Juno the Giraffe and Sully the Sloth beside her" fetchpriority="high"></div>
     </div>
   </section>
 
@@ -147,6 +147,10 @@
 <script src="js/cards.js"></script>
 <script>
   document.querySelector(".threshold").textContent = STORE.freeShippingThreshold;
+  document.querySelectorAll(".hero-perks li").forEach((li, i) => li.insertAdjacentHTML("afterbegin", i ? ICON.gift : ICON.truck));
+  const lowest = PRODUCTS.reduce((a, p) => p.price < a.price ? p : a);
+  document.getElementById("hero-from").textContent = "From " + formatPrice(lowest.price);
+  document.getElementById("hero-was").textContent = lowest.compareAt > lowest.price ? formatPrice(lowest.compareAt) : "";
   document.getElementById("product-grid").innerHTML = PRODUCTS.map(productCard).join("");
 </script>
 </body>
