@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "specs": "<ul><li><b>Length:</b> 50cm, 60cm or 65cm, depending on the pal</li><li><b>Design:</b> Long-arm plush, unisex</li><li><b>Material:</b> High-quality plush fabric</li><li><b>Filling:</b> PP cotton</li><li><b>Weight:</b> 1.14kg</li><li><b>Package size:</b> 28 × 23 × 14cm</li><li><b>In the box:</b> 1 plush</li><li><b>Electrical parts:</b> None</li></ul>"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,28 @@
+<section class="section sand">
+  <div class="wrap signup">
+    <h2>{{ section.settings.heading | escape }}</h2>
+    <p>{{ section.settings.text | escape }}</p>
+    {%- form 'customer', id: 'newsletter-form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      {%- if form.posted_successfully? -%}
+        <p role="status" style="flex-basis:100%">You're in! Watch your inbox for new pals.</p>
+      {%- else -%}
+        <label for="newsletter-email" class="sr-only">Email address</label>
+        <input id="newsletter-email" type="email" name="contact[email]" placeholder="Your email" autocomplete="email" required>
+        <button class="btn" type="submit">Sign up</button>
+        {%- if form.errors -%}<p role="alert" style="flex-basis:100%">{{ form.errors | default_errors }}</p>{%- endif -%}
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Join the collective" },
+    { "type": "text", "id": "text", "label": "Text", "default": "Early access to new pals and member offers." }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}

@@ -349,3 +349,17 @@ body.cart-open .cart-drawer { transform: none; visibility: visible; }
 /* Product photos are shot on white, so photo tiles sit on white. */
 :is(.card-img, .gallery-main, .line-img, .upsell-img, .thumbs button, .pick-img):has(img) { background: var(--white); }
 .line-img:has(img), .upsell-img:has(img), .pick-img:has(img) { box-shadow: inset 0 0 0 1px var(--line); }
+
+/* ---------- Shopify-only pieces ---------- */
+.stepper .qty-input { width: 44px; border: 0; background: none; text-align: center; font: inherit; font-weight: 700; -moz-appearance: textfield; }
+.stepper .qty-input::-webkit-outer-spin-button, .stepper .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.variant-select { width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font: inherit; background: var(--white); margin-bottom: 18px; }
+.page-note { width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font: inherit; font-size: 14px; margin-bottom: 16px; background: var(--ground); }
+.rte p:first-child { margin-top: 0; }
+.rte p:last-child { margin-bottom: 0; }
+.pay-icons .pay-icon { width: 38px; height: 24px; }
+.split-media img { border-radius: 28px; }
+.pagination { text-align: center; }
+.pagination .page, .pagination a { padding: 6px 10px; }
+.btn[disabled], .btn-mini[disabled] { opacity: .55; cursor: default; }
+.signup form { align-items: center; }

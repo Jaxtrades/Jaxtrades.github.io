@@ -1,0 +1,9 @@
+{%- comment -%} Free-shipping progress. Accepts: left (cents still needed), pct (0–100). {%- endcomment -%}
+<p class="ship-msg">
+  {%- if left > 0 -%}
+    You're <b>{{ left | money }}</b> away from <b>free shipping</b>
+  {%- else -%}
+    {%- render 'icon', name: 'truck' -%}<span>You've unlocked <b>free shipping</b></span>
+  {%- endif -%}
+</p>
+<div class="ship-track"><div class="ship-fill" style="width: {{ pct }}%"></div></div>

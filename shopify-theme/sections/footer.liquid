@@ -1,0 +1,45 @@
+<footer class="site-footer" id="contact">
+  <div class="wrap footer-grid">
+    <div class="footer-about">
+      <div class="brand">{{ shop.name }}</div>
+      <p>
+        {{ section.settings.about | escape }}
+        {%- if section.settings.email != blank -%}
+          <br><a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
+        {%- endif -%}
+      </p>
+    </div>
+    <div>
+      <b>Shop</b>
+      <a href="{{ routes.all_products_collection_url }}">All pals</a>
+      <a href="{{ routes.root_url }}#why">Why weighted</a>
+      <a href="/pages/our-story">Our story</a>
+    </div>
+    <div>
+      <b>Support</b>
+      <a href="/pages/our-story#faq">FAQ</a>
+      <a href="/pages/our-story#shipping">Shipping and returns</a>
+      {%- if section.settings.email != blank -%}<a href="mailto:{{ section.settings.email }}">Contact us</a>{%- endif -%}
+    </div>
+    <div>
+      <b>Follow</b>
+      {%- if section.settings.instagram != blank -%}<a href="{{ section.settings.instagram }}">Instagram</a>{%- endif -%}
+      {%- if section.settings.tiktok != blank -%}<a href="{{ section.settings.tiktok }}">TikTok</a>{%- endif -%}
+      {%- if section.settings.facebook != blank -%}<a href="{{ section.settings.facebook }}">Facebook</a>{%- endif -%}
+    </div>
+  </div>
+  <div class="wrap footer-bottom">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All prices in {{ cart.currency.iso_code }}.</div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "text", "id": "about", "label": "About text", "default": "Weighted plush comfort, made to be held." },
+    { "type": "text", "id": "email", "label": "Contact email" },
+    { "type": "url", "id": "instagram", "label": "Instagram link" },
+    { "type": "url", "id": "tiktok", "label": "TikTok link" },
+    { "type": "url", "id": "facebook", "label": "Facebook link" }
+  ]
+}
+{% endschema %}

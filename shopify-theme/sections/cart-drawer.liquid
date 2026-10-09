@@ -1,0 +1,77 @@
+{%- comment -%}
+  Slide-out cart. Re-rendered by assets/cart.js through the Section Rendering
+  API after every add / quantity change, so it always reflects the real cart.
+{%- endcomment -%}
+{%- assign threshold = settings.free_shipping_threshold | times: 100 -%}
+{%- assign left = threshold | minus: cart.total_price -%}
+{%- if threshold > 0 -%}
+  {%- assign pct = cart.total_price | times: 100 | divided_by: threshold -%}
+{%- else -%}
+  {%- assign pct = 100 -%}
+{%- endif -%}
+{%- if pct > 100 -%}{%- assign pct = 100 -%}{%- endif -%}
+
+<div class="drawer-overlay" data-close-cart></div>
+<aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-hidden="true">
+  <div class="drawer-head">
+    <h2 id="cart-title">Your cart <span class="drawer-count">{% if cart.item_count > 0 %}({{ cart.item_count }}){% endif %}</span></h2>
+    <button class="icon-btn" type="button" data-close-cart aria-label="Close cart">{% render 'icon', name: 'close' %}</button>
+  </div>
+
+  <div class="ship-bar">
+    {%- render 'ship-bar', left: left, pct: pct -%}
+  </div>
+
+  <div class="drawer-body">
+    {%- if cart.item_count == 0 -%}
+      <div class="drawer-empty">
+        <p>Your cart is empty.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn">Shop the pals</a>
+      </div>
+    {%- else -%}
+      {%- for item in cart.items -%}
+        {%- render 'cart-line', item: item -%}
+      {%- endfor -%}
+    {%- endif -%}
+    {%- render 'cart-upsell' -%}
+  </div>
+
+  {%- if cart.item_count > 0 -%}
+    {%- assign savings = 0 -%}
+    {%- for item in cart.items -%}
+      {%- if item.variant.compare_at_price > item.final_price -%}
+        {%- assign diff = item.variant.compare_at_price | minus: item.final_price | times: item.quantity -%}
+        {%- assign savings = savings | plus: diff -%}
+      {%- endif -%}
+    {%- endfor -%}
+    <div class="drawer-foot">
+      <details class="note-box">
+        <summary>Add a gift note</summary>
+        <label for="cart-note" class="sr-only">Gift note</label>
+        <textarea id="cart-note" rows="3" data-cart-note placeholder="We'll handwrite it on a card for you">{{ cart.note }}</textarea>
+      </details>
+      {%- if savings > 0 -%}
+        <div class="sum-row save"><span>You save</span><span>{{ savings | money }}</span></div>
+      {%- endif -%}
+      <div class="sum-row total"><span>Subtotal</span><span>{{ cart.total_price | money_with_currency }}</span></div>
+      <p class="fine">Taxes included. Shipping calculated at checkout.</p>
+      <form action="{{ routes.cart_url }}" method="post">
+        <button type="submit" name="checkout" class="btn block checkout-btn">{% render 'icon', name: 'lock' %} Checkout</button>
+      </form>
+      <p class="instal">or 4 interest-free payments of <b>{{ cart.total_price | divided_by: 4 | money }}</b></p>
+      <div class="pay-icons" aria-label="Accepted payments">
+        {%- for type in shop.enabled_payment_types -%}
+          {{ type | payment_type_svg_tag: class: 'pay-icon' }}
+        {%- endfor -%}
+      </div>
+      <a href="{{ routes.cart_url }}" class="view-cart">View full cart</a>
+    </div>
+  {%- endif -%}
+</aside>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "settings": []
+}
+{% endschema %}

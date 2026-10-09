@@ -1,0 +1,27 @@
+<section class="section">
+  <div class="wrap features">
+    {%- for block in section.blocks -%}
+      <div class="feature" {{ block.shopify_attributes }}>
+        <h3>{{ block.settings.title | escape }}</h3>
+        <p>{{ block.settings.text | escape }}</p>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Features",
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Comforting" },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Features", "blocks": [{ "type": "feature" }, { "type": "feature" }, { "type": "feature" }] }]
+}
+{% endschema %}
