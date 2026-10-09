@@ -22,7 +22,7 @@
           "type": "question",
           "settings": {
             "question": "Who are they for?",
-            "answer": "<p>[AGE RANGE AND SAFETY NOTE, e.g. suitable for ages X and up]</p>",
+            "answer": "<p>Teens and adults. Our pals are recommended for ages 14 and up, and aren't suitable for younger children because of their size and design.</p>",
             "anchor": ""
           }
         },
@@ -30,7 +30,7 @@
           "type": "question",
           "settings": {
             "question": "How heavy are they?",
-            "answer": "<p>Each pal weighs [X]kg, with weight placed through the body and limbs.</p>",
+            "answer": "<p>Each pal weighs 1.14kg and measures 50, 60 or 65cm long, depending on the pal.</p>",
             "anchor": ""
           }
         },
