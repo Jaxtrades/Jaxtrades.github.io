@@ -80,7 +80,6 @@ const PRODUCT_DETAILS = {
     "Weight spread through the body and limbs",
     "Arrives gift-ready",
     "Long arms made for hugging, 50–65cm long",
-    "Recommended for ages 14+",
   ],
   specs: [
     ["Length", "50cm, 60cm or 65cm, depending on the pal"],
@@ -89,7 +88,6 @@ const PRODUCT_DETAILS = {
     ["Filling", "PP cotton"],
     ["Weight", "1.14kg"],
     ["Package size", "28 × 23 × 14cm"],
-    ["Recommended age", "14+ (not recommended for younger children due to size and design)"],
     ["In the box", "1 plush"],
     ["Electrical parts", "None"],
   ],
