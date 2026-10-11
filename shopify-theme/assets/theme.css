@@ -63,11 +63,22 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .eyebrow { font-size: 14px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
 
 /* ---------- Header ---------- */
-.announce { display: grid; background: var(--accent); color: var(--white); text-align: center; padding: 12px 24px; font-size: 14px; font-weight: 500; }
-/* Messages stack in one cell and cross-fade. */
-.announce-msg { grid-area: 1 / 1; opacity: 0; transform: translateY(4px); transition: opacity .5s, transform .5s; }
-.announce-msg.is-active { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) { .announce-msg { transition: none; transform: none; } }
+.announce { background: var(--accent); color: var(--white); padding: 12px 0; font-size: 14px; font-weight: 500; overflow: hidden; white-space: nowrap; }
+/* Continuous ticker: two identical groups slide left by exactly one group's width, then loop. */
+.announce-track { display: flex; width: max-content; animation: announce-scroll var(--announce-speed, 28s) linear infinite; }
+.announce-group { display: flex; flex: none; }
+.announce-msg { display: inline-flex; align-items: center; padding: 0 28px; }
+.announce-msg::after { content: "•"; margin-left: 56px; opacity: .6; }
+a.announce-msg:hover { text-decoration: underline; }
+@keyframes announce-scroll { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .announce { white-space: normal; text-align: center; padding: 12px 24px; }
+  .announce-track { animation: none; width: auto; display: block; }
+  .announce-group { display: inline; }
+  .announce-msg.dup, .announce-group[aria-hidden] { display: none; }
+  .announce-msg { padding: 0 10px; }
+  .announce-msg::after { display: none; }
+}
 .site-header { position: sticky; top: 0; z-index: 30; background: var(--ground); border-bottom: 1px solid transparent; }
 .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 18px; padding-bottom: 18px; }
 .brand { font-family: var(--serif); font-size: 28px; font-weight: 600; letter-spacing: -.01em; }

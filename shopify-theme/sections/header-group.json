@@ -24,7 +24,7 @@
         "ship"
       ],
       "settings": {
-        "interval": 4
+        "speed": 28
       }
     },
     "header": {

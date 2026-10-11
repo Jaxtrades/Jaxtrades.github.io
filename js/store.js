@@ -86,10 +86,10 @@ function renderChrome() {
   const header = document.getElementById("site-header");
   if (header) {
     header.outerHTML = `
-    <div class="announce" data-announce aria-label="Store announcements">
-      <span class="announce-msg is-active">💛 $${STORE.donationPerPlush} from every plush donated to ${STORE.charity}</span>
-      <span class="announce-msg" aria-hidden="true">Free shipping on orders over $${STORE.freeShippingThreshold}</span>
-    </div>
+    <div class="announce" data-announce aria-label="Store announcements">${announceTrack([
+      `💛 $${STORE.donationPerPlush} from every plush donated to ${STORE.charity}`,
+      `Free shipping on orders over $${STORE.freeShippingThreshold}`,
+    ])}</div>
     <header class="site-header">
       <div class="wrap nav">
         <button class="icon-btn nav-toggle" aria-label="Open menu" aria-expanded="false">${ICON.menu}</button>
@@ -140,9 +140,6 @@ function renderChrome() {
     </aside>`;
   document.body.append(...drawer.children);
 
-  const announce = document.querySelector("[data-announce]");
-  if (announce) startAnnouncements(announce, 4);
-
   const toggle = document.querySelector(".nav-toggle");
   if (toggle) {
     toggle.addEventListener("click", () => {
@@ -184,21 +181,13 @@ function renderChrome() {
   renderCart();
 }
 
-/* Announcement bar: cycles through its messages every few seconds, pausing while hovered or focused. */
-function startAnnouncements(bar, seconds) {
-  const msgs = bar.querySelectorAll(".announce-msg");
-  if (msgs.length < 2) return;
-  let i = 0, paused = false;
-  bar.addEventListener("mouseenter", () => { paused = true; });
-  bar.addEventListener("mouseleave", () => { paused = false; });
-  bar.addEventListener("focusin", () => { paused = true; });
-  bar.addEventListener("focusout", () => { paused = false; });
-  setInterval(() => {
-    if (paused || document.hidden) return;
-    msgs[i].classList.remove("is-active"); msgs[i].setAttribute("aria-hidden", "true");
-    i = (i + 1) % msgs.length;
-    msgs[i].classList.add("is-active"); msgs[i].removeAttribute("aria-hidden");
-  }, seconds * 1000);
+/* Announcement bar: a ticker that scrolls continuously. The message set is
+   repeated so it fills wide screens, then doubled so the loop is seamless. */
+function announceTrack(msgs) {
+  const group = (copy) => `<span class="announce-group"${copy ? ' aria-hidden="true"' : ""}>` +
+    [0, 1, 2].map(r => msgs.map(m => `<span class="announce-msg${r || copy ? " dup" : ""}">${m}</span>`).join("")).join("") +
+    `</span>`;
+  return `<div class="announce-track">${group(false)}${group(true)}</div>`;
 }
 
 let lastFocus = null;
