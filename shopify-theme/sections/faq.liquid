@@ -1,0 +1,32 @@
+<section class="section sand" id="faq">
+  <div class="wrap">
+    <div class="section-head"><h2>{{ section.settings.heading | escape }}</h2></div>
+    <div class="faq">
+      {%- for block in section.blocks -%}
+        <details {% if block.settings.anchor != blank %}id="{{ block.settings.anchor | handleize }}"{% endif %} {{ block.shopify_attributes }}>
+          <summary>{{ block.settings.question | escape }}</summary>
+          <div class="rte">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [{ "type": "text", "id": "heading", "label": "Heading", "default": "Questions, answered" }],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "What is a weighted plushie?" },
+        { "type": "richtext", "id": "answer", "label": "Answer" },
+        { "type": "text", "id": "anchor", "label": "Link anchor", "info": "Optional, e.g. \"shipping\" lets you link to /pages/our-story#shipping." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "FAQ", "blocks": [{ "type": "question" }] }]
+}
+{% endschema %}

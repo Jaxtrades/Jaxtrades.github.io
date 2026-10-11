@@ -1,0 +1,44 @@
+{%- comment -%}
+  Scrolling ticker. Each block is a message; the set repeats to fill wide
+  screens and is doubled so the loop is seamless.
+{%- endcomment -%}
+{%- if section.blocks.size > 0 -%}
+  {%- capture group -%}
+    {%- for r in (1..3) -%}
+      {%- for block in section.blocks -%}
+        {%- if block.settings.link != blank -%}
+          <a href="{{ block.settings.link }}" class="announce-msg{% if r > 1 %} dup{% endif %}"{% if r > 1 %} tabindex="-1"{% endif %} {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</a>
+        {%- else -%}
+          <span class="announce-msg{% if r > 1 %} dup{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</span>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  <div class="announce" data-announce aria-label="Store announcements" style="--announce-speed: {{ section.settings.speed }}s">
+    <div class="announce-track">
+      <span class="announce-group">{{ group }}</span>
+      <span class="announce-group" aria-hidden="true">{{ group | replace: 'class="announce-msg"', 'class="announce-msg dup"' | replace: '<a href', '<a tabindex="-1" href' }}</span>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "settings": [
+    { "type": "range", "id": "speed", "label": "Seconds for one full loop", "info": "Lower is faster.", "min": 10, "max": 60, "step": 2, "unit": "s", "default": 28 }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Free shipping on orders over $100" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [{ "name": "Announcement bar", "blocks": [{ "type": "message" }] }]
+}
+{% endschema %}

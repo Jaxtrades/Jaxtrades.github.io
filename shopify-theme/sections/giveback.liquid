@@ -1,0 +1,27 @@
+<section class="section" id="gives-back">
+  <div class="wrap">
+    <div class="giveback">
+      <div class="give-icon">{% render 'icon', name: 'heart' %}</div>
+      {%- if section.settings.eyebrow != blank -%}<div class="eyebrow">{{ section.settings.eyebrow | escape }}</div>{%- endif -%}
+      <h2>{{ section.settings.heading | escape }}</h2>
+      <p>{{ section.settings.text | escape }}</p>
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link | default: '/pages/our-story#giving' }}" class="btn outline">{{ section.settings.button_label | escape }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Giving back",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Giving back" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Comfort that gives back" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "$10 from every plush goes to headspace, Australia's National Youth Mental Health Foundation, supporting young people living with anxiety and other mental health challenges." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "How we give back" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "Giving back" }]
+}
+{% endschema %}

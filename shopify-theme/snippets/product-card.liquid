@@ -1,0 +1,43 @@
+{%- comment -%}
+  Product card with quick add. Accepts: product
+  Badge: add a tag like "badge:Bestseller" to the product; otherwise a sale shows "Save $X".
+  Tagline: the product metafield custom.tagline.
+{%- endcomment -%}
+{%- assign badge = blank -%}
+{%- for tag in product.tags -%}
+  {%- if tag contains 'badge:' -%}{%- assign badge = tag | remove_first: 'badge:' | strip -%}{%- endif -%}
+{%- endfor -%}
+{%- assign on_sale = false -%}
+{%- if product.compare_at_price > product.price -%}{%- assign on_sale = true -%}{%- endif -%}
+
+<div class="card">
+  {%- if badge != blank -%}
+    <span class="badge">{{ badge | escape }}</span>
+  {%- elsif on_sale -%}
+    <span class="badge sale">Save {{ product.compare_at_price | minus: product.price | money }}</span>
+  {%- endif -%}
+  <a href="{{ product.url }}" class="card-img">
+    {%- if product.featured_image -%}
+      {{ product.featured_image | image_url: width: 700 | image_tag: alt: product.title, loading: 'lazy', sizes: '(min-width: 960px) 25vw, 90vw', widths: '350, 500, 700' }}
+    {%- endif -%}
+  </a>
+  <div class="card-body">
+    <a href="{{ product.url }}" class="card-name">{{ product.title }}</a>
+    {%- if product.metafields.custom.tagline != blank -%}
+      <div class="card-tag">{{ product.metafields.custom.tagline }}</div>
+    {%- endif -%}
+    <div class="price-row">
+      <span class="price">{{ product.price | money }}</span>
+      {%- if on_sale -%}<span class="compare">{{ product.compare_at_price | money }}</span>{%- endif -%}
+    </div>
+    {%- if product.available -%}
+      <form action="{{ routes.cart_add_url }}" method="post" data-add-form>
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        <input type="hidden" name="quantity" value="1">
+        <button type="submit" class="btn dark">Add to cart</button>
+      </form>
+    {%- else -%}
+      <button type="button" class="btn dark" disabled>Sold out</button>
+    {%- endif -%}
+  </div>
+</div>

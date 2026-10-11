@@ -1,0 +1,60 @@
+<section class="section sand calm" id="calm">
+  <div class="wrap">
+    <div class="section-head">
+      {%- if section.settings.eyebrow != blank -%}<div class="eyebrow">{{ section.settings.eyebrow | escape }}</div>{%- endif -%}
+      <h2>{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.text != blank -%}<p>{{ section.settings.text | escape }}</p>{%- endif -%}
+    </div>
+    <div class="calm-grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'card' -%}
+          <article class="calm-card" {{ block.shopify_attributes }}>
+            <h3>{{ block.settings.title | escape }}</h3>
+            <div>{{ block.settings.text }}</div>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    <div class="calm-try">
+      <h3>{{ section.settings.list_heading | escape }}</h3>
+      <ul>
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'tip' -%}
+            <li {{ block.shopify_attributes }}><b>{{ block.settings.title | escape }}</b> {{ block.settings.text | escape }}</li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Anxiety & calm",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Weight and worry" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Can a weighted hug help with anxiety?" },
+    { "type": "textarea", "id": "text", "label": "Text" },
+    { "type": "text", "id": "list_heading", "label": "Tips heading", "default": "Ways people use their pal" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Deep pressure" },
+        { "type": "richtext", "id": "text", "label": "Text" }
+      ]
+    },
+    {
+      "type": "tip",
+      "name": "Tip",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Slow breathing." },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Anxiety & calm" }]
+}
+{% endschema %}

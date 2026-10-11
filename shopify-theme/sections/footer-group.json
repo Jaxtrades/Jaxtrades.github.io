@@ -1,0 +1,21 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "about": "Weighted plush comfort, made to be held.",
+        "email": "hello@cozycubs.com.au"
+      }
+    },
+    "welcome_popup": {
+      "type": "welcome-popup",
+      "settings": {}
+    }
+  },
+  "order": [
+    "footer",
+    "welcome_popup"
+  ]
+}

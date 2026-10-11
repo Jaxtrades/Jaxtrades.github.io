@@ -1,0 +1,39 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "give": {
+          "type": "message",
+          "settings": {
+            "text": "💛 $10 from every plush donated to headspace",
+            "link": "shopify://pages/our-story"
+          }
+        },
+        "ship": {
+          "type": "message",
+          "settings": {
+            "text": "Free shipping on orders over $100"
+          }
+        }
+      },
+      "block_order": [
+        "give",
+        "ship"
+      ],
+      "settings": {
+        "speed": 28
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {}
+    }
+  },
+  "order": [
+    "announcement",
+    "header"
+  ]
+}

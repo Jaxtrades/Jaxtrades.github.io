@@ -1,0 +1,44 @@
+<header class="site-header">
+  <div class="wrap nav">
+    <button class="icon-btn nav-toggle" aria-label="Open menu" aria-expanded="false" data-nav-toggle>
+      {%- render 'icon', name: 'menu' -%}
+    </button>
+    <a href="{{ routes.root_url }}" class="brand">{{ shop.name }}</a>
+    <nav class="nav-links" aria-label="Main">
+      {%- assign menu = linklists[section.settings.menu] -%}
+      {%- if menu.links.size > 0 -%}
+        {%- for link in menu.links -%}
+          <a href="{{ link.url }}">{{ link.title | escape }}</a>
+        {%- endfor -%}
+      {%- else -%}
+        <a href="{{ routes.all_products_collection_url }}">Shop</a>
+        <a href="{{ routes.root_url }}#why">Why Weighted?</a>
+        <a href="{{ routes.root_url }}#calm">Anxiety &amp; Calm</a>
+        <a href="/pages/our-story">Our Story</a>
+        <a href="/pages/our-story#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      {%- endif -%}
+    </nav>
+    <a href="{{ routes.cart_url }}" class="cart-btn" data-open-cart aria-label="Open cart">
+      {%- render 'icon', name: 'bag' -%}
+      <span>Cart</span>
+      <b class="cart-count" data-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</b>
+    </a>
+  </div>
+</header>
+
+<script>
+  document.querySelector('[data-nav-toggle]').addEventListener('click', function () {
+    var open = document.querySelector('.nav-links').classList.toggle('open');
+    this.setAttribute('aria-expanded', open);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "info": "Leave empty to use the built-in links (Shop, Why Weighted?, Anxiety & Calm, Our Story, FAQ, Contact)." }
+  ]
+}
+{% endschema %}

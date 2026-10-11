@@ -1,0 +1,24 @@
+<div class="wrap" style="padding-bottom:96px">
+  <h1 class="page-title">Search</h1>
+  <form action="{{ routes.search_url }}" method="get" class="signup" style="text-align:left">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px">
+      <label for="search-q" class="sr-only">Search</label>
+      <input id="search-q" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search the pals" style="flex:1 1 280px;padding:16px 22px;border-radius:999px;border:2px solid #CFC4B3;font:inherit;background:#fff">
+      <input type="hidden" name="type" value="product">
+      <button class="btn" type="submit">Search</button>
+    </div>
+  </form>
+  {%- if search.performed -%}
+    <div class="grid">
+      {%- for item in search.results -%}
+        {%- if item.object_type == 'product' -%}{%- render 'product-card', product: item -%}{%- endif -%}
+      {%- else -%}
+        <p>No pals matched "{{ search.terms | escape }}".</p>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{ "name": "Search", "settings": [] }
+{% endschema %}
