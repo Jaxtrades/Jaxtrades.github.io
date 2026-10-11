@@ -1,6 +1,8 @@
 {
-  "current": "Default",
-  "presets": {
-    "Default": {}
+  "current": {
+    "color_ground": "#F6F0E6",
+    "color_accent": "#5E6F5A",
+    "color_ink": "#5B4F47",
+    "free_shipping_threshold": 100
   }
 }

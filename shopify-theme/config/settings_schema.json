@@ -14,19 +14,19 @@
         "type": "color",
         "id": "color_ground",
         "label": "Background",
-        "default": "#F6F1E9"
+        "default": "#F6F0E6"
       },
       {
         "type": "color",
         "id": "color_accent",
         "label": "Accent",
-        "default": "#4F6552"
+        "default": "#5E6F5A"
       },
       {
         "type": "color",
         "id": "color_ink",
         "label": "Text",
-        "default": "#2B2A28"
+        "default": "#5B4F47"
       }
     ]
   },
