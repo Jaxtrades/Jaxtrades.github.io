@@ -4,8 +4,28 @@
   "sections": {
     "announcement": {
       "type": "announcement-bar",
+      "blocks": {
+        "give": {
+          "type": "message",
+          "settings": {
+            "text": "💛 $10 from every plush donated to headspace",
+            "link": "shopify://pages/our-story"
+          }
+        },
+        "ship": {
+          "type": "message",
+          "settings": {
+            "text": "Free shipping on orders over $100",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "give",
+        "ship"
+      ],
       "settings": {
-        "text": "💛 $10 from every plush donated to headspace  |  Free shipping over $100"
+        "interval": 4
       }
     },
     "header": {

@@ -86,7 +86,10 @@ function renderChrome() {
   const header = document.getElementById("site-header");
   if (header) {
     header.outerHTML = `
-    <div class="announce">💛 $${STORE.donationPerPlush} from every plush donated to ${STORE.charity} &nbsp;|&nbsp; Free shipping over $${STORE.freeShippingThreshold}</div>
+    <div class="announce" data-announce aria-label="Store announcements">
+      <span class="announce-msg is-active">💛 $${STORE.donationPerPlush} from every plush donated to ${STORE.charity}</span>
+      <span class="announce-msg" aria-hidden="true">Free shipping on orders over $${STORE.freeShippingThreshold}</span>
+    </div>
     <header class="site-header">
       <div class="wrap nav">
         <button class="icon-btn nav-toggle" aria-label="Open menu" aria-expanded="false">${ICON.menu}</button>
@@ -137,6 +140,9 @@ function renderChrome() {
     </aside>`;
   document.body.append(...drawer.children);
 
+  const announce = document.querySelector("[data-announce]");
+  if (announce) startAnnouncements(announce, 4);
+
   const toggle = document.querySelector(".nav-toggle");
   if (toggle) {
     toggle.addEventListener("click", () => {
@@ -176,6 +182,23 @@ function renderChrome() {
   });
 
   renderCart();
+}
+
+/* Announcement bar: cycles through its messages every few seconds, pausing while hovered or focused. */
+function startAnnouncements(bar, seconds) {
+  const msgs = bar.querySelectorAll(".announce-msg");
+  if (msgs.length < 2) return;
+  let i = 0, paused = false;
+  bar.addEventListener("mouseenter", () => { paused = true; });
+  bar.addEventListener("mouseleave", () => { paused = false; });
+  bar.addEventListener("focusin", () => { paused = true; });
+  bar.addEventListener("focusout", () => { paused = false; });
+  setInterval(() => {
+    if (paused || document.hidden) return;
+    msgs[i].classList.remove("is-active"); msgs[i].setAttribute("aria-hidden", "true");
+    i = (i + 1) % msgs.length;
+    msgs[i].classList.add("is-active"); msgs[i].removeAttribute("aria-hidden");
+  }, seconds * 1000);
 }
 
 let lastFocus = null;
