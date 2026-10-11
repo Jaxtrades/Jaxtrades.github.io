@@ -8,7 +8,14 @@
         "about": "Weighted plush comfort, made to be held.",
         "email": "hello@cozycollectives.com.au"
       }
+    },
+    "welcome_popup": {
+      "type": "welcome-popup",
+      "settings": {}
     }
   },
-  "order": ["footer"]
+  "order": [
+    "footer",
+    "welcome_popup"
+  ]
 }

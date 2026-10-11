@@ -1,0 +1,101 @@
+{%- comment -%}
+  First-visit pop-up: signs the visitor up to the customer list (tagged
+  "newsletter, welcome-popup") and reveals the discount code. Shows once per
+  visitor, never on the cart page.
+{%- endcomment -%}
+{%- if section.settings.enabled and template.name != 'cart' -%}
+  {%- assign pct = section.settings.percent -%}
+  <div class="popup-overlay" data-close-popup></div>
+  <div class="popup" id="welcome-popup" role="dialog" aria-modal="true" aria-labelledby="popup-title" aria-hidden="true" data-delay="{{ section.settings.delay }}">
+    <button class="icon-btn popup-close" type="button" data-close-popup aria-label="Close">{% render 'icon', name: 'close' %}</button>
+    <div class="popup-media">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 1000 | image_tag: alt: section.settings.image.alt, loading: 'lazy' }}
+      {%- else -%}
+        <img src="{{ 'popup.webp' | asset_url }}" alt="A woman relaxing in bed hugging Biscuit the Puppy, with Juno, Sully and Kip beside her" loading="lazy" width="1400" height="933">
+      {%- endif -%}
+    </div>
+    <div class="popup-body">
+      {%- form 'customer', id: 'welcome-popup-form', class: 'popup-form-wrap' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="popup-success-view" data-popup-success>
+            <div class="eyebrow">You're in</div>
+            <h2 id="popup-title">Here's your {{ pct }}% off</h2>
+            <p>Use this code at checkout:</p>
+            <div class="popup-code"><span id="popup-code">{{ section.settings.code | escape }}</span><button class="btn-mini" type="button" id="popup-copy">Copy</button></div>
+            <a href="{{ routes.all_products_collection_url }}" class="btn block">Shop the pals</a>
+          </div>
+        {%- else -%}
+          <div class="popup-form-view" {% if form.errors %}data-popup-error{% endif %}>
+            <div class="eyebrow">{{ section.settings.eyebrow | escape }}</div>
+            <h2 id="popup-title"><span class="popup-big">{{ pct }}% off</span> your first pal</h2>
+            <p>{{ section.settings.text | escape }}</p>
+            <input type="hidden" name="contact[tags]" value="newsletter, welcome-popup">
+            <div class="popup-form">
+              <label for="popup-email" class="sr-only">Email address</label>
+              <input id="popup-email" type="email" name="contact[email]" placeholder="Your email" autocomplete="email" required>
+              <button class="btn block" type="submit">Get my {{ pct }}% off</button>
+            </div>
+            {%- if form.errors -%}<p role="alert" class="popup-fine">{{ form.errors | default_errors }}</p>{%- endif -%}
+            <button class="popup-skip" type="button" data-close-popup>No thanks</button>
+            <p class="popup-fine">One use per customer. Unsubscribe any time.</p>
+          </div>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var KEY = 'cozycollectives_popup_seen';
+      var popup = document.getElementById('welcome-popup');
+      var seen = function () { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } };
+      var mark = function () { try { localStorage.setItem(KEY, '1'); } catch (e) {} };
+      var last = null;
+      function open() {
+        if (document.body.classList.contains('cart-open')) return;
+        last = document.activeElement;
+        document.body.classList.add('popup-open');
+        popup.setAttribute('aria-hidden', 'false');
+        var focusEl = popup.querySelector('#popup-email') || popup.querySelector('#popup-copy');
+        if (focusEl) focusEl.focus({ preventScroll: true });
+      }
+      function close() {
+        mark();
+        document.body.classList.remove('popup-open');
+        popup.setAttribute('aria-hidden', 'true');
+        if (last) last.focus({ preventScroll: true });
+      }
+      document.addEventListener('click', function (e) { if (e.target.closest('[data-close-popup]')) close(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && document.body.classList.contains('popup-open')) close(); });
+
+      var copy = document.getElementById('popup-copy');
+      if (copy) copy.addEventListener('click', function () {
+        var code = document.getElementById('popup-code');
+        var select = function () { var r = document.createRange(); r.selectNodeContents(code); var s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+        try { navigator.clipboard.writeText(code.textContent).then(function () { copy.textContent = 'Copied'; }, select); } catch (e) { select(); }
+      });
+
+      // Just signed up (or the form came back with an error): show it straight away.
+      if (popup.querySelector('[data-popup-success]')) { mark(); open(); return; }
+      if (popup.querySelector('[data-popup-error]')) { open(); return; }
+      if (seen()) return;
+      setTimeout(open, (Number(popup.dataset.delay) || 4) * 1000);
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Welcome pop-up",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Show pop-up", "default": true },
+    { "type": "image_picker", "id": "image", "label": "Image", "info": "Leave empty to use the built-in photo." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Join the collective" },
+    { "type": "range", "id": "percent", "label": "Discount %", "min": 5, "max": 50, "step": 5, "unit": "%", "default": 15 },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Sign up for early access to new pals and member offers, and we'll send 15% off your first order." },
+    { "type": "text", "id": "code", "label": "Discount code", "default": "WELCOME15", "info": "Create the matching code in Discounts. It must exist there for checkout to accept it." },
+    { "type": "range", "id": "delay", "label": "Delay before showing", "min": 0, "max": 30, "step": 1, "unit": "s", "default": 4 }
+  ]
+}
+{% endschema %}

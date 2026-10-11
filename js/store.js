@@ -285,4 +285,96 @@ function renderCart() {
     <a href="cart.html" class="view-cart">View full cart</a>`;
 }
 
+/* ---------- Welcome pop-up ----------
+   Shows once per visitor, a few seconds after their first visit, never on
+   cart or checkout. Signing up reveals the discount code. */
+const POPUP_KEY = "cozycollectives_popup_seen";
+
+function popupSeen() {
+  try { return localStorage.getItem(POPUP_KEY) === "1"; } catch (e) { return false; }
+}
+
+function markPopupSeen() {
+  try { localStorage.setItem(POPUP_KEY, "1"); } catch (e) {}
+}
+
+function onCartOrCheckout() {
+  const where = (location.pathname + location.hash).toLowerCase();
+  return /cart|checkout/.test(where);
+}
+
+function renderPopup() {
+  if (popupSeen() || onCartOrCheckout()) return;
+  const wrap = document.createElement("div");
+  wrap.innerHTML = `
+    <div class="popup-overlay" data-close-popup></div>
+    <div class="popup" id="welcome-popup" role="dialog" aria-modal="true" aria-labelledby="popup-title" aria-hidden="true">
+      <button class="icon-btn popup-close" data-close-popup aria-label="Close">${ICON.close}</button>
+      <div class="popup-media"><img src="images/popup.webp" alt="A woman relaxing in bed hugging Biscuit the Puppy, with Juno, Sully and Kip beside her" loading="lazy"></div>
+      <div class="popup-body">
+        <div class="popup-form-view">
+          <div class="eyebrow">Join the collective</div>
+          <h2 id="popup-title"><span class="popup-big">${STORE.welcomeDiscount}% off</span> your first pal</h2>
+          <p>Sign up for early access to new pals and member offers, and we'll send ${STORE.welcomeDiscount}% off your first order.</p>
+          <form class="popup-form" id="popup-form">
+            <label for="popup-email" class="sr-only">Email address</label>
+            <input id="popup-email" type="email" placeholder="Your email" autocomplete="email" required>
+            <button class="btn block" type="submit">Get my ${STORE.welcomeDiscount}% off</button>
+          </form>
+          <button class="popup-skip" type="button" data-close-popup>No thanks</button>
+          <p class="popup-fine">One use per customer. Unsubscribe any time.</p>
+        </div>
+        <div class="popup-success-view" hidden>
+          <div class="eyebrow">You're in</div>
+          <h2>Here's your ${STORE.welcomeDiscount}% off</h2>
+          <p>Use this code at checkout:</p>
+          <div class="popup-code"><span id="popup-code">${STORE.welcomeCode}</span><button class="btn-mini" type="button" id="popup-copy">Copy</button></div>
+          <a href="shop.html" class="btn block" data-close-popup>Shop the pals</a>
+        </div>
+      </div>
+    </div>`;
+  document.body.append(...wrap.children);
+
+  const popup = document.getElementById("welcome-popup");
+  let lastFocusPopup = null;
+  const open = () => {
+    if (popupSeen() || onCartOrCheckout() || document.body.classList.contains("cart-open")) return;
+    lastFocusPopup = document.activeElement;
+    document.body.classList.add("popup-open");
+    popup.setAttribute("aria-hidden", "false");
+    document.getElementById("popup-email").focus({ preventScroll: true });
+  };
+  const close = () => {
+    markPopupSeen();
+    document.body.classList.remove("popup-open");
+    popup.setAttribute("aria-hidden", "true");
+    if (lastFocusPopup) lastFocusPopup.focus({ preventScroll: true });
+  };
+
+  document.addEventListener("click", e => { if (e.target.closest("[data-close-popup]")) close(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && document.body.classList.contains("popup-open")) close(); });
+  document.getElementById("popup-form").addEventListener("submit", e => {
+    e.preventDefault();
+    markPopupSeen();
+    popup.querySelector(".popup-form-view").hidden = true;
+    popup.querySelector(".popup-success-view").hidden = false;
+    document.getElementById("popup-copy").focus();
+  });
+  document.getElementById("popup-copy").addEventListener("click", e => {
+    const btn = e.currentTarget;
+    const done = () => { btn.textContent = "Copied"; };
+    try {
+      navigator.clipboard.writeText(STORE.welcomeCode).then(done, () => selectCode());
+    } catch (err) { selectCode(); }
+  });
+  function selectCode() {
+    const range = document.createRange();
+    range.selectNodeContents(document.getElementById("popup-code"));
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+  }
+
+  setTimeout(open, STORE.welcomeDelay * 1000);
+}
+
 document.addEventListener("DOMContentLoaded", renderChrome);
+document.addEventListener("DOMContentLoaded", renderPopup);

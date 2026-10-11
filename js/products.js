@@ -12,6 +12,9 @@ const STORE = {
   flatShipping: 9.95,         // shipping charged below the threshold
   instalments: 4,             // "or 4 interest-free payments of $X"
   email: "hello@cozycollectives.com.au",
+  welcomeCode: "WELCOME15",     // code shown after signing up in the welcome pop-up
+  welcomeDiscount: 15,          // percent, for the pop-up copy
+  welcomeDelay: 4,              // seconds before the pop-up appears on a first visit
 };
 
 const PRODUCTS = [
