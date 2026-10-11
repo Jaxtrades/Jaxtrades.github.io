@@ -1,4 +1,4 @@
-<section class="section">
+<section class="section"{% if section.settings.anchor != blank %} id="{{ section.settings.anchor | handleize }}"{% endif %}>
   <div class="wrap split">
     <div class="split-media">
       {%- if section.settings.image != blank -%}
@@ -10,7 +10,7 @@
     <div>
       {%- if section.settings.eyebrow != blank -%}<div class="eyebrow">{{ section.settings.eyebrow | escape }}</div>{%- endif -%}
       <h2>{{ section.settings.heading | escape }}</h2>
-      {{ section.settings.text }}
+      <div class="rte story-text">{{ section.settings.text }}</div>
       {%- if section.settings.button_label != blank -%}
         <a href="{{ section.settings.button_link | default: '/pages/our-story' }}" class="btn outline">{{ section.settings.button_label | escape }}</a>
       {%- endif -%}
@@ -25,9 +25,10 @@
     { "type": "image_picker", "id": "image", "label": "Image" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our story" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Comfort, designed with care." },
-    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>[YOUR BRAND STORY: why you started Cozy Collectives, who it is for, and what you want every pal to feel like.]</p>" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>[YOUR BRAND STORY: why you started Cozy Cubs, who it is for, and what you want every pal to feel like.]</p>" },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Read our story" },
-    { "type": "url", "id": "button_link", "label": "Button link" }
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "text", "id": "anchor", "label": "Link anchor", "info": "Optional, e.g. \"giving\" lets you link to this section with #giving." }
   ],
   "presets": [{ "name": "Story" }]
 }

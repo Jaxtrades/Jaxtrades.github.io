@@ -8,6 +8,9 @@
           <br><a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
         {%- endif -%}
       </p>
+      {%- if settings.charity_name != blank -%}
+        <p class="give-line">{% render 'icon', name: 'heart' %} {{ settings.donation_amount | times: 100 | money_without_trailing_zeros }} from every plush goes to {{ settings.charity_name | escape }}.</p>
+      {%- endif -%}
     </div>
     <div>
       <b>Shop</b>

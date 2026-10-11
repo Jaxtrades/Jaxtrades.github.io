@@ -1,0 +1,5 @@
+{%- comment -%} "Thank you, $X from this order is going to <charity>." — $X scales with the number of plushies. {%- endcomment -%}
+{%- if settings.charity_name != blank and cart.item_count > 0 -%}
+  {%- assign give_total = settings.donation_amount | times: cart.item_count | times: 100 -%}
+  <p class="give-note">{% render 'icon', name: 'heart' %}<span>Thank you, <b>{{ give_total | money_without_trailing_zeros }}</b> from this order is going to {{ settings.charity_name | escape }}.</span></p>
+{%- endif -%}

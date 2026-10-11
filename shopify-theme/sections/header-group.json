@@ -5,7 +5,7 @@
     "announcement": {
       "type": "announcement-bar",
       "settings": {
-        "text": "Free shipping on orders over $100 | Gift-ready packaging on every pal"
+        "text": "💛 $10 from every plush donated to headspace  |  Free shipping over $100"
       }
     },
     "header": {
@@ -13,5 +13,8 @@
       "settings": {}
     }
   },
-  "order": ["announcement", "header"]
+  "order": [
+    "announcement",
+    "header"
+  ]
 }

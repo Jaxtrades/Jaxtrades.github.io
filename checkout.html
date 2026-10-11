@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<title>Checkout | Cozy Collectives</title>
+<title>Checkout | Cozy Cubs</title>
 </head>
 <body>
 <div id="site-header"></div>
@@ -71,6 +71,7 @@
             <div class="sum-row"><span>Shipping</span><span>${shipping ? formatPrice(shipping) : "Free"}</span></div>
             <div class="sum-row total"><span>Total</span><span>${formatPrice(total)} ${STORE.currency}</span></div>
             <p class="fine">Including GST</p>
+            ${giveNoteHtml(cartCount())}
           </div>
         </div>
       </div>`;

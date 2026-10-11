@@ -224,6 +224,10 @@
     "newsletter": {
       "type": "newsletter",
       "settings": {}
+    },
+    "giveback": {
+      "type": "giveback",
+      "settings": {}
     }
   },
   "order": [
@@ -233,6 +237,7 @@
     "how",
     "calm",
     "features",
+    "giveback",
     "reviews",
     "story",
     "newsletter"

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<title>Your cart | Cozy Collectives</title>
+<title>Your cart | Cozy Cubs</title>
 </head>
 <body>
 <div id="site-header"></div>
@@ -44,6 +44,7 @@
           <div class="sum-row"><span>Shipping</span><span>${shippingFor(subtotal) ? formatPrice(shippingFor(subtotal)) : "Free"}</span></div>
           <div class="sum-row total" style="border-top:1px solid var(--line);padding-top:12px;margin-top:6px"><span>Total</span><span>${formatPrice(subtotal + shippingFor(subtotal))} ${STORE.currency}</span></div>
           <p class="fine">Taxes included.</p>
+          ${giveNoteHtml(cartCount())}
           <a href="checkout.html" class="btn block checkout-btn">${ICON.lock} Checkout</a>
           <p class="instal">or ${STORE.instalments} interest-free payments of <b>${formatPrice((subtotal + shippingFor(subtotal)) / STORE.instalments)}</b></p>
           <a href="shop.html" class="view-cart">Continue shopping</a>

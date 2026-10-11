@@ -76,6 +76,7 @@ const ICON = {
   plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg>',
   lock: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
   truck: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h11v10H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.5"/><circle cx="17" cy="17.5" r="1.5"/></svg>',
+  heart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>',
   gift: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="1"/><path d="M3 9h18M12 9v11M12 9S10.5 4 8 4.5 7.5 9 12 9Zm0 0s1.5-5 4-4.5S16.5 9 12 9Z"/></svg>',
   trash: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"/></svg>',
 };
@@ -85,11 +86,11 @@ function renderChrome() {
   const header = document.getElementById("site-header");
   if (header) {
     header.outerHTML = `
-    <div class="announce">Free shipping on orders over $${STORE.freeShippingThreshold} &nbsp;|&nbsp; Gift-ready packaging on every pal</div>
+    <div class="announce">💛 $${STORE.donationPerPlush} from every plush donated to ${STORE.charity} &nbsp;|&nbsp; Free shipping over $${STORE.freeShippingThreshold}</div>
     <header class="site-header">
       <div class="wrap nav">
         <button class="icon-btn nav-toggle" aria-label="Open menu" aria-expanded="false">${ICON.menu}</button>
-        <a href="index.html" class="brand">Cozy Collectives</a>
+        <a href="index.html" class="brand">Cozy Cubs</a>
         <nav class="nav-links" aria-label="Main">
           <a href="shop.html">Shop</a>
           <a href="index.html#why">Why Weighted?</a>
@@ -109,14 +110,15 @@ function renderChrome() {
     <footer class="site-footer" id="contact">
       <div class="wrap footer-grid">
         <div class="footer-about">
-          <div class="brand">Cozy Collectives</div>
+          <div class="brand">Cozy Cubs</div>
           <p>Weighted plush comfort, made to be held.<br><a href="mailto:${STORE.email}">${STORE.email}</a></p>
+          <p class="give-line">${ICON.heart} $${STORE.donationPerPlush} from every plush goes to ${STORE.charity}.</p>
         </div>
         <div><b>Shop</b><a href="shop.html">All pals</a><a href="index.html#why">Why weighted</a><a href="about.html">Our story</a></div>
         <div><b>Support</b><a href="about.html#faq">FAQ</a><a href="about.html#shipping">Shipping and returns</a><a href="mailto:${STORE.email}">Contact us</a></div>
         <div><b>Follow</b><a href="#contact">Instagram</a><a href="#contact">TikTok</a><a href="#contact">Facebook</a></div>
       </div>
-      <div class="wrap footer-bottom">© 2026 Cozy Collectives. All prices in ${STORE.currency}.</div>
+      <div class="wrap footer-bottom">© 2026 Cozy Cubs. All prices in ${STORE.currency}.</div>
     </footer>`;
   }
 
@@ -201,6 +203,12 @@ function shipBarHtml(subtotal) {
   return `<p class="ship-msg">${msg}</p><div class="ship-track"><div class="ship-fill" style="width:${pct}%"></div></div>`;
 }
 
+/* "Thank you, $X from this order is going to <charity>." — $X scales with the number of plushies. */
+function giveNoteHtml(count) {
+  if (!count || !STORE.charity) return "";
+  return `<p class="give-note">${ICON.heart}<span>Thank you, <b>$${STORE.donationPerPlush * count}</b> from this order is going to ${STORE.charity}.</span></p>`;
+}
+
 function lineHtml(l) {
   const p = l.product;
   return `
@@ -228,7 +236,7 @@ function upsellHtml(lines) {
   if (!picks.length) return "";
   return `
   <div class="upsell">
-    <h3>Add a friend to the collective</h3>
+    <h3>Add another pal</h3>
     <div class="upsell-row">
       ${picks.map(p => `
       <div class="upsell-card">
@@ -279,6 +287,7 @@ function renderCart() {
     ${savings > 0 ? `<div class="sum-row save"><span>You save</span><span>${formatPrice(savings)}</span></div>` : ""}
     <div class="sum-row total"><span>Subtotal</span><span>${formatPrice(subtotal)} ${STORE.currency}</span></div>
     <p class="fine">Taxes included. Shipping calculated at checkout.</p>
+    ${giveNoteHtml(count)}
     <a href="checkout.html" class="btn block checkout-btn">${ICON.lock} Checkout</a>
     <p class="instal">or ${STORE.instalments} interest-free payments of <b>${formatPrice(subtotal / STORE.instalments)}</b></p>
     <div class="pay-icons" aria-label="Accepted payments"><span>Visa</span><span>Mastercard</span><span>Amex</span><span>PayPal</span><span>Afterpay</span></div>
@@ -313,7 +322,7 @@ function renderPopup() {
       <div class="popup-media"><img src="images/popup.webp" alt="A woman relaxing in bed hugging Biscuit the Puppy, with Juno, Sully and Kip beside her" loading="lazy"></div>
       <div class="popup-body">
         <div class="popup-form-view">
-          <div class="eyebrow">Join the collective</div>
+          <div class="eyebrow">Join the club</div>
           <h2 id="popup-title"><span class="popup-big">${STORE.welcomeDiscount}% off</span> your first pal</h2>
           <p>Sign up for early access to new pals and member offers, and we'll send ${STORE.welcomeDiscount}% off your first order.</p>
           <form class="popup-form" id="popup-form">

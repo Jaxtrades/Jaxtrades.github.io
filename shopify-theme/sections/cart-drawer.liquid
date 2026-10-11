@@ -55,6 +55,7 @@
       {%- endif -%}
       <div class="sum-row total"><span>Subtotal</span><span>{{ cart.total_price | money_with_currency }}</span></div>
       <p class="fine">Taxes included. Shipping calculated at checkout.</p>
+      {%- render 'give-note' -%}
       <form action="{{ routes.cart_url }}" method="post">
         <button type="submit" name="checkout" class="btn block checkout-btn">{% render 'icon', name: 'lock' %} Checkout</button>
       </form>

@@ -27,6 +27,7 @@
           <span>Total</span><span>{{ cart.total_price | money_with_currency }}</span>
         </div>
         <p class="fine">Taxes included. Shipping calculated at checkout.</p>
+        {%- render 'give-note' -%}
         <button type="submit" name="checkout" class="btn block checkout-btn">{% render 'icon', name: 'lock' %} Checkout</button>
         <p class="instal">or 4 interest-free payments of <b>{{ cart.total_price | divided_by: 4 | money }}</b></p>
         <a href="{{ routes.all_products_collection_url }}" class="view-cart">Continue shopping</a>

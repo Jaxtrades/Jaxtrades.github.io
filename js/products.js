@@ -1,4 +1,4 @@
-/* Cozy Collectives store settings + product catalog.
+/* Cozy Cubs store settings + product catalog.
 
    STORE holds the numbers the cart drawer and checkout use.
    PRODUCTS holds the pals. To add the AliExpress photos, save them into
@@ -6,12 +6,14 @@
    array (first image = the main/card photo). A product with no images shows
    a soft placeholder tile instead. Fields left as "" are hidden on the site. */
 const STORE = {
-  name: "Cozy Collectives",
+  name: "Cozy Cubs",
   currency: "AUD",
   freeShippingThreshold: 100, // cart drawer progress bar unlocks free shipping at this subtotal
   flatShipping: 9.95,         // shipping charged below the threshold
   instalments: 4,             // "or 4 interest-free payments of $X"
-  email: "hello@cozycollectives.com.au",
+  email: "hello@cozycubs.com.au",
+  charity: "headspace",          // who the give-back donation goes to
+  donationPerPlush: 10,          // dollars donated per plush sold
   welcomeCode: "WELCOME15",     // code shown after signing up in the welcome pop-up
   welcomeDiscount: 15,          // percent, for the pop-up copy
   welcomeDelay: 4,              // seconds before the pop-up appears on a first visit

@@ -3,8 +3,10 @@
     "story": {
       "type": "story",
       "settings": {
-        "button_label": "",
-        "text": "<p>[YOUR BRAND STORY: why you started Cozy Collectives, who it is for, and what you want every pal to feel like.]</p><p>[OPTIONAL: GIVING-BACK OR COMMUNITY COMMITMENT]</p>"
+        "button_label": "Find your pal",
+        "text": "<p>[YOUR BRAND STORY: why you started Cozy Cubs, who it is for, and what you want every pal to feel like.]</p><h3>Giving back</h3><p>Looking after your mind shouldn't depend on what you can afford. That's why $10 from every plush sold goes to headspace, supporting young people living with anxiety and other mental health challenges. When you bring a Cozy Cubs friend home, you're helping someone else feel a little less alone.</p>",
+        "button_link": "shopify://collections/all",
+        "anchor": "giving"
       }
     },
     "faq": {

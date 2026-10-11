@@ -1,6 +1,6 @@
-# Cozy Collectives
+# Cozy Cubs
 
-A static storefront for **Cozy Collectives** weighted plushies, built for GitHub Pages (no build step).
+A static storefront for **Cozy Cubs** weighted plushies, built for GitHub Pages (no build step).
 The look follows the Cozy Collective mockup canvas: Fraunces + DM Sans, cream ground, sage accent.
 
 ## Pages

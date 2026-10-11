@@ -83,6 +83,9 @@
       {%- endform -%}
 
       <ul class="perks">
+        {%- if settings.charity_name != blank -%}
+          <li class="give-perk">{% render 'icon', name: 'heart' %} {{ settings.donation_amount | times: 100 | money_without_trailing_zeros }} of your purchase is donated to {{ settings.charity_name | escape }}</li>
+        {%- endif -%}
         <li>{% render 'icon', name: 'truck' %} Free shipping on orders over {{ settings.free_shipping_threshold | times: 100 | money_without_trailing_zeros }}</li>
         <li>{% render 'icon', name: 'lock' %} Secure checkout</li>
       </ul>

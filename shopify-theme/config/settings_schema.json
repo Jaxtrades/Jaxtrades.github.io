@@ -1,9 +1,9 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Cozy Collectives",
+    "theme_name": "Cozy Cubs",
     "theme_version": "1.0.0",
-    "theme_author": "Cozy Collectives",
+    "theme_author": "Cozy Cubs",
     "theme_documentation_url": "https://github.com/Jaxtrades/Jaxtrades.github.io",
     "theme_support_url": "https://github.com/Jaxtrades/Jaxtrades.github.io"
   },
@@ -39,6 +39,24 @@
         "label": "Free shipping threshold (dollars)",
         "default": 100,
         "info": "Drives the progress bar in the cart. Set the matching free-shipping rate in Settings › Shipping."
+      }
+    ]
+  },
+  {
+    "name": "Giving back",
+    "settings": [
+      {
+        "type": "text",
+        "id": "charity_name",
+        "label": "Charity",
+        "default": "headspace",
+        "info": "Shown in the cart, product pages and footer. Leave empty to hide the give-back lines."
+      },
+      {
+        "type": "number",
+        "id": "donation_amount",
+        "label": "Donation per plush (dollars)",
+        "default": 10
       }
     ]
   },
