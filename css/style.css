@@ -175,3 +175,11 @@ table.market .src-cell { font-size: .8rem; color: var(--ink-soft); }
   .result { background: #fff; color: #000; box-shadow: none; }
   .big-value, .range strong { color: #000; }
 }
+
+/* Email step */
+label.consent { margin-top: 16px; font-weight: 500; align-self: auto; padding-bottom: 0; }
+.privacy { font-size: .82rem; color: var(--ink-soft); margin: 10px 0 18px; max-width: 65ch; }
+.error { color: var(--down); font-weight: 700; margin: 0 0 12px; }
+.email-status { display: inline-block; margin: 12px 0 0; padding: 8px 14px; border-radius: 10px; background: rgba(255,255,255,.1); font-size: .92rem; }
+.email-status.ok { background: rgba(255, 210, 63, .18); color: var(--sun); }
+.email-status.fail { background: rgba(199, 55, 47, .25); color: #FFB4AE; }
