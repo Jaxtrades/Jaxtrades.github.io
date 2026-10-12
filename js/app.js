@@ -54,6 +54,7 @@ function initSuburbs() {
   select.addEventListener('change', updateSuburbInfo);
   form.elements.type.addEventListener('change', updateSuburbInfo);
   document.getElementById('data-updated').textContent = DATA_UPDATED;
+  renderSnapshot();
   renderMarketTable();
   updateSuburbInfo();
 }
@@ -71,11 +72,21 @@ function updateSuburbInfo() {
   document.getElementById('land-field').hidden = type === 'unit';
 }
 
+function renderSnapshot() {
+  const local = SUBURBS.filter(s => s.postcode === '4209');
+  document.getElementById('snap-list').innerHTML = local.map(s => `
+    <li>
+      <span class="sub">${s.name}</span><span class="house">${money(s.house)}</span>
+      <span class="lbl">Median house</span><span class="unit">${s.unit ? 'Unit ' + money(s.unit) : 'Unit: limited data'}</span>
+    </li>`).join('');
+  document.getElementById('snap-foot').textContent = `Mostly Cotality data, mid-2026. Updated ${DATA_UPDATED}.`;
+}
+
 function renderMarketTable() {
   const rows = [...SUBURBS].sort((a, b) => a.house - b.house).map(s => `
     <tr>
-      <td><strong>${s.name}</strong> <span class="muted">${s.postcode}</span></td>
-      <td>${money(s.house)}</td>
+      <td><strong>${s.name}</strong> ${s.postcode === '4209' ? '<span class="tag">4209</span>' : `<span class="muted">${s.postcode}</span>`}</td>
+      <td class="num">${money(s.house)}</td>
       <td>${s.unit ? money(s.unit) : '<span class="muted">—</span>'}</td>
       <td class="src-cell">${s.source}, ${s.asOf}</td>
       <td><a class="ext" href="${soldSearchUrl(s)}" target="_blank" rel="noopener">Sold ↗</a></td>

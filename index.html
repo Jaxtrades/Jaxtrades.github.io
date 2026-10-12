@@ -12,7 +12,7 @@
 
 <header class="site-header">
   <div class="wrap nav">
-    <a href="index.html" class="brand">🏠 HomeValue</a>
+    <a href="index.html" class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M6 10v10h12V10"/></svg></span>HomeValue <span class="pc">4209</span></a>
     <nav>
       <a href="#estimate">Estimate</a>
       <a href="#market">Local prices</a>
@@ -24,10 +24,21 @@
 
 <main class="wrap">
   <section class="hero">
-    <p class="eyebrow">Postcode 4209 &amp; the northern Gold Coast</p>
-    <h1>What's your property worth?</h1>
-    <p>Get a free estimate for homes in Coomera, Upper Coomera, Pimpama, Willow Vale and nearby suburbs, based on local median prices and recent sales.</p>
-    <button type="button" class="btn ghost" id="load-sample">Try an example</button>
+    <div>
+      <p class="eyebrow">Coomera · Upper Coomera · Pimpama · Willow Vale</p>
+      <h1>What's your home <mark>really</mark> worth?</h1>
+      <p class="lede">A free, instant estimate for homes in postcode 4209 and the surrounding northern Gold Coast, built on local median prices and real recent sales.</p>
+      <div class="hero-actions">
+        <a href="#estimate" class="btn big">Get my estimate</a>
+        <button type="button" class="btn ghost big" id="load-sample">See an example</button>
+      </div>
+      <div class="trust"><span>Free, no sign-up</span><span>9 local suburbs</span><span>Takes about 2 minutes</span></div>
+    </div>
+    <aside class="snapshot" aria-label="Postcode 4209 median prices">
+      <div class="snapshot-head"><h2>4209 right now</h2><span class="muted">12-month medians</span></div>
+      <ul class="snap-list" id="snap-list"></ul>
+      <p class="foot" id="snap-foot"></p>
+    </aside>
   </section>
 
   <form id="appraisal-form" novalidate>
@@ -94,7 +105,7 @@
       <div class="step-head"><span class="step-num">3</span><h2>Get the estimate</h2></div>
       <p id="form-error" class="error" role="alert" hidden></p>
       <div class="actions">
-        <button type="submit" class="btn">Calculate value</button>
+        <button type="submit" class="btn big">Calculate my value</button>
         <button type="button" class="btn ghost" id="reset">Start over</button>
       </div>
     </section>
@@ -113,9 +124,11 @@
     <p class="muted" id="r-address"></p>
     <p class="note" id="r-note" hidden></p>
 
-    <h3 id="r-grid-title">How the estimate was worked out</h3>
-    <p class="hint" id="r-grid-hint"></p>
-    <div class="table-scroll"><table id="r-grid"></table></div>
+    <div class="result-detail">
+      <h3 id="r-grid-title">How the estimate was worked out</h3>
+      <p class="hint" id="r-grid-hint"></p>
+      <div class="table-scroll"><table id="r-grid"></table></div>
+    </div>
 
     <div class="actions no-print">
       <button type="button" class="btn" id="save">Save appraisal</button>
