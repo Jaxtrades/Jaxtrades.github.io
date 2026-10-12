@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-AU">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HomeValue — Simple Property Appraisal</title>
-<meta name="description" content="Estimate what a home is worth in a few minutes using recent comparable sales — the same approach appraisers use.">
+<title>HomeValue — Property Appraisals for Coomera, Pimpama &amp; the Northern Gold Coast</title>
+<meta name="description" content="Estimate what a home is worth in postcode 4209 (Coomera, Upper Coomera, Pimpama, Willow Vale) and surrounding northern Gold Coast suburbs, using local median prices and recent sales.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -15,6 +15,7 @@
     <a href="index.html" class="brand">🏠 HomeValue</a>
     <nav>
       <a href="#estimate">Estimate</a>
+      <a href="#market">Local prices</a>
       <a href="#saved">Saved</a>
       <a href="#how">How it works</a>
     </nav>
@@ -23,9 +24,10 @@
 
 <main class="wrap">
   <section class="hero">
-    <h1>What's this property worth?</h1>
-    <p>Fill in three quick steps and get an estimated market value — calculated from recent nearby sales, the same way appraisers do it.</p>
-    <button type="button" class="btn ghost" id="load-sample">Try it with sample data</button>
+    <p class="eyebrow">Postcode 4209 &amp; the northern Gold Coast</p>
+    <h1>What's your property worth?</h1>
+    <p>Get a free estimate for homes in Coomera, Upper Coomera, Pimpama, Willow Vale and nearby suburbs, based on local median prices and recent sales.</p>
+    <button type="button" class="btn ghost" id="load-sample">Try an example</button>
   </section>
 
   <form id="appraisal-form" novalidate>
@@ -35,30 +37,32 @@
 
       <div class="grid">
         <label class="span-2"><span>Address <span class="opt">(for your report)</span></span>
-          <input type="text" name="address" placeholder="123 Main St, Springfield">
+          <input type="text" name="address" placeholder="12 Example St">
+        </label>
+        <label>Suburb
+          <select name="suburb" id="suburb-select"></select>
         </label>
         <label>Property type
           <select name="type">
-            <option>Single-family home</option>
-            <option>Townhouse</option>
-            <option>Condo</option>
-            <option>Multi-family</option>
+            <option value="house">House</option>
+            <option value="townhouse">Townhouse</option>
+            <option value="unit">Unit / apartment</option>
           </select>
         </label>
-        <label>Living area (sq ft) *
-          <input type="number" name="sqft" min="100" step="1" placeholder="1,800" required>
-        </label>
         <label>Bedrooms
-          <input type="number" name="beds" min="0" step="1" value="3">
+          <input type="number" name="beds" min="0" step="1" value="4">
         </label>
         <label>Bathrooms
-          <input type="number" name="baths" min="0" step="0.5" value="2">
+          <input type="number" name="baths" min="0" step="1" value="2">
+        </label>
+        <label>Car spaces
+          <input type="number" name="cars" min="0" max="6" step="1" value="2">
+        </label>
+        <label id="land-field">Land size (m²)
+          <input type="number" name="land" min="0" step="1" placeholder="450">
         </label>
         <label>Year built
-          <input type="number" name="year" min="1800" max="2100" step="1" placeholder="1995">
-        </label>
-        <label>Garage spaces
-          <input type="number" name="garage" min="0" max="6" step="1" value="1">
+          <input type="number" name="year" min="1900" max="2100" step="1" placeholder="2015">
         </label>
         <label>Condition
           <select name="condition">
@@ -71,22 +75,18 @@
         </label>
         <label class="check"><input type="checkbox" name="pool"> Has a pool</label>
       </div>
+
+      <div class="suburb-box" id="suburb-box"></div>
     </section>
 
     <!-- STEP 2 -->
     <section class="card">
-      <div class="step-head"><span class="step-num">2</span><h2>Recent nearby sales</h2></div>
-      <p class="hint">Add 3–5 similar homes that sold nearby in the last 6–12 months. You can find these on Zillow, Redfin, Realtor.com, or your county records. Fields left blank are treated as matching your property.</p>
+      <div class="step-head"><span class="step-num">2</span><h2>Recent sales nearby <span class="opt">(optional, but more accurate)</span></h2></div>
+      <p class="hint">Add 3–5 similar homes that sold in the last 6–12 months. Any field left blank is treated as the same as your property. Skip this step and we'll estimate from the suburb median instead.</p>
+      <p class="hint"><a id="sold-link" class="ext" target="_blank" rel="noopener">Find recent sales on realestate.com.au ↗</a></p>
 
       <div id="comps"></div>
-      <button type="button" class="btn ghost small" id="add-comp">+ Add another sale</button>
-
-      <div class="or-box">
-        <strong>No sales handy?</strong> Enter the average price per sq ft in the neighborhood for a quick ballpark instead.
-        <label class="inline">Average $/sq ft
-          <input type="number" name="ppsf" min="1" step="1" placeholder="e.g. 210">
-        </label>
-      </div>
+      <button type="button" class="btn ghost small" id="add-comp">+ Add a sale</button>
     </section>
 
     <!-- STEP 3 -->
@@ -106,23 +106,29 @@
     <p class="big-value" id="r-value">—</p>
     <p class="range">Likely range: <strong id="r-range">—</strong></p>
     <div class="pills">
-      <span class="pill" id="r-ppsf"></span>
+      <span class="pill" id="r-median"></span>
       <span class="pill" id="r-confidence"></span>
       <span class="pill" id="r-method"></span>
     </div>
     <p class="muted" id="r-address"></p>
+    <p class="note" id="r-note" hidden></p>
 
-    <div id="r-grid-wrap">
-      <h3>How each sale was adjusted</h3>
-      <p class="hint">Each sale is adjusted up or down to account for differences from your property. Sales needing fewer adjustments count more toward the final value.</p>
-      <div class="table-scroll"><table id="r-grid"></table></div>
-    </div>
+    <h3 id="r-grid-title">How the estimate was worked out</h3>
+    <p class="hint" id="r-grid-hint"></p>
+    <div class="table-scroll"><table id="r-grid"></table></div>
 
     <div class="actions no-print">
       <button type="button" class="btn" id="save">Save appraisal</button>
       <button type="button" class="btn ghost" onclick="window.print()">Print / save as PDF</button>
     </div>
-    <p class="disclaimer">This is an automated estimate for informational purposes only. It is not a licensed appraisal and should not be used for lending decisions.</p>
+    <p class="disclaimer">This is an automated estimate for information only. It is not a formal valuation by a registered valuer and should not be used for lending, legal or tax purposes.</p>
+  </section>
+
+  <!-- MARKET -->
+  <section class="card no-print" id="market">
+    <h2>Local median prices</h2>
+    <p class="hint">12-month median sale prices for postcode 4209 and surrounding suburbs. Figures as at mid-2026, from published suburb profiles (source listed per suburb).</p>
+    <div class="table-scroll"><table id="market-table" class="market"></table></div>
   </section>
 
   <!-- SAVED -->
@@ -136,15 +142,15 @@
   <section class="card no-print" id="how">
     <h2>How it works</h2>
     <ol class="how">
-      <li><strong>Start with real sales.</strong> Homes that recently sold nearby are the best evidence of what buyers will pay.</li>
-      <li><strong>Adjust for differences.</strong> If a sale had one more bathroom than your home, its price is adjusted down; if it was older or in worse shape, it's adjusted up. Size, bedrooms, bathrooms, age, condition, garage, and pool are all considered.</li>
-      <li><strong>Weight the closest matches.</strong> The final value is a weighted average — sales that needed the smallest adjustments are trusted the most.</li>
+      <li><strong>Start from the local market.</strong> Each suburb's median sale price describes a typical home there (for houses around here, that's roughly 4 bed, 2 bath, 2 car on about 450 m²).</li>
+      <li><strong>Use real sales if you have them.</strong> Recently sold homes nearby are the best evidence of what buyers will pay. Look them up on realestate.com.au and enter them in step 2.</li>
+      <li><strong>Adjust for differences.</strong> Each sale (or the suburb median) is adjusted up or down for bedrooms, bathrooms, car spaces, land size, age, condition and pool, and sales needing the smallest adjustments count most.</li>
     </ol>
   </section>
 </main>
 
 <footer class="site-footer no-print">
-  <div class="wrap">HomeValue · Estimates only — not a licensed appraisal.</div>
+  <div class="wrap">HomeValue · Northern Gold Coast · Estimates only, not a formal valuation. Median data updated <span id="data-updated"></span>.</div>
 </footer>
 
 <template id="comp-template">
@@ -154,12 +160,12 @@
       <button type="button" class="link remove-comp">Remove</button>
     </div>
     <div class="grid">
-      <label>Sale price *<input type="number" data-f="price" min="1" step="1000" placeholder="350,000"></label>
-      <label>Sq ft *<input type="number" data-f="sqft" min="100" step="1" placeholder="1,750"></label>
-      <label>Beds<input type="number" data-f="beds" min="0" step="1"></label>
-      <label>Baths<input type="number" data-f="baths" min="0" step="0.5"></label>
-      <label>Year built<input type="number" data-f="year" min="1800" max="2100" step="1"></label>
-      <label>Garage<input type="number" data-f="garage" min="0" max="6" step="1"></label>
+      <label>Sold price ($) *<input type="number" data-f="price" min="1" step="1000" placeholder="1,050,000"></label>
+      <label>Bedrooms<input type="number" data-f="beds" min="0" step="1"></label>
+      <label>Bathrooms<input type="number" data-f="baths" min="0" step="1"></label>
+      <label>Car spaces<input type="number" data-f="cars" min="0" max="6" step="1"></label>
+      <label>Land (m²)<input type="number" data-f="land" min="0" step="1"></label>
+      <label>Year built<input type="number" data-f="year" min="1900" max="2100" step="1"></label>
       <label>Condition
         <select data-f="condition">
           <option value="">Same as mine</option>
@@ -181,6 +187,7 @@
   </div>
 </template>
 
+<script src="js/suburbs.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

@@ -29,6 +29,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.5; }
 .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
 
@@ -130,3 +131,12 @@ tr.total td { font-weight: 700; border-top: 2px solid var(--line); }
   body { background: #fff; color: #000; }
   .result { border: none; }
 }
+
+/* Suburb / local market */
+.step-head h2 .opt { font-size: .85rem; font-weight: 400; color: var(--ink-soft); }
+.suburb-box { margin-top: 18px; padding: 14px 16px; background: var(--brand-light); border-radius: 12px; font-size: .95rem; }
+.suburb-box .src { display: block; font-size: .8rem; color: var(--ink-soft); margin-top: 4px; }
+.ext { color: var(--brand); font-weight: 600; }
+.note { background: var(--brand-light); border-radius: 10px; padding: 10px 14px; font-size: .9rem; text-align: left; }
+table.market td, table.market th { text-align: left; }
+table.market .src-cell { font-size: .8rem; color: var(--ink-soft); }
