@@ -1,240 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-AU">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cozzy — Cordless Heat Therapy for Period Cramps</title>
-<meta name="description" content="Cozzy is a plush, cordless electric heating pillow built for period cramps and cozy days. Three heat settings, machine-washable cover, made for women.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🫶</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<title>HomeValue — Property Appraisals for Coomera, Pimpama &amp; the Northern Gold Coast</title>
+<meta name="description" content="Estimate what a home is worth in postcode 4209 (Coomera, Upper Coomera, Pimpama, Willow Vale) and surrounding northern Gold Coast suburbs, using local median prices and recent sales.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<div class="announce">✨ <strong>Free shipping</strong> on orders $40+ &nbsp;·&nbsp; 30-day Happy Period Guarantee &nbsp;·&nbsp; Rated 4.9/5 by 2,000+ women</div>
-
 <header class="site-header">
   <div class="wrap nav">
-    <a href="index.html" class="brand">Cozzy<span class="dot">.</span></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="about.html">Our Story</a></li>
-      <li><a href="about.html#faq">FAQ</a></li>
-      <li><a href="cart.html" class="cart-link">Cart <span id="cart-count">0</span></a></li>
-    </ul>
+    <a href="index.html" class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M6 10v10h12V10"/></svg></span>HomeValue <span class="pc">4209</span></a>
+    <nav>
+      <a href="#estimate">Estimate</a>
+      <a href="#market">Local prices</a>
+      <a href="#saved">Saved</a>
+      <a href="#how">How it works</a>
+    </nav>
   </div>
 </header>
 
-<main>
-  <div class="wrap">
-    <section class="hero">
-      <div class="hero-copy">
-        <span class="eyebrow">💗 Made for period cramps &amp; cozy days</span>
-        <h1>Warmth that has your back. <em>Literally.</em></h1>
-        <p class="lede">Cozzy is the plush, cordless heating pillow that melts cramps, tension, and bad days — three heat settings, huggable softness, and zero cords tying you to the couch.</p>
-        <div class="hero-actions">
-          <a href="product.html?id=cozzy-pillow" class="btn">Shop the Cozzy Pillow →</a>
-          <a href="about.html" class="btn secondary">Why heat works</a>
-        </div>
-        <div class="stat-row">
-          <div class="stat"><b>4.9★</b><span>2,148 reviews</span></div>
-          <div class="stat"><b>90 min</b><span>auto shut-off</span></div>
-          <div class="stat"><b>2+ hrs</b><span>cordless heat</span></div>
-        </div>
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Coomera · Upper Coomera · Pimpama · Willow Vale</p>
+      <h1>What's your home <mark>really</mark> worth?</h1>
+      <p class="lede">A free, instant estimate for homes in postcode 4209 and the surrounding northern Gold Coast, built on the latest local median prices.</p>
+      <div class="hero-actions">
+        <a href="#estimate" class="btn big">Get my estimate</a>
+        <button type="button" class="btn ghost big" id="load-sample">See an example</button>
       </div>
-      <div class="hero-art bg-blush" style="border-radius:var(--radius-lg);"></div>
+      <div class="trust"><span>Free, no sign-up</span><span>9 local suburbs</span><span>Takes under a minute</span></div>
+    </div>
+    <aside class="snapshot" aria-label="Postcode 4209 median prices">
+      <div class="snapshot-head"><h2>4209 right now</h2><span class="muted">12-month medians</span></div>
+      <ul class="snap-list" id="snap-list"></ul>
+      <p class="foot" id="snap-foot"></p>
+    </aside>
+  </section>
+
+  <form id="appraisal-form" novalidate>
+    <!-- STEP 1 -->
+    <section class="card" id="estimate">
+      <div class="step-head"><span class="step-num">1</span><h2>The property</h2></div>
+
+      <div class="grid">
+        <label class="span-2"><span>Address <span class="opt">(for your report)</span></span>
+          <input type="text" name="address" placeholder="12 Example St">
+        </label>
+        <label>Suburb
+          <select name="suburb" id="suburb-select"></select>
+        </label>
+        <label>Property type
+          <select name="type">
+            <option value="house">House</option>
+            <option value="townhouse">Townhouse</option>
+            <option value="unit">Unit / apartment</option>
+          </select>
+        </label>
+        <label>Bedrooms
+          <input type="number" name="beds" min="0" step="1" value="4">
+        </label>
+        <label>Bathrooms
+          <input type="number" name="baths" min="0" step="1" value="2">
+        </label>
+        <label>Car spaces
+          <input type="number" name="cars" min="0" max="6" step="1" value="2">
+        </label>
+        <label id="land-field">Land size (m²)
+          <input type="number" name="land" min="0" step="1" placeholder="450">
+        </label>
+        <label>Year built
+          <input type="number" name="year" min="1900" max="2100" step="1" placeholder="2015">
+        </label>
+        <label>Condition
+          <select name="condition">
+            <option value="1">Poor — needs major work</option>
+            <option value="2">Fair — dated, some repairs</option>
+            <option value="3" selected>Average — well kept</option>
+            <option value="4">Good — updated</option>
+            <option value="5">Excellent — like new</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" name="pool"> Has a pool</label>
+      </div>
+
+      <div class="suburb-box" id="suburb-box"></div>
     </section>
 
-    <div class="trust-strip">
-      <span class="trust-pill"><span class="dot">●</span> Cordless &amp; rechargeable</span>
-      <span class="trust-pill"><span class="dot">●</span> Machine-washable cover</span>
-      <span class="trust-pill"><span class="dot">●</span> Auto shut-off</span>
-      <span class="trust-pill"><span class="dot">●</span> Designed by women, for women</span>
-    </div>
-  </div>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="pill-tag">Why Cozzy</span>
-        <h2>Not your grandma's hot water bottle.</h2>
-        <p>We redesigned heat therapy to actually fit your life — no leaks, no burns, no being stuck plugged into a wall.</p>
+    <!-- STEP 2 -->
+    <section class="card">
+      <div class="step-head"><span class="step-num">2</span><h2>Get the estimate</h2></div>
+      <div class="actions">
+        <button type="submit" class="btn big">Calculate my value</button>
+        <button type="button" class="btn ghost" id="reset">Start over</button>
       </div>
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="icon-badge bg-coral">🔥</div>
-          <h3>3 heat settings</h3>
-          <p>Low, medium, and "get in my bones" high — dial in exactly the warmth you need.</p>
-        </div>
-        <div class="feature-card">
-          <div class="icon-badge bg-sage">🔋</div>
-          <h3>Cordless freedom</h3>
-          <p>USB-C rechargeable with 2+ hours of heat per charge. Curl up anywhere, no outlet required.</p>
-        </div>
-        <div class="feature-card">
-          <div class="icon-badge bg-blush">🧸</div>
-          <h3>Huggably soft</h3>
-          <p>A plush, removable cover that's genuinely cozy — and tosses right in the wash.</p>
-        </div>
-        <div class="feature-card">
-          <div class="icon-badge bg-coral">😴</div>
-          <h3>Sleep-safe</h3>
-          <p>Auto shuts off after 90 minutes, so you can drift off without a second thought.</p>
-        </div>
-      </div>
+    </section>
+  </form>
+
+  <!-- RESULT -->
+  <section class="card result" id="result" hidden>
+    <p class="eyebrow">Estimated market value</p>
+    <p class="big-value" id="r-value">—</p>
+    <p class="range">Likely range: <strong id="r-range">—</strong></p>
+    <div class="pills">
+      <span class="pill" id="r-median"></span>
+      <span class="pill" id="r-source"></span>
+      <span class="pill" id="r-method"></span>
     </div>
+    <p class="muted" id="r-address"></p>
+
+    <div class="result-detail">
+      <h3 id="r-grid-title">How the estimate was worked out</h3>
+      <p class="hint" id="r-grid-hint"></p>
+      <div class="table-scroll"><table id="r-grid"></table></div>
+    </div>
+
+    <div class="actions no-print">
+      <button type="button" class="btn" id="save">Save appraisal</button>
+      <button type="button" class="btn ghost" onclick="window.print()">Print / save as PDF</button>
+    </div>
+    <p class="disclaimer">This is an automated estimate for information only. It is not a formal valuation by a registered valuer and should not be used for lending, legal or tax purposes.</p>
   </section>
 
-  <section class="section" style="padding-top:0;">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="pill-tag">Shop</span>
-        <h2>Meet the lineup</h2>
-        <p>One hero product, four colorways, and a couple of little extras to go with it.</p>
-      </div>
-      <div class="grid" id="product-grid"></div>
-    </div>
+  <!-- MARKET -->
+  <section class="card no-print" id="market">
+    <h2>Local median prices</h2>
+    <p class="hint">12-month median sale prices for postcode 4209 and surrounding suburbs. Figures as at mid-2026, from published suburb profiles (source listed per suburb).</p>
+    <div class="table-scroll"><table id="market-table" class="market"></table></div>
   </section>
 
-  <section class="section">
-    <div class="wrap band">
-      <div class="section-head">
-        <h2>How Cozzy works</h2>
-        <p>From unboxing to cramp-free in three easy steps.</p>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <h3>Charge it up</h3>
-          <p>Plug in the USB-C cable for a full charge — about 2 hours the first time.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <h3>Pick your heat</h3>
-          <p>Tap the button to choose low, medium, or high — the LED ring shows you which.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <h3>Cozzy up</h3>
-          <p>Hug it to your belly or back, breathe out, and let the warmth do its thing.</p>
-        </div>
-      </div>
-    </div>
+  <!-- SAVED -->
+  <section class="card no-print" id="saved">
+    <h2>Saved appraisals</h2>
+    <ul id="saved-list" class="saved-list"></ul>
+    <p class="muted" id="saved-empty">Nothing saved yet. Saved estimates stay in this browser only.</p>
   </section>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="pill-tag">Reviews</span>
-        <h2>2,000+ women swear by their Cozzy</h2>
-      </div>
-      <div class="testi-grid">
-        <div class="testi-card">
-          <div class="stars">★★★★★</div>
-          <p class="quote">"I keep this in my desk drawer at work now. Game changer for the first two days of my cycle."</p>
-          <div class="who">
-            <div class="avatar bg-coral" style="background:var(--coral);">M</div>
-            <div><b>Maya R.</b><span>Verified buyer</span></div>
-          </div>
-        </div>
-        <div class="testi-card">
-          <div class="stars">★★★★★</div>
-          <p class="quote">"So much better than my old microwavable bag — it actually stays warm and doesn't smell like flax seeds."</p>
-          <div class="who">
-            <div class="avatar" style="background:var(--sage);">P</div>
-            <div><b>Priya D.</b><span>Verified buyer</span></div>
-          </div>
-        </div>
-        <div class="testi-card">
-          <div class="stars">★★★★★</div>
-          <p class="quote">"Bought the Duo for me and my sister. We fight over whose turn it is to use the terracotta one."</p>
-          <div class="who">
-            <div class="avatar" style="background:var(--blush);">J</div>
-            <div><b>Jordan K.</b><span>Verified buyer</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <div class="newsletter">
-        <span class="pill-tag">Stay cozy</span>
-        <h2 style="margin-bottom:6px;">Get 10% off your first Cozzy</h2>
-        <p style="margin:0;color:var(--ink-soft);">Plus period-care tips and first dibs on new colors. No spam, promise.</p>
-        <form onsubmit="event.preventDefault(); this.querySelector('button').textContent='Thanks! Check your inbox 💌';">
-          <input type="email" placeholder="you@example.com" required>
-          <button type="submit" class="btn">Get my code</button>
-        </form>
-      </div>
-    </div>
+  <!-- HOW -->
+  <section class="card no-print" id="how">
+    <h2>How it works</h2>
+    <ol class="how">
+      <li><strong>Pick your suburb.</strong> We start from its latest 12-month median sale price for your type of property.</li>
+      <li><strong>Describe your home.</strong> The median reflects a typical local home (for houses, roughly 4 bed, 2 bath, 2 car on about 450 m²).</li>
+      <li><strong>See the adjustments.</strong> Your estimate moves up or down for bedrooms, bathrooms, car spaces, land size, age, condition and pool, and every step is shown.</li>
+    </ol>
   </section>
 </main>
 
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      <div>
-        <div class="brand">Cozzy<span class="dot">.</span></div>
-        <p>Cordless heat therapy for period cramps and cozy days — designed by women, for women.</p>
-      </div>
-      <div>
-        <h4>Shop</h4>
-        <ul>
-          <li><a href="product.html?id=cozzy-pillow">Cozzy Pillow</a></li>
-          <li><a href="product.html?id=cozzy-duo">Duo Bundle</a></li>
-          <li><a href="shop.html">All products</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Company</h4>
-        <ul>
-          <li><a href="about.html">Our Story</a></li>
-          <li><a href="about.html#faq">FAQ</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Support</h4>
-        <ul>
-          <li><a href="about.html#faq">Shipping &amp; Returns</a></li>
-          <li><a href="cart.html">Your Cart</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 Cozzy. All rights reserved.</span>
-      <span>Made with warmth, wherever you are.</span>
-    </div>
-  </div>
+<footer class="site-footer no-print">
+  <div class="wrap">HomeValue · Northern Gold Coast · Estimates only, not a formal valuation. Median data updated <span id="data-updated"></span>.</div>
 </footer>
 
-<script src="js/products.js"></script>
-<script src="js/illustrations.js"></script>
-<script src="js/store.js"></script>
-<script>
-  document.querySelector(".hero-art").innerHTML = cozzyIllustration("#D97A52");
 
-  const grid = document.getElementById("product-grid");
-  grid.innerHTML = PRODUCTS.map(p => {
-    const bgClass = p.kind === "hero" ? "bg-blush" : p.kind === "bundle" ? "bg-coral" : "bg-sage";
-    const badge = p.kind === "hero" ? '<span class="badge">Bestseller</span>' : p.kind === "bundle" ? '<span class="badge">Save $19</span>' : "";
-    const swatches = p.variants.slice(0,4).map(v => `<span class="swatch" style="background:${v.hex}"></span>`).join("");
-    return `
-    <a href="product.html?id=${p.id}" class="card">
-      ${badge}
-      <div class="card-art ${bgClass}">${cozzyIllustration(p.variants[0].hex, {spark: p.kind === "hero"})}</div>
-      <h3>${p.name}</h3>
-      <div class="tagline">${p.tagline}</div>
-      <div class="stars">★★★★★ <span class="count">(${p.reviewCount})</span></div>
-      <div class="swatches">${swatches}</div>
-      <div class="price-row">
-        <span class="price">${formatPrice(p.price)}</span>
-        ${p.compareAt ? `<span class="compare-at">${formatPrice(p.compareAt)}</span>` : ""}
-      </div>
-    </a>`;
-  }).join("");
-</script>
+<script src="js/suburbs.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>

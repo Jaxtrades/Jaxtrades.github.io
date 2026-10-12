@@ -1,44 +1,27 @@
-# Cozzy
+# HomeValue — Northern Gold Coast
 
-A static, front-end-only storefront for **Cozzy** — a plush, cordless electric heating pillow built to ease
-period cramps (and just be a really good hot-water-bottle replacement). Built for GitHub Pages, no
-server/build step required.
+A simple, front-end-only property appraisal site for postcode **4209** (Coomera, Upper Coomera, Pimpama,
+Willow Vale) and surrounding suburbs (Ormeau 4208, Oxenford 4210, Pacific Pines 4211, Helensvale and
+Hope Island 4212). Built for GitHub Pages — no server or build step.
 
-## Pages
+## How it works
 
-- `index.html` — Home: hero, "why Cozzy" features, product grid, how-it-works, reviews, newsletter
-- `shop.html` — Full product grid (pillow, bundle, accessories)
-- `product.html?id=<slug>` — Product detail with a color selector + add to cart
-- `cart.html` — Cart (stored in `localStorage`)
-- `checkout.html` — Shipping form + simulated order placement
-- `about.html` — Brand story, "why heat helps," and FAQ
+1. **The property** — suburb, type (house / townhouse / unit), beds, baths, car spaces, land size (m²),
+   year built, condition, pool.
+2. **Estimate** — starts from the suburb's median for that property type (which describes a typical
+   property, see `TYPICAL`) and adjusts up or down for each difference, showing every adjustment.
 
-## Design
+## Data
 
-Warm, editorial DTC aesthetic aimed at women: cream background, a coral "pop" accent, soft blush/sage
-supporting colors, `Fraunces` for display type paired with `Poppins` for body/UI. There's no product
-photography — the brand mark is a reusable inline-SVG illustration of the pillow (`js/illustrations.js`,
-`cozzyIllustration(hex, opts)`) recolored per product variant, used everywhere a "photo" would normally go
-(hero, product cards, product detail, cart thumbnails).
+`js/suburbs.js` holds each suburb's 12-month median house and unit price with its source and date
+(mid-2026 figures from published suburb profiles, mostly Cotality). Prices are not pulled live, so update
+`SUBURBS` periodically as new medians are published. Where no unit median is available, it falls back to 75% of the house median.
 
-## Catalog
+## Files
 
-`js/products.js` holds the catalog: the core Cozzy Pillow, a Duo Bundle, and two small accessories (spare
-cover, travel pouch). Each product has a flat `price` (no per-size pricing) and a `variants` array of color
-options (`{ code, label, hex }`) used for swatches and the illustration recolor.
+- `index.html` — the page
+- `css/style.css` — styles (light/dark, mobile, print)
+- `js/suburbs.js` — suburb medians and typical-property profiles
+- `js/app.js` — valuation logic; adjustment rates live in `RATES` at the top
 
-Cart line items are keyed as `"<productId>::<variantCode>"` (see `js/store.js`) so the same product can
-appear as multiple cart lines at different colors.
-
-## Editing the catalog
-
-Add or edit products directly in `js/products.js`. Each product needs an `id`, `name`, `kind`
-(`hero` | `bundle` | `accessory`, used for card styling), `tagline`, `description`, `bullets`, a `price`
-(+ optional `compareAt`), and a `variants` array of `{ code, label, hex }`.
-
-## Checkout
-
-There is no backend, so `checkout.html` simulates order placement client-side (collects shipping info,
-generates an order number, clears the cart) rather than processing real payment. To take real payments,
-wire the form submit handler in `checkout.html` to a hosted payment processor (e.g. Stripe Checkout /
-Payment Links or Shopify) or a serverless function.
+Estimates are informational only — not a formal valuation by a registered valuer.
