@@ -23,8 +23,3 @@ const TYPICAL = {
   unit:      { beds: 2, baths: 2, cars: 1, land: 0,   year: 2015 },
 };
 
-// realestate.com.au sold-listings search for a suburb, so users can look up real comparable sales.
-function soldSearchUrl(s) {
-  const slug = s.name.toLowerCase().replace(/ /g, '+');
-  return `https://www.realestate.com.au/sold/in-${slug},+qld+${s.postcode}/list-1`;
-}

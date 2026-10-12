@@ -91,9 +91,6 @@ label.check input { width: 20px; height: 20px; accent-color: var(--blue); }
 .ext { color: var(--blue); font-weight: 700; text-decoration: none; }
 .ext:hover { text-decoration: underline; }
 
-.comp { border: 1.5px solid var(--line); border-radius: 14px; padding: 18px; margin-bottom: 14px; background: var(--mist); }
-.comp input, .comp select { background: var(--white); }
-.comp-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 
 .btn {
   font: inherit; font-weight: 700; cursor: pointer; border: 2px solid var(--blue); background: var(--blue);
@@ -107,7 +104,6 @@ label.check input { width: 20px; height: 20px; accent-color: var(--blue); }
 .btn.big { padding: 16px 30px; font-size: 1.05rem; }
 .link { background: none; border: none; color: var(--down); cursor: pointer; font: inherit; font-weight: 600; font-size: .9rem; padding: 0; }
 .actions { display: flex; gap: 12px; flex-wrap: wrap; }
-.error { color: var(--down); font-weight: 700; margin: 0 0 12px; }
 
 /* Result: the one dark panel on the page */
 .result { background: var(--ink); color: var(--white); border: none; text-align: center; padding: 40px 28px; box-shadow: 0 30px 70px -30px rgba(14, 26, 43, .55); }
@@ -120,8 +116,6 @@ label.check input { width: 20px; height: 20px; accent-color: var(--blue); }
 .pill:first-child { background: var(--sun); color: var(--ink); border-color: var(--sun); }
 .pill:empty { display: none; }
 .result .muted { color: #A9B6C8; }
-.result .note { background: rgba(255,255,255,.08); border-radius: 12px; padding: 12px 16px; font-size: .92rem; text-align: left; margin: 16px 0 0; }
-.result .note .ext, .result .ext { color: var(--sun); }
 .result-detail { background: var(--white); color: var(--ink); border-radius: 14px; padding: 20px; margin-top: 26px; text-align: left; }
 .result-detail h3 { margin: 0 0 6px; font-size: 1.2rem; }
 .result .actions { justify-content: center; margin-top: 24px; }
@@ -170,7 +164,6 @@ table.market .src-cell { font-size: .8rem; color: var(--ink-soft); }
   .card { padding: 20px; }
   .result { padding: 30px 18px; }
   .result-detail { padding: 14px; }
-  .comp .grid { grid-template-columns: 1fr 1fr; }
   .nav nav { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {

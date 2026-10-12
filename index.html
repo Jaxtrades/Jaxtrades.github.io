@@ -27,12 +27,12 @@
     <div>
       <p class="eyebrow">Coomera · Upper Coomera · Pimpama · Willow Vale</p>
       <h1>What's your home <mark>really</mark> worth?</h1>
-      <p class="lede">A free, instant estimate for homes in postcode 4209 and the surrounding northern Gold Coast, built on local median prices and real recent sales.</p>
+      <p class="lede">A free, instant estimate for homes in postcode 4209 and the surrounding northern Gold Coast, built on the latest local median prices.</p>
       <div class="hero-actions">
         <a href="#estimate" class="btn big">Get my estimate</a>
         <button type="button" class="btn ghost big" id="load-sample">See an example</button>
       </div>
-      <div class="trust"><span>Free, no sign-up</span><span>9 local suburbs</span><span>Takes about 2 minutes</span></div>
+      <div class="trust"><span>Free, no sign-up</span><span>9 local suburbs</span><span>Takes under a minute</span></div>
     </div>
     <aside class="snapshot" aria-label="Postcode 4209 median prices">
       <div class="snapshot-head"><h2>4209 right now</h2><span class="muted">12-month medians</span></div>
@@ -90,20 +90,10 @@
       <div class="suburb-box" id="suburb-box"></div>
     </section>
 
+
     <!-- STEP 2 -->
     <section class="card">
-      <div class="step-head"><span class="step-num">2</span><h2>Recent sales nearby <span class="opt">(optional, but more accurate)</span></h2></div>
-      <p class="hint">Add 3–5 similar homes that sold in the last 6–12 months. Any field left blank is treated as the same as your property. Skip this step and we'll estimate from the suburb median instead.</p>
-      <p class="hint"><a id="sold-link" class="ext" target="_blank" rel="noopener">Find recent sales on realestate.com.au ↗</a></p>
-
-      <div id="comps"></div>
-      <button type="button" class="btn ghost small" id="add-comp">+ Add a sale</button>
-    </section>
-
-    <!-- STEP 3 -->
-    <section class="card">
-      <div class="step-head"><span class="step-num">3</span><h2>Get the estimate</h2></div>
-      <p id="form-error" class="error" role="alert" hidden></p>
+      <div class="step-head"><span class="step-num">2</span><h2>Get the estimate</h2></div>
       <div class="actions">
         <button type="submit" class="btn big">Calculate my value</button>
         <button type="button" class="btn ghost" id="reset">Start over</button>
@@ -118,11 +108,10 @@
     <p class="range">Likely range: <strong id="r-range">—</strong></p>
     <div class="pills">
       <span class="pill" id="r-median"></span>
-      <span class="pill" id="r-confidence"></span>
+      <span class="pill" id="r-source"></span>
       <span class="pill" id="r-method"></span>
     </div>
     <p class="muted" id="r-address"></p>
-    <p class="note" id="r-note" hidden></p>
 
     <div class="result-detail">
       <h3 id="r-grid-title">How the estimate was worked out</h3>
@@ -155,9 +144,9 @@
   <section class="card no-print" id="how">
     <h2>How it works</h2>
     <ol class="how">
-      <li><strong>Start from the local market.</strong> Each suburb's median sale price describes a typical home there (for houses around here, that's roughly 4 bed, 2 bath, 2 car on about 450 m²).</li>
-      <li><strong>Use real sales if you have them.</strong> Recently sold homes nearby are the best evidence of what buyers will pay. Look them up on realestate.com.au and enter them in step 2.</li>
-      <li><strong>Adjust for differences.</strong> Each sale (or the suburb median) is adjusted up or down for bedrooms, bathrooms, car spaces, land size, age, condition and pool, and sales needing the smallest adjustments count most.</li>
+      <li><strong>Pick your suburb.</strong> We start from its latest 12-month median sale price for your type of property.</li>
+      <li><strong>Describe your home.</strong> The median reflects a typical local home (for houses, roughly 4 bed, 2 bath, 2 car on about 450 m²).</li>
+      <li><strong>See the adjustments.</strong> Your estimate moves up or down for bedrooms, bathrooms, car spaces, land size, age, condition and pool, and every step is shown.</li>
     </ol>
   </section>
 </main>
@@ -166,39 +155,6 @@
   <div class="wrap">HomeValue · Northern Gold Coast · Estimates only, not a formal valuation. Median data updated <span id="data-updated"></span>.</div>
 </footer>
 
-<template id="comp-template">
-  <div class="comp">
-    <div class="comp-head">
-      <strong class="comp-title">Sale</strong>
-      <button type="button" class="link remove-comp">Remove</button>
-    </div>
-    <div class="grid">
-      <label>Sold price ($) *<input type="number" data-f="price" min="1" step="1000" placeholder="1,050,000"></label>
-      <label>Bedrooms<input type="number" data-f="beds" min="0" step="1"></label>
-      <label>Bathrooms<input type="number" data-f="baths" min="0" step="1"></label>
-      <label>Car spaces<input type="number" data-f="cars" min="0" max="6" step="1"></label>
-      <label>Land (m²)<input type="number" data-f="land" min="0" step="1"></label>
-      <label>Year built<input type="number" data-f="year" min="1900" max="2100" step="1"></label>
-      <label>Condition
-        <select data-f="condition">
-          <option value="">Same as mine</option>
-          <option value="1">Poor</option>
-          <option value="2">Fair</option>
-          <option value="3">Average</option>
-          <option value="4">Good</option>
-          <option value="5">Excellent</option>
-        </select>
-      </label>
-      <label>Pool
-        <select data-f="pool">
-          <option value="">Same as mine</option>
-          <option value="1">Yes</option>
-          <option value="0">No</option>
-        </select>
-      </label>
-    </div>
-  </div>
-</template>
 
 <script src="js/suburbs.js"></script>
 <script src="js/app.js"></script>
