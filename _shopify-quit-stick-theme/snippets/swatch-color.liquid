@@ -1,0 +1,14 @@
+{%- comment -%}
+  Outputs a CSS colour for a finish or colour option value.
+  Usage: {% render 'swatch-color', value: 'Walnut' %}
+{%- endcomment -%}
+{%- assign key = value | handle -%}
+{%- case key -%}
+  {%- when 'walnut' -%}linear-gradient(135deg, #5a3720, #8a5a3b 55%, #5f3b24)
+  {%- when 'natural', 'oak', 'bamboo' -%}linear-gradient(135deg, #cfa874, #e6cba0 55%, #c49a63)
+  {%- when 'black', 'matte-black' -%}linear-gradient(135deg, #111, #3a3a3a)
+  {%- when 'silver', 'steel' -%}linear-gradient(135deg, #9aa0a6, #e4e7ea 50%, #a7adb3)
+  {%- when 'gold' -%}linear-gradient(135deg, #b8913d, #ecd08c 50%, #b48a34)
+  {%- when 'white' -%}#f4f4f4
+  {%- else -%}{{ key | replace: '-', '' }}
+{%- endcase -%}

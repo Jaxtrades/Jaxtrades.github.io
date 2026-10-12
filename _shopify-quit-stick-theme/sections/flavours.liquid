@@ -1,0 +1,60 @@
+<section class="section" id="flavours">
+  <div class="page-width">
+    <div class="section-head">
+      {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h2>{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}<p>{{ section.settings.text }}</p>{%- endif -%}
+    </div>
+    <div class="grid grid--{{ section.blocks.size | at_most: 4 | at_least: 2 }}">
+      {%- for block in section.blocks -%}
+        <div class="flavour" style="background: {{ block.settings.color }};" {{ block.shopify_attributes }}>
+          <span class="flavour__dot" aria-hidden="true"></span>
+          {%- if block.settings.tag != blank -%}<span class="flavour__tag">{{ block.settings.tag }}</span>{%- endif -%}
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.text }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.button_label != blank -%}
+      <div class="center mt-2">
+        <a class="button button--secondary" href="{{ section.settings.button_link }}">{{ section.settings.button_label }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Flavours",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The flavours" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Three flavours in every kit" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Five cores of each. Naturally flavoured, nothing else." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop refill packs" },
+    { "type": "url", "id": "button_link", "label": "Button link", "default": "/products/quit-stick-flavour-refill-pack" }
+  ],
+  "blocks": [
+    {
+      "type": "flavour",
+      "name": "Flavour",
+      "settings": [
+        { "type": "text", "id": "tag", "label": "Tag", "default": "5 cores" },
+        { "type": "text", "id": "title", "label": "Name", "default": "Flavour" },
+        { "type": "text", "id": "text", "label": "Description", "default": "Describe the taste." },
+        { "type": "color", "id": "color", "label": "Card colour", "default": "#CFE6D6" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Flavours",
+      "blocks": [
+        { "type": "flavour", "settings": { "title": "Minty Magic", "text": "Cool and clean.", "color": "#BFE3D0" } },
+        { "type": "flavour", "settings": { "title": "Cinnamon Spice", "text": "Warm with a little bite.", "color": "#EBC9A4" } },
+        { "type": "flavour", "settings": { "title": "Raspberry Fruity", "text": "Sweet and bright.", "color": "#F0BCC4" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

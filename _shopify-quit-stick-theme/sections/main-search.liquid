@@ -1,0 +1,41 @@
+<div class="page-width" style="padding-bottom: clamp(56px, 8vw, 112px);">
+  <div class="page-head">
+    <h1>{{ 'search.title' | t }}</h1>
+  </div>
+
+  <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
+    <label for="SearchInput" class="visually-hidden">{{ 'search.title' | t }}</label>
+    <input id="SearchInput" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'search.placeholder' | t }}">
+    <input type="hidden" name="options[prefix]" value="last">
+    <button type="submit" class="button">{{ 'search.submit' | t }}</button>
+  </form>
+
+  {%- if search.performed -%}
+    {%- paginate search.results by 12 -%}
+      <p class="center" style="color: var(--color-muted);">{{ 'search.results_count' | t: count: search.results_count, terms: search.terms }}</p>
+      <div class="grid grid--3 mt-2">
+        {%- for item in search.results -%}
+          {%- case item.object_type -%}
+            {%- when 'product' -%}
+              {% render 'product-card', product: item %}
+            {%- else -%}
+              <a class="card" href="{{ item.url }}" style="text-decoration: none;">
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.content | strip_html | truncatewords: 24 }}</p>
+              </a>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+      {%- if paginate.pages > 1 -%}
+        <div class="pagination">{{ paginate | default_pagination }}</div>
+      {%- endif -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": []
+}
+{% endschema %}

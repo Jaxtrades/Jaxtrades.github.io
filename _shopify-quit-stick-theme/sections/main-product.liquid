@@ -1,0 +1,46 @@
+<section class="section section--tight">
+  <div class="page-width">
+    {% render 'product-layout', product: product, section: section, heading_tag: 'h1', update_url: true %}
+  </div>
+</section>
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "description": {{ product.description | strip_html | json }},
+    "url": {{ request.origin | append: product.url | json }},
+    {%- if product.featured_media -%}
+      "image": {{ product.featured_media | image_url: width: 1200 | prepend: 'https:' | json }},
+    {%- endif -%}
+    "brand": { "@type": "Brand", "name": {{ product.vendor | json }} },
+    "offers": [
+      {%- for variant in product.variants -%}
+        {
+          "@type": "Offer",
+          {%- if variant.sku != blank -%}"sku": {{ variant.sku | json }},{%- endif -%}
+          "availability": "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+          "price": {{ variant.price | divided_by: 100.00 | json }},
+          "priceCurrency": {{ cart.currency.iso_code | json }},
+          "url": {{ request.origin | append: variant.url | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Nicotine-free · Hand-finished wood" },
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show dynamic checkout buttons", "default": true },
+    { "type": "checkbox", "id": "show_description", "label": "Show description", "default": true },
+    { "type": "checkbox", "id": "show_perks", "label": "Show perks list", "default": true },
+    { "type": "text", "id": "perk_1", "label": "Perk 1", "default": "0 mg nicotine. Flavoured air only." },
+    { "type": "text", "id": "perk_2", "label": "Perk 2", "default": "Ships from Australia" },
+    { "type": "text", "id": "perk_3", "label": "Perk 3", "default": "Refill packs available any time" }
+  ]
+}
+{% endschema %}

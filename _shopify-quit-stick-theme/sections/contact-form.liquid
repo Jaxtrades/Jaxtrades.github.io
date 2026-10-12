@@ -1,0 +1,37 @@
+<div class="page-width narrow" style="padding-bottom: clamp(56px, 8vw, 112px);">
+  {%- form 'contact', id: 'ContactForm' -%}
+    {%- if form.posted_successfully? -%}
+      <p class="notice" role="status">{{ 'contact.success' | t }}</p>
+    {%- endif -%}
+    {%- if form.errors -%}
+      <div class="errors" role="alert">{{ form.errors | default_errors }}</div>
+    {%- endif -%}
+    <div class="grid grid--2" style="gap: 0 1rem;">
+      <div class="field">
+        <label for="ContactName">{{ 'contact.name' | t }}</label>
+        <input id="ContactName" type="text" name="contact[name]" autocomplete="name" value="{{ form.name }}">
+      </div>
+      <div class="field">
+        <label for="ContactEmail">{{ 'contact.email' | t }}</label>
+        <input id="ContactEmail" type="email" name="contact[email]" autocomplete="email" required value="{{ form.email }}">
+      </div>
+    </div>
+    <div class="field">
+      <label for="ContactPhone">{{ 'contact.phone' | t }}</label>
+      <input id="ContactPhone" type="tel" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}">
+    </div>
+    <div class="field">
+      <label for="ContactBody">{{ 'contact.message' | t }}</label>
+      <textarea id="ContactBody" name="contact[body]" required>{{ form.body }}</textarea>
+    </div>
+    <button type="submit" class="button">{{ 'contact.send' | t }}</button>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "settings": [],
+  "presets": [{ "name": "Contact form" }]
+}
+{% endschema %}

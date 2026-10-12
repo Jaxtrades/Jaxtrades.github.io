@@ -1,0 +1,32 @@
+{%- assign product = section.settings.product -%}
+<section class="section{% if section.settings.surface %} section--surface{% endif %}" id="shop">
+  <div class="page-width">
+    {%- if product -%}
+      {% render 'product-layout', product: product, section: section, heading_tag: 'h2', update_url: false %}
+    {%- else -%}
+      <div class="section-head">
+        <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+        <h2>Quit Stick Starter Kit</h2>
+        <p>{{ 'sections.featured_product.choose' | t }}</p>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured product",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "checkbox", "id": "surface", "label": "Use panel background", "default": true },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The starter kit" },
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show dynamic checkout buttons", "default": false },
+    { "type": "checkbox", "id": "show_description", "label": "Show description", "default": false },
+    { "type": "checkbox", "id": "show_perks", "label": "Show perks list", "default": true },
+    { "type": "text", "id": "perk_1", "label": "Perk 1", "default": "Inhaler + 15 flavour cores (Minty, Cinnamon, Raspberry)" },
+    { "type": "text", "id": "perk_2", "label": "Perk 2", "default": "Ships from Australia" },
+    { "type": "text", "id": "perk_3", "label": "Perk 3", "default": "Most people get a few days out of a single core" }
+  ],
+  "presets": [{ "name": "Featured product" }]
+}
+{% endschema %}

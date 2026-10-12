@@ -1,0 +1,12 @@
+<div class="age-gate" data-age-gate hidden role="dialog" aria-modal="true" aria-labelledby="AgeGateHeading">
+  <div class="age-gate__box">
+    <span class="eyebrow">{{ shop.name }}</span>
+    <h2 id="AgeGateHeading" class="h3">{{ settings.age_gate_heading }}</h2>
+    <p>{{ settings.age_gate_text }}</p>
+    <div class="age-gate__actions">
+      <button type="button" class="button" data-age-yes>{{ 'general.age_gate.confirm' | t }}</button>
+      <button type="button" class="button button--secondary" data-age-no>{{ 'general.age_gate.deny' | t }}</button>
+    </div>
+    <p class="mt-2" data-age-message hidden>{{ 'general.age_gate.denied' | t }}</p>
+  </div>
+</div>

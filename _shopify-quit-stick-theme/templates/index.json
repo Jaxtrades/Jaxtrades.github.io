@@ -1,0 +1,114 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "tick-1": { "type": "tick", "settings": { "text": "No nicotine" } },
+        "tick-2": { "type": "tick", "settings": { "text": "No vapour" } },
+        "tick-3": { "type": "tick", "settings": { "text": "No batteries" } }
+      },
+      "block_order": ["tick-1", "tick-2", "tick-3"],
+      "settings": {
+        "product": "quit-stick-starter-kit"
+      }
+    },
+    "stats": {
+      "type": "stats",
+      "blocks": {
+        "stat-1": { "type": "stat", "settings": { "value": "0 mg", "label": "Nicotine" } },
+        "stat-2": { "type": "stat", "settings": { "value": "100 mm", "label": "About the length of a cigarette" } },
+        "stat-3": { "type": "stat", "settings": { "value": "15", "label": "Flavour cores in every kit" } },
+        "stat-4": { "type": "stat", "settings": { "value": "0", "label": "Batteries, coils or cables" } }
+      },
+      "block_order": ["stat-1", "stat-2", "stat-3", "stat-4"],
+      "settings": { "style": "primary" }
+    },
+    "benefits": {
+      "type": "benefits",
+      "blocks": {
+        "b-1": { "type": "benefit", "settings": { "icon": "no-nicotine", "title": "No nicotine", "text": "Flavoured air only, so there's no new habit to break later." } },
+        "b-2": { "type": "benefit", "settings": { "icon": "wind", "title": "No vapour, no smoke", "text": "Nothing is heated or burned. No smell, no cloud." } },
+        "b-3": { "type": "benefit", "settings": { "icon": "battery-off", "title": "No electronics", "text": "No battery, no coil, no charging cable. Nothing to break." } },
+        "b-4": { "type": "benefit", "settings": { "icon": "pocket", "title": "Pocket sized", "text": "100 mm long, about the length of a cigarette." } }
+      },
+      "block_order": ["b-1", "b-2", "b-3", "b-4"],
+      "settings": {}
+    },
+    "featured_product": {
+      "type": "featured-product",
+      "settings": {
+        "product": "quit-stick-starter-kit"
+      }
+    },
+    "how_it_works": {
+      "type": "how-it-works",
+      "blocks": {
+        "step-1": { "type": "step", "settings": { "title": "Prep", "text": "Take a flavour core from the pack and fray the end with your fingers to open up the fibres." } },
+        "step-2": { "type": "step", "settings": { "title": "Insert", "text": "Slide the core into the wooden body." } },
+        "step-3": { "type": "step", "settings": { "title": "Inhale", "text": "Draw on it whenever a craving hits. Cover the small hole at the base to tighten the airflow." } }
+      },
+      "block_order": ["step-1", "step-2", "step-3"],
+      "settings": {}
+    },
+    "flavours": {
+      "type": "flavours",
+      "blocks": {
+        "f-1": { "type": "flavour", "settings": { "title": "Minty Magic", "text": "Cool and clean.", "color": "#BFE3D0" } },
+        "f-2": { "type": "flavour", "settings": { "title": "Cinnamon Spice", "text": "Warm with a little bite.", "color": "#EBC9A4" } },
+        "f-3": { "type": "flavour", "settings": { "title": "Raspberry Fruity", "text": "Sweet and bright.", "color": "#F0BCC4" } }
+      },
+      "block_order": ["f-1", "f-2", "f-3"],
+      "settings": {}
+    },
+    "image_with_text": {
+      "type": "image-with-text",
+      "settings": { "surface": true }
+    },
+    "comparison": {
+      "type": "comparison",
+      "blocks": {
+        "r-1": { "type": "row", "settings": { "feature": "Nicotine-free", "us": true, "col_2": false, "col_3": false } },
+        "r-2": { "type": "row", "settings": { "feature": "No smoke or vapour", "us": true, "col_2": false, "col_3": false } },
+        "r-3": { "type": "row", "settings": { "feature": "No battery or charging", "us": true, "col_2": true, "col_3": false } },
+        "r-4": { "type": "row", "settings": { "feature": "Hand-to-mouth ritual", "us": true, "col_2": true, "col_3": true } },
+        "r-5": { "type": "row", "settings": { "feature": "Fine to use indoors", "us": true, "col_2": false, "col_3": false } }
+      },
+      "block_order": ["r-1", "r-2", "r-3", "r-4", "r-5"],
+      "settings": { "surface": false }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q-1": { "type": "question", "settings": { "question": "Is there any nicotine in it?", "answer": "<p>No. Quit Stick contains no nicotine or tobacco. You're breathing in naturally flavoured air, nothing else.</p>" } },
+        "q-2": { "type": "question", "settings": { "question": "Does it produce vapour or smoke?", "answer": "<p>No. Nothing is heated or burned, so there's no vapour, no smoke and no smell.</p>" } },
+        "q-3": { "type": "question", "settings": { "question": "How long does a flavour core last?", "answer": "<p>Most people get a few days out of a single core. Every starter kit comes with 15 cores, and refill packs are available any time.</p>" } },
+        "q-4": { "type": "question", "settings": { "question": "Do I need to charge it?", "answer": "<p>No. There's no battery, no coil and no cable. Just insert a core and go.</p>" } },
+        "q-5": { "type": "question", "settings": { "question": "Will it help me quit?", "answer": "<p>Quit Stick is not a therapeutic good or medical device. Many people like keeping the hand-to-mouth habit while they cut back. For free, professional support in Australia, call Quitline on 13 7848.</p>" } },
+        "q-6": { "type": "question", "settings": { "question": "Who can buy it?", "answer": "<p>Quit Stick is for adults only.</p>" } }
+      },
+      "block_order": ["q-1", "q-2", "q-3", "q-4", "q-5", "q-6"],
+      "settings": { "surface": true }
+    },
+    "support": {
+      "type": "support-banner",
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "stats",
+    "benefits",
+    "featured_product",
+    "how_it_works",
+    "flavours",
+    "image_with_text",
+    "comparison",
+    "faq",
+    "support",
+    "newsletter"
+  ]
+}

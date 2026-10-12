@@ -1,0 +1,103 @@
+{
+  "accessibility": {
+    "skip_to_content": "Skip to content"
+  },
+  "general": {
+    "account": "Account",
+    "close": "Close",
+    "main_menu": "Main menu",
+    "menu": "Menu",
+    "search": "Search",
+    "shop_all": "Shop all",
+    "yes": "Yes",
+    "no": "No",
+    "page": "Page {{ page }}",
+    "tagged_with": "Tagged \"{{ tags }}\"",
+    "age_gate": {
+      "confirm": "Yes, I'm 18+",
+      "deny": "No",
+      "denied": "Sorry, Quit Stick is only available to adults."
+    },
+    "404": {
+      "title": "Page not found",
+      "text": "The page you were looking for doesn't exist or has moved.",
+      "button": "Back to home"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "adding": "Adding...",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "from_price": "From {{ price }}",
+      "view_image": "View image {{ number }}"
+    }
+  },
+  "cart": {
+    "title": "Your cart",
+    "checkout": "Check out",
+    "continue_shopping": "Continue shopping",
+    "view_cart": "View cart",
+    "empty": "Your cart is empty",
+    "empty_text": "Nothing in here yet. Start with the starter kit.",
+    "subtotal": "Subtotal",
+    "taxes_and_shipping": "Taxes included. Shipping calculated at checkout.",
+    "note": "Order note",
+    "quantity": "Quantity",
+    "increase": "Increase quantity",
+    "decrease": "Decrease quantity",
+    "remove": "Remove",
+    "shipping_remaining_html": "You're <strong>{{ amount }}</strong> away from free shipping",
+    "shipping_unlocked": "You've unlocked free shipping"
+  },
+  "collections": {
+    "eyebrow": "Shop",
+    "all_title": "Collections",
+    "empty": "No products here yet.",
+    "product_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    }
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search products",
+    "submit": "Search",
+    "results_count": {
+      "one": "{{ count }} result for \"{{ terms }}\"",
+      "other": "{{ count }} results for \"{{ terms }}\""
+    }
+  },
+  "blogs": {
+    "eyebrow": "Journal",
+    "empty": "No articles yet.",
+    "back": "Back to {{ title }}"
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "send": "Send",
+    "success": "Thanks for getting in touch. We'll get back to you soon."
+  },
+  "password": {
+    "notify": "Notify me",
+    "owner": "Store owner? Enter password",
+    "password": "Password",
+    "enter": "Enter"
+  },
+  "sections": {
+    "comparison": {
+      "feature": "Feature"
+    },
+    "featured_product": {
+      "choose": "Choose a product in the theme editor to show it here."
+    },
+    "newsletter": {
+      "email": "Your email",
+      "success": "Thanks for signing up."
+    }
+  }
+}

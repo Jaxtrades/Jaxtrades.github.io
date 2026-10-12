@@ -1,0 +1,32 @@
+{%- paginate collection.products by section.settings.per_page -%}
+  <div class="page-width">
+    <div class="page-head">
+      <span class="eyebrow">{{ 'collections.eyebrow' | t }}</span>
+      <h1>{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="rte narrow" style="color: var(--color-muted);">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="grid grid--3" style="padding-bottom: clamp(56px, 8vw, 112px);">
+      {%- for product in collection.products -%}
+        {% render 'product-card', product: product %}
+      {%- else -%}
+        <p class="center" style="grid-column: 1 / -1;">{{ 'collections.empty' | t }}</p>
+      {%- endfor -%}
+    </div>
+
+    {%- if paginate.pages > 1 -%}
+      <div class="pagination" style="margin-top: -3rem; padding-bottom: 4rem;">{{ paginate | default_pagination }}</div>
+    {%- endif -%}
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 6, "max": 24, "step": 3, "default": 12 }
+  ]
+}
+{% endschema %}

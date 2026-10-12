@@ -1,0 +1,53 @@
+<header class="site-header">
+  <div class="page-width site-header__inner">
+    <button type="button" class="icon-button menu-toggle" data-menu-toggle aria-expanded="false" aria-controls="MobileNav" aria-label="{{ 'general.menu' | t }}">
+      {% render 'icon', name: 'menu' %}
+    </button>
+
+    <a href="{{ routes.root_url }}" class="site-header__logo">
+      {%- if section.settings.logo -%}
+        {{ section.settings.logo | image_url: width: 400 | image_tag: alt: shop.name, widths: '200, 400' }}
+      {%- else -%}
+        <span class="logo-mark" aria-hidden="true"></span>
+        {{ shop.name | capitalize }}
+      {%- endif -%}
+    </a>
+
+    <nav class="site-nav" aria-label="{{ 'general.main_menu' | t }}">
+      {%- for link in section.settings.menu.links -%}
+        <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
+      {%- endfor -%}
+    </nav>
+
+    <div class="site-header__actions">
+      <a href="{{ routes.search_url }}" class="icon-button" aria-label="{{ 'general.search' | t }}">
+        {% render 'icon', name: 'search' %}
+      </a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="icon-button" aria-label="{{ 'general.account' | t }}">
+          {% render 'icon', name: 'account' %}
+        </a>
+      {%- endif -%}
+      <a href="{{ routes.cart_url }}" class="icon-button" data-cart-open aria-label="{{ 'cart.title' | t }}">
+        {% render 'icon', name: 'cart' %}
+        <span class="cart-count" data-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+
+  <nav class="mobile-nav page-width" id="MobileNav" aria-label="{{ 'general.main_menu' | t }}">
+    {%- for link in section.settings.menu.links -%}
+      <a href="{{ link.url }}">{{ link.title }}</a>
+    {%- endfor -%}
+  </nav>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" }
+  ]
+}
+{% endschema %}

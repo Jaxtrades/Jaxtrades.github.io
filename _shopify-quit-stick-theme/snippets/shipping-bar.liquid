@@ -1,0 +1,23 @@
+{%- assign threshold_text = settings.free_shipping_threshold | strip -%}
+{%- if threshold_text != blank and cart.item_count > 0 -%}
+  {%- liquid
+    assign threshold = threshold_text | times: 100 | times: cart.currency_rate | round
+    assign remaining = threshold | minus: cart.total_price
+    assign remaining_money = remaining | money
+    assign percent = 100
+    if threshold > 0
+      assign percent = cart.total_price | times: 100 | divided_by: threshold
+    endif
+    if percent > 100
+      assign percent = 100
+    endif
+  -%}
+  <div class="shipping-bar">
+    {%- if remaining > 0 -%}
+      {{ 'cart.shipping_remaining_html' | t: amount: remaining_money }}
+    {%- else -%}
+      {{ 'cart.shipping_unlocked' | t }}
+    {%- endif -%}
+    <div class="shipping-bar__track"><div class="shipping-bar__fill" style="width: {{ percent }}%"></div></div>
+  </div>
+{%- endif -%}

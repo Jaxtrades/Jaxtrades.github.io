@@ -1,0 +1,7 @@
+{
+  "sections": {
+    "main": { "type": "main-collection", "settings": {} },
+    "support": { "type": "support-banner", "settings": {} }
+  },
+  "order": ["main", "support"]
+}

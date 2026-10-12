@@ -1,0 +1,105 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Quit Stick",
+    "theme_version": "1.0.0",
+    "theme_author": "Quit Stick",
+    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
+    "theme_support_url": "https://help.shopify.com"
+  },
+  {
+    "name": "Colours",
+    "settings": [
+      { "type": "color", "id": "color_background", "label": "Background", "default": "#F6F1E7" },
+      { "type": "color", "id": "color_surface", "label": "Cards and panels", "default": "#FFFDF8" },
+      { "type": "color", "id": "color_text", "label": "Text", "default": "#1F2A24" },
+      { "type": "color", "id": "color_muted", "label": "Secondary text", "default": "#5D6A62" },
+      { "type": "color", "id": "color_primary", "label": "Primary (forest)", "default": "#24473A" },
+      { "type": "color", "id": "color_primary_text", "label": "Text on primary", "default": "#F6F1E7" },
+      { "type": "color", "id": "color_accent", "label": "Accent (walnut)", "default": "#8A5A3B" },
+      { "type": "color", "id": "color_highlight", "label": "Highlight (mint)", "default": "#CFE6D6" },
+      { "type": "color", "id": "color_border", "label": "Borders", "default": "#E2D9C8" }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "label": "Page width",
+        "min": 1000,
+        "max": 1600,
+        "step": 20,
+        "unit": "px",
+        "default": 1240
+      },
+      {
+        "type": "range",
+        "id": "radius",
+        "label": "Corner radius",
+        "min": 0,
+        "max": 32,
+        "step": 2,
+        "unit": "px",
+        "default": 18
+      }
+    ]
+  },
+  {
+    "name": "Branding",
+    "settings": [
+      { "type": "image_picker", "id": "favicon", "label": "Favicon", "info": "32 x 32 px PNG" },
+      { "type": "image_picker", "id": "share_image", "label": "Social sharing image" }
+    ]
+  },
+  {
+    "name": "Age check",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "age_gate_enabled",
+        "label": "Ask visitors to confirm they are 18+",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "age_gate_heading",
+        "label": "Heading",
+        "default": "Are you 18 or older?"
+      },
+      {
+        "type": "textarea",
+        "id": "age_gate_text",
+        "label": "Text",
+        "default": "Quit Stick is made for adults who want to quit smoking or vaping."
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "cart_drawer",
+        "label": "Open a cart drawer when adding to cart",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold",
+        "info": "In your store currency, e.g. 50. Leave blank to hide the progress bar.",
+        "default": "50"
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      { "type": "text", "id": "social_instagram", "label": "Instagram URL" },
+      { "type": "text", "id": "social_tiktok", "label": "TikTok URL" },
+      { "type": "text", "id": "social_facebook", "label": "Facebook URL" }
+    ]
+  }
+]

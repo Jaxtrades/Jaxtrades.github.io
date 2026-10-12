@@ -1,0 +1,33 @@
+{%- comment -%}
+  Usage: {% render 'cart-line', item: item %}
+{%- endcomment -%}
+<li class="cart-item" data-line-key="{{ item.key }}">
+  <a class="cart-item__media" href="{{ item.url }}" tabindex="-1">
+    {%- if item.image -%}
+      {{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.title }}
+    {%- endif -%}
+  </a>
+  <div>
+    <a class="cart-item__title" href="{{ item.url }}">{{ item.product.title }}</a>
+    {%- unless item.product.has_only_default_variant -%}
+      <div class="cart-item__variant">{{ item.variant.title }}</div>
+    {%- endunless -%}
+    {%- for discount in item.line_level_discount_allocations -%}
+      <div class="cart-item__variant">{{ discount.discount_application.title }} (-{{ discount.amount | money }})</div>
+    {%- endfor -%}
+    <div class="cart-item__controls">
+      <div class="quantity">
+        <button type="button" data-qty="minus" aria-label="{{ 'cart.decrease' | t }}">&minus;</button>
+        <input type="number" min="0" value="{{ item.quantity }}" aria-label="{{ 'cart.quantity' | t }}">
+        <button type="button" data-qty="plus" aria-label="{{ 'cart.increase' | t }}">+</button>
+      </div>
+      <a href="{{ item.url_to_remove }}" class="link-button" data-line-remove>{{ 'cart.remove' | t }}</a>
+    </div>
+  </div>
+  <div class="cart-item__price">
+    {%- if item.original_line_price != item.final_line_price -%}
+      <s>{{ item.original_line_price | money }}</s><br>
+    {%- endif -%}
+    {{ item.final_line_price | money }}
+  </div>
+</li>

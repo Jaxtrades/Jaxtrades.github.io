@@ -1,0 +1,94 @@
+{%- assign hero_product = section.settings.product -%}
+<section class="hero section">
+  <div class="page-width hero__grid">
+    <div class="hero__text">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      <h1>{{ section.settings.heading }}</h1>
+      <p class="hero__sub">{{ section.settings.subheading }}</p>
+      <div class="hero__actions">
+        {%- if section.settings.button_label != blank -%}
+          <a class="button" href="{{ section.settings.button_link | default: hero_product.url | default: routes.all_products_collection_url }}">
+            {{ section.settings.button_label }}
+            {%- if hero_product and section.settings.show_price %} &middot; {{ hero_product.price | money }}{% endif -%}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.button_2_label != blank -%}
+          <a class="button button--secondary" href="{{ section.settings.button_2_link }}">{{ section.settings.button_2_label }}</a>
+        {%- endif -%}
+      </div>
+      {%- if section.blocks.size > 0 -%}
+        <ul class="hero__ticks">
+          {%- for block in section.blocks -%}
+            <li {{ block.shopify_attributes }}>{% render 'icon', name: 'check' %}{{ block.settings.text }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    <div class="hero__media">
+      {%- if section.settings.image -%}
+        {{ section.settings.image | image_url: width: 1400 | image_tag:
+          loading: 'eager', fetchpriority: 'high',
+          widths: '600, 900, 1200, 1400',
+          sizes: '(min-width: 860px) 50vw, 100vw'
+        }}
+      {%- elsif hero_product.featured_media -%}
+        {{ hero_product.featured_media | image_url: width: 1400 | image_tag:
+          loading: 'eager', fetchpriority: 'high',
+          widths: '600, 900, 1200, 1400',
+          sizes: '(min-width: 860px) 50vw, 100vw',
+          alt: hero_product.title
+        }}
+      {%- else -%}
+        <div class="hero__placeholder"><span class="stick"></span></div>
+      {%- endif -%}
+      {%- if section.settings.badge != blank -%}
+        <span class="hero__badge">{{ section.settings.badge }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Nicotine-free inhaler" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Keep the ritual. Drop the cigarette." },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "A hand-finished wooden inhaler that delivers nothing but naturally flavoured air. Something to hold, something to draw on, nothing to get hooked on."
+    },
+    { "type": "product", "id": "product", "label": "Featured product", "info": "Used for the image and price if no image is set." },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "badge", "label": "Image badge", "default": "Minty · Cinnamon · Raspberry" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Get the starter kit" },
+    { "type": "url", "id": "button_link", "label": "Button link", "info": "Defaults to the featured product." },
+    { "type": "checkbox", "id": "show_price", "label": "Show price on button", "default": true },
+    { "type": "text", "id": "button_2_label", "label": "Second button label", "default": "How it works" },
+    { "type": "url", "id": "button_2_link", "label": "Second button link", "default": "/#how-it-works" }
+  ],
+  "blocks": [
+    {
+      "type": "tick",
+      "name": "Tick point",
+      "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "No nicotine" }]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero",
+      "blocks": [
+        { "type": "tick", "settings": { "text": "No nicotine" } },
+        { "type": "tick", "settings": { "text": "No vapour" } },
+        { "type": "tick", "settings": { "text": "No batteries" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

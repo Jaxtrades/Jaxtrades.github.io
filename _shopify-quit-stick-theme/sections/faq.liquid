@@ -1,0 +1,51 @@
+<section class="section{% if section.settings.surface %} section--surface{% endif %}" id="faq">
+  <div class="page-width">
+    <div class="section-head">
+      {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h2>{{ section.settings.heading }}</h2>
+    </div>
+    <div class="faq">
+      {%- for block in section.blocks -%}
+        <details {{ block.shopify_attributes }}{% if forloop.first and section.settings.open_first %} open{% endif %}>
+          <summary>{{ block.settings.question }}</summary>
+          <div class="rte">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Questions" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Good to know" },
+    { "type": "checkbox", "id": "open_first", "label": "Open the first question", "default": true },
+    { "type": "checkbox", "id": "surface", "label": "Use panel background", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "Question" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Answer</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        { "type": "question", "settings": { "question": "Is there any nicotine in it?", "answer": "<p>No. Quit Stick contains no nicotine or tobacco. You're breathing in naturally flavoured air, nothing else.</p>" } },
+        { "type": "question", "settings": { "question": "Does it produce vapour or smoke?", "answer": "<p>No. Nothing is heated or burned, so there's no vapour, no smoke and no smell.</p>" } },
+        { "type": "question", "settings": { "question": "How long does a flavour core last?", "answer": "<p>Most people get a few days out of a single core. Every kit comes with 15 cores, and refill packs are available any time.</p>" } },
+        { "type": "question", "settings": { "question": "Do I need to charge it?", "answer": "<p>No. There's no battery, no coil and no cable. Just insert a core and go.</p>" } },
+        { "type": "question", "settings": { "question": "Will it help me quit?", "answer": "<p>Quit Stick is not a therapeutic good or medical device. Many people find it helps to keep the hand-to-mouth habit while they cut back. For free, professional support in Australia, call Quitline on 13 7848.</p>" } },
+        { "type": "question", "settings": { "question": "Who can buy it?", "answer": "<p>Quit Stick is for adults only.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,13 @@
+<div class="page-width center" style="padding: clamp(80px, 12vw, 160px) 0;">
+  <span class="eyebrow">404</span>
+  <h1>{{ 'general.404.title' | t }}</h1>
+  <p style="color: var(--color-muted);">{{ 'general.404.text' | t }}</p>
+  <a class="button mt-2" href="{{ routes.root_url }}">{{ 'general.404.button' | t }}</a>
+</div>
+
+{% schema %}
+{
+  "name": "404",
+  "settings": []
+}
+{% endschema %}

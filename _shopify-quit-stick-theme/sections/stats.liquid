@@ -1,0 +1,51 @@
+<section class="section section--tight section--{{ section.settings.style }}">
+  <div class="page-width stats">
+    {%- for block in section.blocks -%}
+      <div class="stat" {{ block.shopify_attributes }}>
+        <div class="stat__value">{{ block.settings.value }}</div>
+        <div class="stat__label">{{ block.settings.label }}</div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Stats strip",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Background",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "highlight", "label": "Highlight" },
+        { "value": "surface", "label": "Surface" }
+      ],
+      "default": "primary"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        { "type": "text", "id": "value", "label": "Value", "default": "0 mg" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Nicotine" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Stats strip",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "0 mg", "label": "Nicotine" } },
+        { "type": "stat", "settings": { "value": "100 mm", "label": "About the length of a cigarette" } },
+        { "type": "stat", "settings": { "value": "15", "label": "Flavour cores in every kit" } },
+        { "type": "stat", "settings": { "value": "0", "label": "Batteries, coils or cables" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
