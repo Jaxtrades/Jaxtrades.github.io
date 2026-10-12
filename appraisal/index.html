@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HomeValue — Simple Property Appraisal</title>
+<meta name="description" content="Estimate what a home is worth in a few minutes using recent comparable sales — the same approach appraisers use.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="index.html" class="brand">🏠 HomeValue</a>
+    <nav>
+      <a href="#estimate">Estimate</a>
+      <a href="#saved">Saved</a>
+      <a href="#how">How it works</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>What's this property worth?</h1>
+    <p>Fill in three quick steps and get an estimated market value — calculated from recent nearby sales, the same way appraisers do it.</p>
+    <button type="button" class="btn ghost" id="load-sample">Try it with sample data</button>
+  </section>
+
+  <form id="appraisal-form" novalidate>
+    <!-- STEP 1 -->
+    <section class="card" id="estimate">
+      <div class="step-head"><span class="step-num">1</span><h2>The property</h2></div>
+
+      <div class="grid">
+        <label class="span-2"><span>Address <span class="opt">(for your report)</span></span>
+          <input type="text" name="address" placeholder="123 Main St, Springfield">
+        </label>
+        <label>Property type
+          <select name="type">
+            <option>Single-family home</option>
+            <option>Townhouse</option>
+            <option>Condo</option>
+            <option>Multi-family</option>
+          </select>
+        </label>
+        <label>Living area (sq ft) *
+          <input type="number" name="sqft" min="100" step="1" placeholder="1,800" required>
+        </label>
+        <label>Bedrooms
+          <input type="number" name="beds" min="0" step="1" value="3">
+        </label>
+        <label>Bathrooms
+          <input type="number" name="baths" min="0" step="0.5" value="2">
+        </label>
+        <label>Year built
+          <input type="number" name="year" min="1800" max="2100" step="1" placeholder="1995">
+        </label>
+        <label>Garage spaces
+          <input type="number" name="garage" min="0" max="6" step="1" value="1">
+        </label>
+        <label>Condition
+          <select name="condition">
+            <option value="1">Poor — needs major work</option>
+            <option value="2">Fair — dated, some repairs</option>
+            <option value="3" selected>Average — well kept</option>
+            <option value="4">Good — updated</option>
+            <option value="5">Excellent — like new</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" name="pool"> Has a pool</label>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="card">
+      <div class="step-head"><span class="step-num">2</span><h2>Recent nearby sales</h2></div>
+      <p class="hint">Add 3–5 similar homes that sold nearby in the last 6–12 months. You can find these on Zillow, Redfin, Realtor.com, or your county records. Fields left blank are treated as matching your property.</p>
+
+      <div id="comps"></div>
+      <button type="button" class="btn ghost small" id="add-comp">+ Add another sale</button>
+
+      <div class="or-box">
+        <strong>No sales handy?</strong> Enter the average price per sq ft in the neighborhood for a quick ballpark instead.
+        <label class="inline">Average $/sq ft
+          <input type="number" name="ppsf" min="1" step="1" placeholder="e.g. 210">
+        </label>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="card">
+      <div class="step-head"><span class="step-num">3</span><h2>Get the estimate</h2></div>
+      <p id="form-error" class="error" role="alert" hidden></p>
+      <div class="actions">
+        <button type="submit" class="btn">Calculate value</button>
+        <button type="button" class="btn ghost" id="reset">Start over</button>
+      </div>
+    </section>
+  </form>
+
+  <!-- RESULT -->
+  <section class="card result" id="result" hidden>
+    <p class="eyebrow">Estimated market value</p>
+    <p class="big-value" id="r-value">—</p>
+    <p class="range">Likely range: <strong id="r-range">—</strong></p>
+    <div class="pills">
+      <span class="pill" id="r-ppsf"></span>
+      <span class="pill" id="r-confidence"></span>
+      <span class="pill" id="r-method"></span>
+    </div>
+    <p class="muted" id="r-address"></p>
+
+    <div id="r-grid-wrap">
+      <h3>How each sale was adjusted</h3>
+      <p class="hint">Each sale is adjusted up or down to account for differences from your property. Sales needing fewer adjustments count more toward the final value.</p>
+      <div class="table-scroll"><table id="r-grid"></table></div>
+    </div>
+
+    <div class="actions no-print">
+      <button type="button" class="btn" id="save">Save appraisal</button>
+      <button type="button" class="btn ghost" onclick="window.print()">Print / save as PDF</button>
+    </div>
+    <p class="disclaimer">This is an automated estimate for informational purposes only. It is not a licensed appraisal and should not be used for lending decisions.</p>
+  </section>
+
+  <!-- SAVED -->
+  <section class="card no-print" id="saved">
+    <h2>Saved appraisals</h2>
+    <ul id="saved-list" class="saved-list"></ul>
+    <p class="muted" id="saved-empty">Nothing saved yet. Saved estimates stay in this browser only.</p>
+  </section>
+
+  <!-- HOW -->
+  <section class="card no-print" id="how">
+    <h2>How it works</h2>
+    <ol class="how">
+      <li><strong>Start with real sales.</strong> Homes that recently sold nearby are the best evidence of what buyers will pay.</li>
+      <li><strong>Adjust for differences.</strong> If a sale had one more bathroom than your home, its price is adjusted down; if it was older or in worse shape, it's adjusted up. Size, bedrooms, bathrooms, age, condition, garage, and pool are all considered.</li>
+      <li><strong>Weight the closest matches.</strong> The final value is a weighted average — sales that needed the smallest adjustments are trusted the most.</li>
+    </ol>
+  </section>
+</main>
+
+<footer class="site-footer no-print">
+  <div class="wrap">HomeValue · Estimates only — not a licensed appraisal.</div>
+</footer>
+
+<template id="comp-template">
+  <div class="comp">
+    <div class="comp-head">
+      <strong class="comp-title">Sale</strong>
+      <button type="button" class="link remove-comp">Remove</button>
+    </div>
+    <div class="grid">
+      <label>Sale price *<input type="number" data-f="price" min="1" step="1000" placeholder="350,000"></label>
+      <label>Sq ft *<input type="number" data-f="sqft" min="100" step="1" placeholder="1,750"></label>
+      <label>Beds<input type="number" data-f="beds" min="0" step="1"></label>
+      <label>Baths<input type="number" data-f="baths" min="0" step="0.5"></label>
+      <label>Year built<input type="number" data-f="year" min="1800" max="2100" step="1"></label>
+      <label>Garage<input type="number" data-f="garage" min="0" max="6" step="1"></label>
+      <label>Condition
+        <select data-f="condition">
+          <option value="">Same as mine</option>
+          <option value="1">Poor</option>
+          <option value="2">Fair</option>
+          <option value="3">Average</option>
+          <option value="4">Good</option>
+          <option value="5">Excellent</option>
+        </select>
+      </label>
+      <label>Pool
+        <select data-f="pool">
+          <option value="">Same as mine</option>
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+      </label>
+    </div>
+  </div>
+</template>
+
+<script src="app.js"></script>
+</body>
+</html>

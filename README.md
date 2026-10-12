@@ -42,3 +42,12 @@ There is no backend, so `checkout.html` simulates order placement client-side (c
 generates an order number, clears the cart) rather than processing real payment. To take real payments,
 wire the form submit handler in `checkout.html` to a hosted payment processor (e.g. Stripe Checkout /
 Payment Links or Shopify) or a serverless function.
+
+## HomeValue (property appraisal tool)
+
+`appraisal/` is a separate, self-contained page (`appraisal/index.html`, `app.js`, `style.css`) that estimates a
+home's market value using the sales comparison approach: enter the property, add 3–5 recent nearby sales, and
+each sale is adjusted for differences (size, beds, baths, age, condition, garage, pool) and blended into a
+weighted estimate with a likely range. Without sales, it falls back to a quick neighborhood $/sq ft ballpark.
+Adjustment rates live in the `RATES` object at the top of `appraisal/app.js`. Saved estimates stay in the
+browser's `localStorage`. It's an informational estimate, not a licensed appraisal.
