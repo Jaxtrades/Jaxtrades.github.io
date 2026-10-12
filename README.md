@@ -1,53 +1,26 @@
-# Cozzy
+# HomeValue
 
-A static, front-end-only storefront for **Cozzy** — a plush, cordless electric heating pillow built to ease
-period cramps (and just be a really good hot-water-bottle replacement). Built for GitHub Pages, no
-server/build step required.
+A simple, front-end-only property appraisal site built for GitHub Pages — no server or build step required.
 
-## Pages
+## How it works
 
-- `index.html` — Home: hero, "why Cozzy" features, product grid, how-it-works, reviews, newsletter
-- `shop.html` — Full product grid (pillow, bundle, accessories)
-- `product.html?id=<slug>` — Product detail with a color selector + add to cart
-- `cart.html` — Cart (stored in `localStorage`)
-- `checkout.html` — Shipping form + simulated order placement
-- `about.html` — Brand story, "why heat helps," and FAQ
+`index.html` walks the user through three steps:
 
-## Design
+1. **The property** — living area (required), beds, baths, year built, garage, condition, pool.
+2. **Recent nearby sales** — 3–5 comparable sales (price + sq ft required; blank fields are treated as
+   matching the property). Without sales, an average neighborhood $/sq ft gives a quick ballpark instead.
+3. **Calculate** — shows the estimated value, a likely range, a confidence level, and an adjustment grid.
 
-Warm, editorial DTC aesthetic aimed at women: cream background, a coral "pop" accent, soft blush/sage
-supporting colors, `Fraunces` for display type paired with `Poppins` for body/UI. There's no product
-photography — the brand mark is a reusable inline-SVG illustration of the pillow (`js/illustrations.js`,
-`cozzyIllustration(hex, opts)`) recolored per product variant, used everywhere a "photo" would normally go
-(hero, product cards, product detail, cart thumbnails).
+It uses the sales comparison approach: each sale is adjusted up or down for differences from the property
+(size, beds, baths, age, condition, garage, pool), then blended into a weighted average where sales needing
+the smallest adjustments count most.
 
-## Catalog
+## Files
 
-`js/products.js` holds the catalog: the core Cozzy Pillow, a Duo Bundle, and two small accessories (spare
-cover, travel pouch). Each product has a flat `price` (no per-size pricing) and a `variants` array of color
-options (`{ code, label, hex }`) used for swatches and the illustration recolor.
+- `index.html` — the page
+- `css/style.css` — styles (light/dark, mobile, print)
+- `js/app.js` — valuation logic; adjustment rates live in the `RATES` object at the top
 
-Cart line items are keyed as `"<productId>::<variantCode>"` (see `js/store.js`) so the same product can
-appear as multiple cart lines at different colors.
+Results can be printed / saved as PDF, and saved estimates stay in the browser's `localStorage`.
 
-## Editing the catalog
-
-Add or edit products directly in `js/products.js`. Each product needs an `id`, `name`, `kind`
-(`hero` | `bundle` | `accessory`, used for card styling), `tagline`, `description`, `bullets`, a `price`
-(+ optional `compareAt`), and a `variants` array of `{ code, label, hex }`.
-
-## Checkout
-
-There is no backend, so `checkout.html` simulates order placement client-side (collects shipping info,
-generates an order number, clears the cart) rather than processing real payment. To take real payments,
-wire the form submit handler in `checkout.html` to a hosted payment processor (e.g. Stripe Checkout /
-Payment Links or Shopify) or a serverless function.
-
-## HomeValue (property appraisal tool)
-
-`appraisal/` is a separate, self-contained page (`appraisal/index.html`, `app.js`, `style.css`) that estimates a
-home's market value using the sales comparison approach: enter the property, add 3–5 recent nearby sales, and
-each sale is adjusted for differences (size, beds, baths, age, condition, garage, pool) and blended into a
-weighted estimate with a likely range. Without sales, it falls back to a quick neighborhood $/sq ft ballpark.
-Adjustment rates live in the `RATES` object at the top of `appraisal/app.js`. Saved estimates stay in the
-browser's `localStorage`. It's an informational estimate, not a licensed appraisal.
+Estimates are informational only — not a licensed appraisal.

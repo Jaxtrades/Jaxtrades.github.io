@@ -3,238 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cozzy — Cordless Heat Therapy for Period Cramps</title>
-<meta name="description" content="Cozzy is a plush, cordless electric heating pillow built for period cramps and cozy days. Three heat settings, machine-washable cover, made for women.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🫶</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<title>HomeValue — Simple Property Appraisal</title>
+<meta name="description" content="Estimate what a home is worth in a few minutes using recent comparable sales — the same approach appraisers use.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<div class="announce">✨ <strong>Free shipping</strong> on orders $40+ &nbsp;·&nbsp; 30-day Happy Period Guarantee &nbsp;·&nbsp; Rated 4.9/5 by 2,000+ women</div>
-
 <header class="site-header">
   <div class="wrap nav">
-    <a href="index.html" class="brand">Cozzy<span class="dot">.</span></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="about.html">Our Story</a></li>
-      <li><a href="about.html#faq">FAQ</a></li>
-      <li><a href="cart.html" class="cart-link">Cart <span id="cart-count">0</span></a></li>
-    </ul>
+    <a href="index.html" class="brand">🏠 HomeValue</a>
+    <nav>
+      <a href="#estimate">Estimate</a>
+      <a href="#saved">Saved</a>
+      <a href="#how">How it works</a>
+    </nav>
   </div>
 </header>
 
-<main>
-  <div class="wrap">
-    <section class="hero">
-      <div class="hero-copy">
-        <span class="eyebrow">💗 Made for period cramps &amp; cozy days</span>
-        <h1>Warmth that has your back. <em>Literally.</em></h1>
-        <p class="lede">Cozzy is the plush, cordless heating pillow that melts cramps, tension, and bad days — three heat settings, huggable softness, and zero cords tying you to the couch.</p>
-        <div class="hero-actions">
-          <a href="product.html?id=cozzy-pillow" class="btn">Shop the Cozzy Pillow →</a>
-          <a href="about.html" class="btn secondary">Why heat works</a>
-        </div>
-        <div class="stat-row">
-          <div class="stat"><b>4.9★</b><span>2,148 reviews</span></div>
-          <div class="stat"><b>90 min</b><span>auto shut-off</span></div>
-          <div class="stat"><b>2+ hrs</b><span>cordless heat</span></div>
-        </div>
+<main class="wrap">
+  <section class="hero">
+    <h1>What's this property worth?</h1>
+    <p>Fill in three quick steps and get an estimated market value — calculated from recent nearby sales, the same way appraisers do it.</p>
+    <button type="button" class="btn ghost" id="load-sample">Try it with sample data</button>
+  </section>
+
+  <form id="appraisal-form" novalidate>
+    <!-- STEP 1 -->
+    <section class="card" id="estimate">
+      <div class="step-head"><span class="step-num">1</span><h2>The property</h2></div>
+
+      <div class="grid">
+        <label class="span-2"><span>Address <span class="opt">(for your report)</span></span>
+          <input type="text" name="address" placeholder="123 Main St, Springfield">
+        </label>
+        <label>Property type
+          <select name="type">
+            <option>Single-family home</option>
+            <option>Townhouse</option>
+            <option>Condo</option>
+            <option>Multi-family</option>
+          </select>
+        </label>
+        <label>Living area (sq ft) *
+          <input type="number" name="sqft" min="100" step="1" placeholder="1,800" required>
+        </label>
+        <label>Bedrooms
+          <input type="number" name="beds" min="0" step="1" value="3">
+        </label>
+        <label>Bathrooms
+          <input type="number" name="baths" min="0" step="0.5" value="2">
+        </label>
+        <label>Year built
+          <input type="number" name="year" min="1800" max="2100" step="1" placeholder="1995">
+        </label>
+        <label>Garage spaces
+          <input type="number" name="garage" min="0" max="6" step="1" value="1">
+        </label>
+        <label>Condition
+          <select name="condition">
+            <option value="1">Poor — needs major work</option>
+            <option value="2">Fair — dated, some repairs</option>
+            <option value="3" selected>Average — well kept</option>
+            <option value="4">Good — updated</option>
+            <option value="5">Excellent — like new</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" name="pool"> Has a pool</label>
       </div>
-      <div class="hero-art bg-blush" style="border-radius:var(--radius-lg);"></div>
     </section>
 
-    <div class="trust-strip">
-      <span class="trust-pill"><span class="dot">●</span> Cordless &amp; rechargeable</span>
-      <span class="trust-pill"><span class="dot">●</span> Machine-washable cover</span>
-      <span class="trust-pill"><span class="dot">●</span> Auto shut-off</span>
-      <span class="trust-pill"><span class="dot">●</span> Designed by women, for women</span>
-    </div>
-  </div>
+    <!-- STEP 2 -->
+    <section class="card">
+      <div class="step-head"><span class="step-num">2</span><h2>Recent nearby sales</h2></div>
+      <p class="hint">Add 3–5 similar homes that sold nearby in the last 6–12 months. You can find these on Zillow, Redfin, Realtor.com, or your county records. Fields left blank are treated as matching your property.</p>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="pill-tag">Why Cozzy</span>
-        <h2>Not your grandma's hot water bottle.</h2>
-        <p>We redesigned heat therapy to actually fit your life — no leaks, no burns, no being stuck plugged into a wall.</p>
+      <div id="comps"></div>
+      <button type="button" class="btn ghost small" id="add-comp">+ Add another sale</button>
+
+      <div class="or-box">
+        <strong>No sales handy?</strong> Enter the average price per sq ft in the neighborhood for a quick ballpark instead.
+        <label class="inline">Average $/sq ft
+          <input type="number" name="ppsf" min="1" step="1" placeholder="e.g. 210">
+        </label>
       </div>
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="icon-badge bg-coral">🔥</div>
-          <h3>3 heat settings</h3>
-          <p>Low, medium, and "get in my bones" high — dial in exactly the warmth you need.</p>
-        </div>
-        <div class="feature-card">
-          <div class="icon-badge bg-sage">🔋</div>
-          <h3>Cordless freedom</h3>
-          <p>USB-C rechargeable with 2+ hours of heat per charge. Curl up anywhere, no outlet required.</p>
-        </div>
-        <div class="feature-card">
-          <div class="icon-badge bg-blush">🧸</div>
-          <h3>Huggably soft</h3>
-          <p>A plush, removable cover that's genuinely cozy — and tosses right in the wash.</p>
-        </div>
-        <div class="feature-card">
-          <div class="icon-badge bg-coral">😴</div>
-          <h3>Sleep-safe</h3>
-          <p>Auto shuts off after 90 minutes, so you can drift off without a second thought.</p>
-        </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="card">
+      <div class="step-head"><span class="step-num">3</span><h2>Get the estimate</h2></div>
+      <p id="form-error" class="error" role="alert" hidden></p>
+      <div class="actions">
+        <button type="submit" class="btn">Calculate value</button>
+        <button type="button" class="btn ghost" id="reset">Start over</button>
       </div>
+    </section>
+  </form>
+
+  <!-- RESULT -->
+  <section class="card result" id="result" hidden>
+    <p class="eyebrow">Estimated market value</p>
+    <p class="big-value" id="r-value">—</p>
+    <p class="range">Likely range: <strong id="r-range">—</strong></p>
+    <div class="pills">
+      <span class="pill" id="r-ppsf"></span>
+      <span class="pill" id="r-confidence"></span>
+      <span class="pill" id="r-method"></span>
     </div>
+    <p class="muted" id="r-address"></p>
+
+    <div id="r-grid-wrap">
+      <h3>How each sale was adjusted</h3>
+      <p class="hint">Each sale is adjusted up or down to account for differences from your property. Sales needing fewer adjustments count more toward the final value.</p>
+      <div class="table-scroll"><table id="r-grid"></table></div>
+    </div>
+
+    <div class="actions no-print">
+      <button type="button" class="btn" id="save">Save appraisal</button>
+      <button type="button" class="btn ghost" onclick="window.print()">Print / save as PDF</button>
+    </div>
+    <p class="disclaimer">This is an automated estimate for informational purposes only. It is not a licensed appraisal and should not be used for lending decisions.</p>
   </section>
 
-  <section class="section" style="padding-top:0;">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="pill-tag">Shop</span>
-        <h2>Meet the lineup</h2>
-        <p>One hero product, four colorways, and a couple of little extras to go with it.</p>
-      </div>
-      <div class="grid" id="product-grid"></div>
-    </div>
+  <!-- SAVED -->
+  <section class="card no-print" id="saved">
+    <h2>Saved appraisals</h2>
+    <ul id="saved-list" class="saved-list"></ul>
+    <p class="muted" id="saved-empty">Nothing saved yet. Saved estimates stay in this browser only.</p>
   </section>
 
-  <section class="section">
-    <div class="wrap band">
-      <div class="section-head">
-        <h2>How Cozzy works</h2>
-        <p>From unboxing to cramp-free in three easy steps.</p>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <h3>Charge it up</h3>
-          <p>Plug in the USB-C cable for a full charge — about 2 hours the first time.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <h3>Pick your heat</h3>
-          <p>Tap the button to choose low, medium, or high — the LED ring shows you which.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <h3>Cozzy up</h3>
-          <p>Hug it to your belly or back, breathe out, and let the warmth do its thing.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="pill-tag">Reviews</span>
-        <h2>2,000+ women swear by their Cozzy</h2>
-      </div>
-      <div class="testi-grid">
-        <div class="testi-card">
-          <div class="stars">★★★★★</div>
-          <p class="quote">"I keep this in my desk drawer at work now. Game changer for the first two days of my cycle."</p>
-          <div class="who">
-            <div class="avatar bg-coral" style="background:var(--coral);">M</div>
-            <div><b>Maya R.</b><span>Verified buyer</span></div>
-          </div>
-        </div>
-        <div class="testi-card">
-          <div class="stars">★★★★★</div>
-          <p class="quote">"So much better than my old microwavable bag — it actually stays warm and doesn't smell like flax seeds."</p>
-          <div class="who">
-            <div class="avatar" style="background:var(--sage);">P</div>
-            <div><b>Priya D.</b><span>Verified buyer</span></div>
-          </div>
-        </div>
-        <div class="testi-card">
-          <div class="stars">★★★★★</div>
-          <p class="quote">"Bought the Duo for me and my sister. We fight over whose turn it is to use the terracotta one."</p>
-          <div class="who">
-            <div class="avatar" style="background:var(--blush);">J</div>
-            <div><b>Jordan K.</b><span>Verified buyer</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <div class="newsletter">
-        <span class="pill-tag">Stay cozy</span>
-        <h2 style="margin-bottom:6px;">Get 10% off your first Cozzy</h2>
-        <p style="margin:0;color:var(--ink-soft);">Plus period-care tips and first dibs on new colors. No spam, promise.</p>
-        <form onsubmit="event.preventDefault(); this.querySelector('button').textContent='Thanks! Check your inbox 💌';">
-          <input type="email" placeholder="you@example.com" required>
-          <button type="submit" class="btn">Get my code</button>
-        </form>
-      </div>
-    </div>
+  <!-- HOW -->
+  <section class="card no-print" id="how">
+    <h2>How it works</h2>
+    <ol class="how">
+      <li><strong>Start with real sales.</strong> Homes that recently sold nearby are the best evidence of what buyers will pay.</li>
+      <li><strong>Adjust for differences.</strong> If a sale had one more bathroom than your home, its price is adjusted down; if it was older or in worse shape, it's adjusted up. Size, bedrooms, bathrooms, age, condition, garage, and pool are all considered.</li>
+      <li><strong>Weight the closest matches.</strong> The final value is a weighted average — sales that needed the smallest adjustments are trusted the most.</li>
+    </ol>
   </section>
 </main>
 
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      <div>
-        <div class="brand">Cozzy<span class="dot">.</span></div>
-        <p>Cordless heat therapy for period cramps and cozy days — designed by women, for women.</p>
-      </div>
-      <div>
-        <h4>Shop</h4>
-        <ul>
-          <li><a href="product.html?id=cozzy-pillow">Cozzy Pillow</a></li>
-          <li><a href="product.html?id=cozzy-duo">Duo Bundle</a></li>
-          <li><a href="shop.html">All products</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Company</h4>
-        <ul>
-          <li><a href="about.html">Our Story</a></li>
-          <li><a href="about.html#faq">FAQ</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Support</h4>
-        <ul>
-          <li><a href="about.html#faq">Shipping &amp; Returns</a></li>
-          <li><a href="cart.html">Your Cart</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 Cozzy. All rights reserved.</span>
-      <span>Made with warmth, wherever you are.</span>
-    </div>
-  </div>
+<footer class="site-footer no-print">
+  <div class="wrap">HomeValue · Estimates only — not a licensed appraisal.</div>
 </footer>
 
-<script src="js/products.js"></script>
-<script src="js/illustrations.js"></script>
-<script src="js/store.js"></script>
-<script>
-  document.querySelector(".hero-art").innerHTML = cozzyIllustration("#D97A52");
+<template id="comp-template">
+  <div class="comp">
+    <div class="comp-head">
+      <strong class="comp-title">Sale</strong>
+      <button type="button" class="link remove-comp">Remove</button>
+    </div>
+    <div class="grid">
+      <label>Sale price *<input type="number" data-f="price" min="1" step="1000" placeholder="350,000"></label>
+      <label>Sq ft *<input type="number" data-f="sqft" min="100" step="1" placeholder="1,750"></label>
+      <label>Beds<input type="number" data-f="beds" min="0" step="1"></label>
+      <label>Baths<input type="number" data-f="baths" min="0" step="0.5"></label>
+      <label>Year built<input type="number" data-f="year" min="1800" max="2100" step="1"></label>
+      <label>Garage<input type="number" data-f="garage" min="0" max="6" step="1"></label>
+      <label>Condition
+        <select data-f="condition">
+          <option value="">Same as mine</option>
+          <option value="1">Poor</option>
+          <option value="2">Fair</option>
+          <option value="3">Average</option>
+          <option value="4">Good</option>
+          <option value="5">Excellent</option>
+        </select>
+      </label>
+      <label>Pool
+        <select data-f="pool">
+          <option value="">Same as mine</option>
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+      </label>
+    </div>
+  </div>
+</template>
 
-  const grid = document.getElementById("product-grid");
-  grid.innerHTML = PRODUCTS.map(p => {
-    const bgClass = p.kind === "hero" ? "bg-blush" : p.kind === "bundle" ? "bg-coral" : "bg-sage";
-    const badge = p.kind === "hero" ? '<span class="badge">Bestseller</span>' : p.kind === "bundle" ? '<span class="badge">Save $19</span>' : "";
-    const swatches = p.variants.slice(0,4).map(v => `<span class="swatch" style="background:${v.hex}"></span>`).join("");
-    return `
-    <a href="product.html?id=${p.id}" class="card">
-      ${badge}
-      <div class="card-art ${bgClass}">${cozzyIllustration(p.variants[0].hex, {spark: p.kind === "hero"})}</div>
-      <h3>${p.name}</h3>
-      <div class="tagline">${p.tagline}</div>
-      <div class="stars">★★★★★ <span class="count">(${p.reviewCount})</span></div>
-      <div class="swatches">${swatches}</div>
-      <div class="price-row">
-        <span class="price">${formatPrice(p.price)}</span>
-        ${p.compareAt ? `<span class="compare-at">${formatPrice(p.compareAt)}</span>` : ""}
-      </div>
-    </a>`;
-  }).join("");
-</script>
+<script src="js/app.js"></script>
 </body>
 </html>
