@@ -1,5 +1,5 @@
 // HomeValue — property estimates for postcode 4209 and surrounds, entirely client-side.
-// Relies on SUBURBS, TYPICAL and DATA_UPDATED from suburbs.js.
+// Relies on SUBURBS, TYPICAL and DATA_UPDATED from suburbs.js, and EMAIL_CONFIG from config.js.
 
 // Adjustment rates, as a share of the suburb median per unit of difference.
 const RATES = {
@@ -137,25 +137,16 @@ function appraise(s) {
 }
 
 // ---------- Rendering ----------
-function renderResult(s, r) {
-  const diff = r.value / r.median - 1;
+// Plain-text pieces of a result, shared by the page and the email.
+function describe(s, r) {
   const typeWord = s.type === 'house' ? 'house' : s.type === 'unit' ? 'unit' : 'townhouse';
-  document.getElementById('r-value').textContent = money(r.value);
-  document.getElementById('r-range').textContent = `${money(r.low)} – ${money(r.high)}`;
-  document.getElementById('r-median').textContent = Math.abs(diff) < 0.01
+  const diff = r.value / r.median - 1;
+  const medianText = Math.abs(diff) < 0.01
     ? `In line with ${r.suburb.name} median ${typeWord}`
     : `${Math.abs(diff * 100).toFixed(0)}% ${diff > 0 ? 'above' : 'below'} ${r.suburb.name} median ${typeWord}`;
-  document.getElementById('r-source').textContent = `Data: ${r.suburb.source}, ${r.suburb.asOf}`;
-  document.getElementById('r-method').textContent = r.method;
-
-  const desc = [`${TYPE_LABELS[s.type]}, ${r.suburb.name} ${r.suburb.postcode}`, `${s.beds} bed · ${s.baths} bath · ${s.cars} car`];
-  if (s.land) desc.push(`${s.land.toLocaleString('en-AU')} m²`);
-  if (s.year) desc.push(`built ${s.year}`);
-  document.getElementById('r-address').textContent = (s.address ? s.address + ' · ' : '') + desc.join(' · ');
-
-  document.getElementById('r-grid-hint').textContent =
-    `Starts from the ${r.suburb.name} median ${typeWord} price, which reflects a typical ${typeWord} there, then adjusts for how yours differs.`;
-
+  const parts = [`${TYPE_LABELS[s.type]}, ${r.suburb.name} ${r.suburb.postcode}`, `${s.beds} bed · ${s.baths} bath · ${s.cars} car`];
+  if (s.land) parts.push(`${s.land.toLocaleString('en-AU')} m²`);
+  if (s.year) parts.push(`built ${s.year}`);
   const t = r.typical;
   const cond = n => ['', 'Poor', 'Fair', 'Average', 'Good', 'Excellent'][n];
   const rows = [
@@ -167,14 +158,85 @@ function renderResult(s, r) {
     ['Condition', cond(t.condition), cond(s.condition), r.adj.condition],
     ['Pool', 'No', s.pool ? 'Yes' : 'No', r.adj.pool],
   ];
+  return { typeWord, medianText, summary: parts.join(' · '), rows };
+}
+
+function renderResult(s, r) {
+  const d = describe(s, r);
+  document.getElementById('r-value').textContent = money(r.value);
+  document.getElementById('r-range').textContent = `${money(r.low)} – ${money(r.high)}`;
+  document.getElementById('r-median').textContent = d.medianText;
+  document.getElementById('r-source').textContent = `Data: ${r.suburb.source}, ${r.suburb.asOf}`;
+  document.getElementById('r-method').textContent = r.method;
+  document.getElementById('r-address').textContent = (s.address ? s.address + ' · ' : '') + d.summary;
+  document.getElementById('r-email').hidden = true;
+
+  document.getElementById('r-grid-hint').textContent =
+    `Starts from the ${r.suburb.name} median ${d.typeWord} price, which reflects a typical ${d.typeWord} there, then adjusts for how yours differs.`;
   document.getElementById('r-grid').innerHTML =
-    `<thead><tr><th></th><th>Typical ${typeWord}</th><th>Yours</th><th>Adjustment</th></tr></thead><tbody>` +
+    `<thead><tr><th></th><th>Typical ${d.typeWord}</th><th>Yours</th><th>Adjustment</th></tr></thead><tbody>` +
     `<tr><td>${r.suburb.name} median</td><td></td><td></td><td>${money(r.median)}</td></tr>` +
-    rows.map(([label, a, b, n]) => `<tr><td>${label}</td><td>${a}</td><td>${b}</td><td>${adjCell(n)}</td></tr>`).join('') +
+    d.rows.map(([label, a, b, n]) => `<tr><td>${label}</td><td>${a}</td><td>${b}</td><td>${adjCell(n)}</td></tr>`).join('') +
     `<tr class="total"><td>Estimated value</td><td></td><td></td><td>${money(r.adjusted)}</td></tr></tbody>`;
 
   resultEl.hidden = false;
   resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ---------- Email (via EmailJS, configured in config.js) ----------
+const emailReady = () => !!(window.emailjs && EMAIL_CONFIG.publicKey && EMAIL_CONFIG.serviceId && EMAIL_CONFIG.templateId);
+const escapeHtml = str => String(str).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
+
+function readContact() {
+  const f = form.elements;
+  return { name: f.name.value.trim(), email: f.email.value.trim(), optIn: f.optin.checked };
+}
+
+function emailParams(s, r, c) {
+  const d = describe(s, r);
+  const cell = 'padding:6px 10px;border-bottom:1px solid #E3E9F1;';
+  const breakdown = d.rows.map(([label, a, b, n]) => {
+    const amount = roundTo(n, 500);
+    return `<tr><td style="${cell}">${label}</td><td style="${cell}">${escapeHtml(a)}</td><td style="${cell}">${escapeHtml(b)}</td>` +
+      `<td style="${cell}text-align:right;">${signed(amount)}</td></tr>`;
+  }).join('');
+  return {
+    to_email: c.email,
+    to_name: c.name || 'there',
+    property: s.address || `Your ${d.typeWord} in ${r.suburb.name}`,
+    property_summary: d.summary,
+    suburb: `${r.suburb.name} ${r.suburb.postcode}`,
+    estimate: money(r.value),
+    range: `${money(r.low)} – ${money(r.high)}`,
+    median_compare: d.medianText,
+    suburb_median: money(r.median),
+    data_source: `${r.suburb.source}, ${r.suburb.asOf}`,
+    breakdown_html: breakdown,
+    market_updates: c.optIn ? 'Yes' : 'No',
+    date: new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }),
+  };
+}
+
+function setEmailStatus(text, cls) {
+  const el = document.getElementById('r-email');
+  el.textContent = text;
+  el.className = 'email-status' + (cls ? ' ' + cls : '');
+  el.hidden = false;
+}
+
+async function sendEstimateEmail(s, r, c) {
+  if (!emailReady()) {
+    console.warn('HomeValue: email is not set up yet. Fill in js/config.js to send estimates by email.');
+    return;
+  }
+  setEmailStatus(`Sending a copy to ${c.email}…`);
+  try {
+    await emailjs.send(EMAIL_CONFIG.serviceId, EMAIL_CONFIG.templateId, emailParams(s, r, c));
+    setEmailStatus(`✓ We've emailed your estimate to ${c.email}`, 'ok');
+  } catch (err) {
+    console.error('HomeValue: email failed', err);
+    setEmailStatus(`We couldn't email ${c.email} just now. Your estimate is shown above.`, 'fail');
+  }
 }
 
 function adjCell(n) {
@@ -213,7 +275,7 @@ function renderSaved() {
     btns.className = 'btns';
     const open = document.createElement('button');
     open.type = 'button'; open.className = 'link open'; open.textContent = 'Open';
-    open.addEventListener('click', () => { fillForm(item.subject); form.requestSubmit(); });
+    open.addEventListener('click', () => { fillForm(item.subject); renderResult(item.subject, appraise(item.subject)); });
     const del = document.createElement('button');
     del.type = 'button'; del.className = 'link'; del.textContent = 'Delete';
     del.addEventListener('click', () => { storeSaved(loadSaved().filter(x => x.id !== item.id)); renderSaved(); });
@@ -242,10 +304,25 @@ function fillForm(s) {
 // ---------- Events ----------
 form.addEventListener('submit', e => {
   e.preventDefault();
+  const emailInput = form.elements.email;
+  const errorEl = document.getElementById('form-error');
+  emailInput.classList.remove('invalid');
+  if (!emailInput.value.trim() || !emailInput.checkValidity()) {
+    emailInput.classList.add('invalid');
+    errorEl.textContent = emailInput.value.trim()
+      ? 'That email address doesn’t look right. Check it and try again.'
+      : 'Enter your email address to get your estimate.';
+    errorEl.hidden = false;
+    emailInput.focus();
+    return;
+  }
+  errorEl.hidden = true;
+
   const s = readSubject();
   const r = appraise(s);
   lastReport = { subject: s, value: r.value };
   renderResult(s, r);
+  sendEstimateEmail(s, r, readContact());
 });
 
 document.getElementById('reset').addEventListener('click', () => {
@@ -265,13 +342,14 @@ document.getElementById('save').addEventListener('click', e => {
   renderSaved();
 });
 
-// Example inputs for a typical Coomera house.
+// Example: shows a sample result for a typical Coomera house without needing an email.
 document.getElementById('load-sample').addEventListener('click', () => {
-  fillForm(
-    { address: 'Example property', suburb: 'Coomera', type: 'house', beds: 4, baths: 2, cars: 2, land: 520, year: 2016, condition: 4, pool: true }
-  );
-  form.requestSubmit();
+  const example = { address: 'Example property', suburb: 'Coomera', type: 'house', beds: 4, baths: 2, cars: 2, land: 520, year: 2016, condition: 4, pool: true };
+  fillForm(example);
+  renderResult(example, appraise(example));
 });
+
+if (emailReady()) emailjs.init({ publicKey: EMAIL_CONFIG.publicKey });
 
 // ---------- Init ----------
 initSuburbs();

@@ -32,7 +32,7 @@
         <a href="#estimate" class="btn big">Get my estimate</a>
         <button type="button" class="btn ghost big" id="load-sample">See an example</button>
       </div>
-      <div class="trust"><span>Free, no sign-up</span><span>9 local suburbs</span><span>Takes under a minute</span></div>
+      <div class="trust"><span>Free, no sign-up</span><span>9 local suburbs</span><span>Sent straight to your inbox</span></div>
     </div>
     <aside class="snapshot" aria-label="Postcode 4209 median prices">
       <div class="snapshot-head"><h2>4209 right now</h2><span class="muted">12-month medians</span></div>
@@ -92,10 +92,22 @@
 
 
     <!-- STEP 2 -->
-    <section class="card">
-      <div class="step-head"><span class="step-num">2</span><h2>Get the estimate</h2></div>
+    <section class="card" id="contact">
+      <div class="step-head"><span class="step-num">2</span><h2>Where should we send your estimate?</h2></div>
+      <p class="hint">We'll show your estimate here and email you a copy with the full breakdown.</p>
+      <div class="grid">
+        <label>First name
+          <input type="text" name="name" id="contact-name" autocomplete="given-name" placeholder="Sam">
+        </label>
+        <label class="span-2">Email *
+          <input type="email" name="email" id="contact-email" autocomplete="email" placeholder="you@example.com" required>
+        </label>
+      </div>
+      <label class="check consent"><input type="checkbox" name="optin" id="contact-optin"> Send me occasional updates on the local property market (optional)</label>
+      <p class="privacy">We only use your details to send your estimate and, if you tick the box, market updates. You can ask us to delete them at any time.</p>
+      <p id="form-error" class="error" role="alert" hidden></p>
       <div class="actions">
-        <button type="submit" class="btn big">Calculate my value</button>
+        <button type="submit" class="btn big" id="submit-btn">Email me my estimate</button>
         <button type="button" class="btn ghost" id="reset">Start over</button>
       </div>
     </section>
@@ -112,6 +124,7 @@
       <span class="pill" id="r-method"></span>
     </div>
     <p class="muted" id="r-address"></p>
+    <p class="email-status" id="r-email" hidden></p>
 
     <div class="result-detail">
       <h3 id="r-grid-title">How the estimate was worked out</h3>
@@ -156,6 +169,8 @@
 </footer>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
+<script src="js/config.js"></script>
 <script src="js/suburbs.js"></script>
 <script src="js/app.js"></script>
 </body>
