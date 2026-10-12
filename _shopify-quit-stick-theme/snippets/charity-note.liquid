@@ -1,0 +1,10 @@
+{%- comment -%}
+  One-line donation message. Settings live in Theme settings → Charity.
+  Usage: {% render 'charity-note' %}
+{%- endcomment -%}
+{%- if settings.charity_enabled and settings.charity_name != blank -%}
+  <p class='charity-note' style='display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 0 0;font-size:13px;font-weight:600;line-height:1.35;text-align:center;'>
+    <svg viewBox='0 0 24 24' width='16' height='16' fill='#C8553D' aria-hidden='true' style='flex:none'><path d='M12 21s-7.5-4.6-7.5-10.4A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 7.5 2.6C19.5 16.4 12 21 12 21Z'/></svg>
+    <span>{{ settings.charity_amount }} from every order goes to {% if settings.charity_url != blank %}<a href='{{ settings.charity_url }}' target='_blank' rel='noopener' style='color:inherit'>{{ settings.charity_name }}</a>{% else %}{{ settings.charity_name }}{% endif %}</span>
+  </p>
+{%- endif -%}

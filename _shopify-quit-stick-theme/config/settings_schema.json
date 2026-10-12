@@ -10,15 +10,60 @@
   {
     "name": "Colours",
     "settings": [
-      { "type": "color", "id": "color_background", "label": "Background", "default": "#F6F1E7" },
-      { "type": "color", "id": "color_surface", "label": "Cards and panels", "default": "#FFFDF8" },
-      { "type": "color", "id": "color_text", "label": "Text", "default": "#1F2A24" },
-      { "type": "color", "id": "color_muted", "label": "Secondary text", "default": "#5D6A62" },
-      { "type": "color", "id": "color_primary", "label": "Primary (forest)", "default": "#24473A" },
-      { "type": "color", "id": "color_primary_text", "label": "Text on primary", "default": "#F6F1E7" },
-      { "type": "color", "id": "color_accent", "label": "Accent (walnut)", "default": "#8A5A3B" },
-      { "type": "color", "id": "color_highlight", "label": "Highlight (mint)", "default": "#CFE6D6" },
-      { "type": "color", "id": "color_border", "label": "Borders", "default": "#E2D9C8" }
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background",
+        "default": "#F6F1E7"
+      },
+      {
+        "type": "color",
+        "id": "color_surface",
+        "label": "Cards and panels",
+        "default": "#FFFDF8"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#1F2A24"
+      },
+      {
+        "type": "color",
+        "id": "color_muted",
+        "label": "Secondary text",
+        "default": "#5D6A62"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary (forest)",
+        "default": "#24473A"
+      },
+      {
+        "type": "color",
+        "id": "color_primary_text",
+        "label": "Text on primary",
+        "default": "#F6F1E7"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent (walnut)",
+        "default": "#8A5A3B"
+      },
+      {
+        "type": "color",
+        "id": "color_highlight",
+        "label": "Highlight (mint)",
+        "default": "#CFE6D6"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Borders",
+        "default": "#E2D9C8"
+      }
     ]
   },
   {
@@ -49,8 +94,51 @@
   {
     "name": "Branding",
     "settings": [
-      { "type": "image_picker", "id": "favicon", "label": "Favicon", "info": "32 x 32 px PNG" },
-      { "type": "image_picker", "id": "share_image", "label": "Social sharing image" }
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "32 x 32 px PNG"
+      },
+      {
+        "type": "image_picker",
+        "id": "share_image",
+        "label": "Social sharing image"
+      }
+    ]
+  },
+  {
+    "name": "Charity",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "charity_enabled",
+        "label": "Show the charity donation message",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "charity_amount",
+        "label": "Amount per order",
+        "default": "$5"
+      },
+      {
+        "type": "text",
+        "id": "charity_name",
+        "label": "Charity name",
+        "default": "Lung Foundation Australia"
+      },
+      {
+        "type": "text",
+        "id": "charity_url",
+        "label": "Charity website",
+        "default": "https://lungfoundation.com.au",
+        "info": "Full web address, starting with https://"
+      },
+      {
+        "type": "paragraph",
+        "content": "Shown under the checkout buttons, in the cart and in the QS Charity section."
+      }
     ]
   },
   {
@@ -97,9 +185,21 @@
   {
     "name": "Social media",
     "settings": [
-      { "type": "text", "id": "social_instagram", "label": "Instagram URL" },
-      { "type": "text", "id": "social_tiktok", "label": "TikTok URL" },
-      { "type": "text", "id": "social_facebook", "label": "Facebook URL" }
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram URL"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok URL"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook URL"
+      }
     ]
   }
 ]
