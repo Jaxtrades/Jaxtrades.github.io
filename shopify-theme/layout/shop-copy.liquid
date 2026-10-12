@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ page_title }}{% unless page_title contains shop.name %} | {{ shop.name }}{% endunless %}</title>
+{%- if page_description %}<meta name="description" content="{{ page_description | escape }}">{% endif %}
+<link rel="canonical" href="{{ canonical_url }}">
+{{ 'shop-copy.css' | asset_url | stylesheet_tag }}
+{{ content_for_header }}
+</head>
+<body>
+
+<div class="announce">Secure checkout with Shopify</div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="{{ routes.root_url }}" class="brand">{{ shop.name }}</a>
+    <button type="button" class="cart-btn" id="open-cart" aria-label="Open cart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      <span class="cart-count" id="cart-count">{{ cart.item_count }}</span>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+  {{ content_for_layout }}
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© {{ 'now' | date: '%Y' }} {{ shop.name }}. Prices in {{ cart.currency.iso_code }}.</p>
+  </div>
+</footer>
+
+<!-- Cart drawer: filled from /cart.js -->
+<div class="overlay" id="overlay" hidden></div>
+<aside class="drawer" id="drawer" aria-label="Cart" aria-hidden="true">
+  <div class="drawer-head">
+    <h2>Your cart</h2>
+    <button type="button" class="icon-btn" id="close-drawer" aria-label="Close">✕</button>
+  </div>
+  <div class="drawer-body">
+    <ul class="cart-list" id="cart-list"></ul>
+    <p class="empty" id="cart-empty">Your cart is empty.</p>
+  </div>
+  <div class="drawer-foot">
+    <div class="sum-row"><span>Subtotal</span><span id="subtotal"></span></div>
+    <div class="sum-row"><span>Shipping</span><span>Calculated at checkout</span></div>
+    <div class="sum-row total"><span>Total</span><span id="total"></span></div>
+    <button type="button" class="btn full" id="checkout-btn">Checkout</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  window.SHOP_COPY = { currency: {{ cart.currency.iso_code | json }}, locale: "en-AU", routes: { cartAdd: "{{ routes.cart_add_url }}.js", cartChange: "{{ routes.cart_change_url }}.js", cart: "{{ routes.cart_url }}.js" } };
+</script>
+<script src="{{ 'shop-copy.js' | asset_url }}" defer></script>
+</body>
+</html>

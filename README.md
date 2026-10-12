@@ -34,3 +34,14 @@ cart drawer (saved in the browser) and a checkout form that emails the order to 
 
 All product content is in `shop/js/product.js`. Fields marked `TODO` are placeholders — fill them from the
 listing (title, image links, options, description, specs) and set your store name, contact email and retail price.
+
+## Shopify copy (`shopify-theme/`)
+
+The same product page as Shopify theme files, uploaded to the unpublished theme "Quit Stick - shop page copy"
+in the quit stick store. It uses the store's real products, variants and photos, Shopify's cart (AJAX API)
+and Shopify checkout. Preview any product with `?view=shop-copy`, e.g.
+`/products/quit-stick-starter-kit?view=shop-copy`.
+
+- `layout/shop-copy.liquid` — header, cart drawer, footer
+- `templates/product.shop-copy.liquid` — product page
+- `assets/shop-copy.css`, `assets/shop-copy.js` — styles and behaviour

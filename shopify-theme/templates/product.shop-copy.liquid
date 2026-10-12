@@ -1,0 +1,114 @@
+{%- layout 'shop-copy' -%}
+{%- comment -%}
+  Product page copied from the GitHub Pages store (shop/index.html), driven by Shopify product data.
+  Preview: /products/<handle>?view=shop-copy
+{%- endcomment -%}
+{%- assign current = product.selected_or_first_available_variant -%}
+{%- assign highlights = product.metafields.custom.highlights.value -%}
+
+<section class="product">
+  <div class="gallery">
+    <div class="main-img" id="main-img">
+      {%- if product.featured_media -%}
+        {%- assign first = current.featured_media | default: product.featured_media -%}
+        {{ first | image_url: width: 1200 | image_tag: alt: first.alt, loading: 'eager', sizes: '(max-width: 820px) 100vw, 560px' }}
+      {%- endif -%}
+    </div>
+    {%- if product.media.size > 1 -%}
+      <div class="thumbs" id="thumbs">
+        {%- for m in product.media -%}
+          {%- if m.media_type == 'image' -%}
+            <button type="button" data-media-id="{{ m.id }}" data-src="{{ m | image_url: width: 1200 }}" data-alt="{{ m.alt | escape }}" aria-label="Show photo {{ forloop.index }}" aria-current="{% if m.id == first.id %}true{% else %}false{% endif %}">
+              {{ m | image_url: width: 160 | image_tag: alt: '', loading: 'lazy' }}
+            </button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="buybox">
+    {%- if product.vendor != blank -%}<p class="sold">{{ product.vendor }}</p>{%- endif -%}
+    <h1>{{ product.title }}</h1>
+    {%- if product.type != blank -%}<p class="tagline">{{ product.type }}</p>{%- endif -%}
+
+    <div class="price-row">
+      <span class="price" id="price">{{ current.price | money }}</span>
+      <s class="compare" id="compare">{% if current.compare_at_price > current.price %}{{ current.compare_at_price | money }}{% endif %}</s>
+      <span class="save" id="save"{% unless current.compare_at_price > current.price %} hidden{% endunless %}>
+        {%- if current.compare_at_price > current.price -%}Save {{ current.compare_at_price | minus: current.price | times: 100 | divided_by: current.compare_at_price }}%{%- endif -%}
+      </span>
+    </div>
+
+    {%- unless product.has_only_default_variant -%}
+      <div id="options">
+        {%- for option in product.options_with_values -%}
+          <div class="opt" role="group" aria-label="{{ option.name | escape }}">
+            <span class="label">{{ option.name }}: <em data-selected="{{ forloop.index0 }}">{{ option.selected_value }}</em></span>
+            <div class="chips">
+              {%- for value in option.values -%}
+                <button type="button" class="chip" data-opt="{{ forloop.parentloop.index0 }}" data-value="{{ value | escape }}" aria-pressed="{% if value == option.selected_value %}true{% else %}false{% endif %}">{{ value }}</button>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endunless -%}
+
+    <div class="qty-row">
+      <span class="label">Quantity</span>
+      <div class="qty">
+        <button type="button" id="qty-minus" aria-label="Decrease quantity">−</button>
+        <input type="number" id="qty" value="1" min="1" max="99" inputmode="numeric" aria-label="Quantity">
+        <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn" id="add-to-cart"{% unless current.available %} disabled{% endunless %}>{% if current.available %}Add to cart{% else %}Sold out{% endif %}</button>
+      <button type="button" class="btn dark" id="buy-now"{% unless current.available %} disabled{% endunless %}>Buy now</button>
+    </div>
+
+    {%- if highlights != blank -%}
+      <ul class="highlights">{% for h in highlights %}<li>{{ h }}</li>{% endfor %}</ul>
+    {%- endif -%}
+
+    <ul class="perks">
+      {%- if shop.shipping_policy != blank -%}<li><a href="{{ shop.shipping_policy.url }}">Shipping policy</a></li>{%- endif -%}
+      {%- if shop.refund_policy != blank -%}<li><a href="{{ shop.refund_policy.url }}">Returns &amp; refunds</a></li>{%- endif -%}
+      <li>Secure checkout</li>
+    </ul>
+  </div>
+</section>
+
+<section class="details">
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" class="tab" aria-selected="true" data-tab="desc">Description</button>
+    <button type="button" role="tab" class="tab" aria-selected="false" data-tab="specs">Specifications</button>
+    <button type="button" role="tab" class="tab" aria-selected="false" data-tab="ship">Shipping &amp; returns</button>
+  </div>
+  <div class="panel rte" data-panel="desc">{{ product.description }}</div>
+  <div class="panel" data-panel="specs" hidden>
+    <table class="specs">
+      {%- if product.vendor != blank -%}<tr><th scope="row">Brand</th><td>{{ product.vendor }}</td></tr>{%- endif -%}
+      {%- if product.type != blank -%}<tr><th scope="row">Type</th><td>{{ product.type }}</td></tr>{%- endif -%}
+      {%- unless product.has_only_default_variant -%}
+        {%- for option in product.options_with_values -%}
+          <tr><th scope="row">{{ option.name }}</th><td>{{ option.values | join: ', ' }}</td></tr>
+        {%- endfor -%}
+      {%- endunless -%}
+      <tr><th scope="row">SKU</th><td id="sku">{{ current.sku | default: '—' }}</td></tr>
+    </table>
+  </div>
+  <div class="panel rte" data-panel="ship" hidden>
+    {%- if shop.shipping_policy != blank or shop.refund_policy != blank -%}
+      {%- if shop.shipping_policy != blank -%}<h3>Shipping</h3>{{ shop.shipping_policy.body }}{%- endif -%}
+      {%- if shop.refund_policy != blank -%}<h3>Returns</h3>{{ shop.refund_policy.body }}{%- endif -%}
+    {%- else -%}
+      <p>Shipping costs are calculated at checkout.</p>
+    {%- endif -%}
+  </div>
+</section>
+
+<script type="application/json" id="product-json">{{ product | json }}</script>
+<script type="application/json" id="current-variant">{{ current.id }}</script>
