@@ -25,3 +25,12 @@ Hope Island 4212). Built for GitHub Pages — no server or build step.
 - `js/app.js` — valuation logic; adjustment rates live in `RATES` at the top
 
 Estimates are informational only — not a formal valuation by a registered valuer.
+
+## Shop (`shop/`)
+
+A separate single-product store at `/shop/`, for AliExpress item
+[1005009503631046](https://www.aliexpress.com/item/1005009503631046.html): gallery, option picker, quantity,
+cart drawer (saved in the browser) and a checkout form that emails the order to `STORE.contactEmail`.
+
+All product content is in `shop/js/product.js`. Fields marked `TODO` are placeholders — fill them from the
+listing (title, image links, options, description, specs) and set your store name, contact email and retail price.

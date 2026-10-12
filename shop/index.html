@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop</title>
+<meta name="description" content="">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛍️</text></svg>">
+<link rel="stylesheet" href="css/shop.css">
+</head>
+<body>
+
+<div class="announce" id="announce"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="./" class="brand" id="brand"></a>
+    <button type="button" class="cart-btn" id="open-cart" aria-label="Open cart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      <span class="cart-count" id="cart-count">0</span>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="product">
+    <div class="gallery">
+      <div class="main-img" id="main-img"></div>
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+
+    <div class="buybox">
+      <p class="sold" id="sold"></p>
+      <h1 id="title"></h1>
+      <p class="rating" id="rating" hidden></p>
+      <p class="tagline" id="tagline"></p>
+
+      <div class="price-row">
+        <span class="price" id="price"></span>
+        <s class="compare" id="compare"></s>
+        <span class="save" id="save"></span>
+      </div>
+
+      <div id="options"></div>
+
+      <div class="qty-row">
+        <span class="label">Quantity</span>
+        <div class="qty">
+          <button type="button" id="qty-minus" aria-label="Decrease quantity">−</button>
+          <input type="number" id="qty" value="1" min="1" max="99" inputmode="numeric" aria-label="Quantity">
+          <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn" id="add-to-cart">Add to cart</button>
+        <button type="button" class="btn dark" id="buy-now">Buy now</button>
+      </div>
+
+      <ul class="highlights" id="highlights"></ul>
+
+      <ul class="perks">
+        <li id="perk-shipping"></li>
+        <li id="perk-returns"></li>
+        <li>Secure checkout</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="details">
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" class="tab" aria-selected="true" data-tab="desc">Description</button>
+      <button type="button" role="tab" class="tab" aria-selected="false" data-tab="specs">Specifications</button>
+      <button type="button" role="tab" class="tab" aria-selected="false" data-tab="ship">Shipping &amp; returns</button>
+    </div>
+    <div class="panel" data-panel="desc" id="description"></div>
+    <div class="panel" data-panel="specs" hidden><table class="specs" id="specs"></table></div>
+    <div class="panel" data-panel="ship" hidden>
+      <p id="ship-text"></p>
+      <p id="returns-text"></p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p id="footer-text"></p>
+  </div>
+</footer>
+
+<!-- Cart drawer -->
+<div class="overlay" id="overlay" hidden></div>
+<aside class="drawer" id="drawer" aria-label="Cart" aria-hidden="true">
+  <div class="drawer-head">
+    <h2 id="drawer-title">Your cart</h2>
+    <button type="button" class="icon-btn" id="close-drawer" aria-label="Close">✕</button>
+  </div>
+
+  <div class="drawer-body" id="cart-view">
+    <ul class="cart-list" id="cart-list"></ul>
+    <p class="empty" id="cart-empty">Your cart is empty.</p>
+  </div>
+
+  <form class="drawer-body" id="checkout-view" hidden novalidate>
+    <label>Full name <input name="name" autocomplete="name" required></label>
+    <label>Email <input name="email" type="email" autocomplete="email" required></label>
+    <label>Phone <input name="phone" type="tel" autocomplete="tel"></label>
+    <label>Address <input name="address" autocomplete="street-address" required></label>
+    <div class="two">
+      <label>Suburb <input name="suburb" autocomplete="address-level2" required></label>
+      <label>Postcode <input name="postcode" autocomplete="postal-code" inputmode="numeric" required></label>
+    </div>
+    <div class="two">
+      <label>State
+        <select name="state" autocomplete="address-level1" required>
+          <option value="">Select</option>
+          <option>ACT</option><option>NSW</option><option>NT</option><option>QLD</option>
+          <option>SA</option><option>TAS</option><option>VIC</option><option>WA</option>
+        </select>
+      </label>
+      <label>Country <input name="country" value="Australia" autocomplete="country-name" required></label>
+    </div>
+    <label>Notes <textarea name="notes" rows="2"></textarea></label>
+    <p class="form-error" id="form-error" hidden>Please fill in the highlighted fields.</p>
+  </form>
+
+  <div class="drawer-body" id="done-view" hidden>
+    <div class="done">
+      <h3>Thanks, your order is ready to send</h3>
+      <p>Your email app should have opened with the order details. Press send to place the order and we'll reply with payment details.</p>
+      <p class="muted" id="order-ref"></p>
+    </div>
+  </div>
+
+  <div class="drawer-foot" id="drawer-foot">
+    <div class="sum-row"><span>Subtotal</span><span id="subtotal"></span></div>
+    <div class="sum-row"><span>Shipping</span><span id="shipping"></span></div>
+    <div class="sum-row total"><span>Total</span><span id="total"></span></div>
+    <button type="button" class="btn full" id="checkout-btn">Checkout</button>
+    <button type="button" class="btn ghost full" id="back-btn" hidden>Back to cart</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/product.js"></script>
+<script src="js/shop.js"></script>
+</body>
+</html>
