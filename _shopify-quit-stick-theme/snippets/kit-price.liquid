@@ -1,0 +1,26 @@
+{%- comment -%}
+  Lowest price of a product, ignoring refill options (any option whose name contains "refill").
+  Usage: {% render 'kit-price', product: p %}            -> formatted money, with "from " if prices vary
+         {% render 'kit-price', product: p, cents: true %} -> plain number in cents (for scripts)
+{%- endcomment -%}
+{%- liquid
+  assign low = 999999999
+  assign high = 0
+  for v in product.variants
+    assign key = v.title | downcase
+    if key contains 'refill'
+      continue
+    endif
+    if v.price < low
+      assign low = v.price
+    endif
+    if v.price > high
+      assign high = v.price
+    endif
+  endfor
+  if low == 999999999
+    assign low = product.price_min
+    assign high = product.price_max
+  endif
+-%}
+{%- if cents -%}{{ low }}{%- else -%}{% if high > low %}from {% endif %}{{ low | money }}{%- endif -%}

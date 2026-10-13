@@ -119,8 +119,15 @@
       {
         "type": "text",
         "id": "charity_amount",
-        "label": "Amount per order",
+        "label": "Donation amount",
         "default": "$5"
+      },
+      {
+        "type": "text",
+        "id": "charity_per",
+        "label": "Donation per",
+        "default": "Starter Kit",
+        "info": "Shown as \"$5 from every Starter Kit goes to …\". Use \"order\" to donate on every order."
       },
       {
         "type": "text",
