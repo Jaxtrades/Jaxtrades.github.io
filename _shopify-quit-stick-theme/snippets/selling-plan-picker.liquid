@@ -1,47 +1,136 @@
 {%- comment -%}
-  One-time / subscribe choice for products with subscription plans
-  (set up in the Shopify Subscriptions app). Renders nothing otherwise.
-  Must sit inside the product form, so the chosen plan is sent as selling_plan.
-  Usage: {% render 'selling-plan-picker', product: product, variant: current_variant, id_prefix: section.id %}
+  One-off / Subscribe & save toggle for a product with subscription plans
+  (set up in the Shopify Subscriptions app). Renders nothing without plans.
+
+  Writes the chosen plan id ('' for one-off) into a hidden input named input_name,
+  and fires a bubbling 'pt:change' event with the current price in event.detail.
+
+  Params:
+    product     (required)
+    variant     defaults to product.selected_or_first_available_variant
+    uid         unique id for this instance (e.g. section.id)
+    input_name  name of the hidden plan input, default 'selling_plan'
+    start       'once' or 'sub', default 'once'
 {%- endcomment -%}
 {%- if product.selling_plan_groups.size > 0 -%}
   {%- liquid
-    assign default_plan = product.selected_selling_plan
-    if product.requires_selling_plan and default_plan == blank
-      assign default_plan = product.selling_plan_groups.first.selling_plans.first
+    assign v = variant | default: product.selected_or_first_available_variant
+    assign input_name = input_name | default: 'selling_plan'
+    assign start = start | default: 'once'
+    if product.requires_selling_plan
+      assign start = 'sub'
     endif
+    assign first_plan = product.selling_plan_groups.first.selling_plans.first
+    assign first_price = v.price
+    for allocation in v.selling_plan_allocations
+      if allocation.selling_plan.id == first_plan.id
+        assign first_price = allocation.price
+      endif
+    endfor
+    assign percent = 0
+    assign adjustment = first_plan.price_adjustments.first
+    if adjustment.value_type == 'percentage'
+      assign percent = adjustment.value
+    elsif v.price > 0
+      assign percent = v.price | minus: first_price | times: 100 | divided_by: v.price
+    endif
+    assign plan_count = 0
+    for group in product.selling_plan_groups
+      assign plan_count = plan_count | plus: group.selling_plans.size
+    endfor
   -%}
-  <fieldset class="plan-picker" style="border:0;padding:0;margin:0 0 1.4rem;display:grid;gap:.6rem;">
-    <legend style="font-weight:600;margin-bottom:.65rem;">{{ 'products.subscriptions.legend' | t }}</legend>
-    {%- unless product.requires_selling_plan -%}
-      <label class="plan-option" style="display:flex;gap:.75rem;align-items:center;padding:.85rem 1rem;border:1.5px solid var(--color-border, #E4E0D6);border-radius:12px;background:var(--color-surface, #fff);cursor:pointer;margin:0;">
-        <input type="radio" name="selling_plan" value="" {% if default_plan == blank %}checked{% endif %} style="width:18px;height:18px;flex:none;">
-        <span style="flex:1;"><b>{{ 'products.subscriptions.one_time' | t }}</b></span>
-        <span style="font-weight:600;">{{ variant.price | money }}</span>
-      </label>
-    {%- endunless -%}
-    {%- for group in product.selling_plan_groups -%}
-      {%- for plan in group.selling_plans -%}
-        {%- liquid
-          assign plan_price = variant.price
-          for allocation in variant.selling_plan_allocations
-            if allocation.selling_plan.id == plan.id
-              assign plan_price = allocation.price
-            endif
-          endfor
-          assign saving = variant.price | minus: plan_price
-          assign saving_money = saving | money
-        -%}
-        <label class="plan-option" style="display:flex;gap:.75rem;align-items:center;padding:.85rem 1rem;border:1.5px solid var(--color-border, #E4E0D6);border-radius:12px;background:var(--color-surface, #fff);cursor:pointer;margin:0;">
-          <input type="radio" name="selling_plan" value="{{ plan.id }}" {% if default_plan.id == plan.id %}checked{% endif %} style="width:18px;height:18px;flex:none;">
-          <span style="flex:1;line-height:1.3;">
-            <b>{{ plan.name }}</b>
-            {%- if saving > 0 %}<br><small style="color:#C8553D;font-weight:600;">{{ 'products.subscriptions.save' | t: amount: saving_money }}</small>{% endif -%}
-          </span>
-          <span style="font-weight:600;">{{ plan_price | money }}</span>
+    <style>
+      .pt{display:grid;gap:10px;font-family:inherit}
+      .pt__opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+      .pt__opt{position:relative;display:grid;gap:2px;align-content:center;min-height:76px;padding:14px 16px;border:2px solid #E4E0D6;border-radius:14px;background:#fff;color:#17332D;cursor:pointer;margin:0;transition:border-color .15s,background .15s}
+      .pt__opt input{position:absolute;opacity:0;pointer-events:none}
+      .pt__opt:has(input:checked){border-color:#17332D;background:#EAF1EC;box-shadow:0 0 0 1px #17332D}
+      .pt__opt:has(input:focus-visible){outline:3px solid #C8553D;outline-offset:2px}
+      .pt__t{font-size:14px;font-weight:700;line-height:1.2}
+      .pt__p{font-size:18px;font-weight:800;line-height:1.2}
+      .pt__p s{font-size:13px;font-weight:500;color:#8B8F8A;margin-left:4px}
+      .pt__badge{position:absolute;top:-10px;right:10px;background:#C8553D;color:#fff;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px}
+      .pt__sub{display:grid;gap:8px;padding:14px 16px;border-radius:14px;background:#17332D;color:#fff}
+      .pt__sub[hidden]{display:none}
+      .pt__subhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+      .pt__subhead b{font-size:15px;letter-spacing:.08em;text-transform:uppercase}
+      .pt__subhead span{font-size:20px;font-weight:800}
+      .pt__subhead s{font-size:13px;font-weight:500;opacity:.6;margin-left:6px}
+      .pt__plans{display:grid;gap:6px}
+      .pt__plan{display:flex;gap:10px;align-items:center;font-size:14px;cursor:pointer;margin:0}
+      .pt__plan input{accent-color:#C8553D;width:16px;height:16px;margin:0}
+      .pt__plan span{flex:1}
+      .pt__note{font-size:12px;opacity:.75;margin:0;line-height:1.4}
+      .pt__every{font-size:14px;margin:0}
+    </style>
+    <script>
+      if (!window.__qsPurchaseToggle) {
+      window.__qsPurchaseToggle = true;
+      document.addEventListener('change', function (e) {
+        var root = e.target.closest && e.target.closest('[data-pt]');
+        if (!root) return;
+        var sub = root.querySelector('[data-pt-mode]:checked');
+        var isSub = sub && sub.value === 'sub';
+        var plan = root.querySelector('[data-pt-plan]:checked') || root.querySelector('[data-pt-plan]');
+        var price = isSub && plan ? +plan.dataset.price : +root.dataset.oncePrice;
+        root.querySelector('[data-pt-input]').value = isSub && plan ? plan.value : '';
+        root.querySelector('[data-pt-sub]').hidden = !isSub;
+        if (isSub && plan) root.querySelector('[data-pt-subprice]').textContent = plan.dataset.money;
+        root.dispatchEvent(new CustomEvent('pt:change', { bubbles: true, detail: { subscribed: isSub, plan: isSub && plan ? plan.value : '', planName: isSub && plan ? plan.dataset.name : '', price: price } }));
+      });
+      }
+    </script>
+  <div class="pt" data-pt data-once-price="{{ v.price }}">
+    <input type="hidden" name="{{ input_name }}" value="{% if start == 'sub' %}{{ first_plan.id }}{% endif %}" data-pt-input>
+    <div class="pt__opts" role="radiogroup" aria-label="{{ 'products.subscriptions.legend' | t }}">
+      {%- unless product.requires_selling_plan -%}
+        <label class="pt__opt">
+          <input type="radio" name="pt-{{ uid }}" value="once" data-pt-mode {% if start == 'once' %}checked{% endif %}>
+          <span class="pt__t">{{ 'products.subscriptions.one_time' | t }}</span>
+          <span class="pt__p">{{ v.price | money }}</span>
         </label>
+      {%- endunless -%}
+      <label class="pt__opt">
+        <input type="radio" name="pt-{{ uid }}" value="sub" data-pt-mode {% if start == 'sub' %}checked{% endif %}>
+        {%- if percent > 0 -%}<span class="pt__badge">{{ 'products.subscriptions.badge' | t: percent: percent }}</span>{%- endif -%}
+        <span class="pt__t">{{ 'products.subscriptions.subscribe' | t }}</span>
+        <span class="pt__p">{{ first_price | money }}{% if first_price < v.price %}<s>{{ v.price | money }}</s>{% endif %}</span>
+      </label>
+    </div>
+    <div class="pt__sub" data-pt-sub {% if start != 'sub' %}hidden{% endif %}>
+      <div class="pt__subhead">
+        <b>{{ 'products.subscriptions.heading' | t }}</b>
+        <span><span data-pt-subprice>{{ first_price | money }}</span>{% if first_price < v.price %}<s>{{ v.price | money }}</s>{% endif %}</span>
+      </div>
+      {%- if plan_count > 1 -%}
+        <div class="pt__plans">
+      {%- endif -%}
+      {%- for group in product.selling_plan_groups -%}
+        {%- for plan in group.selling_plans -%}
+          {%- liquid
+            assign plan_price = v.price
+            for allocation in v.selling_plan_allocations
+              if allocation.selling_plan.id == plan.id
+                assign plan_price = allocation.price
+              endif
+            endfor
+          -%}
+          {%- if plan_count > 1 -%}
+            <label class="pt__plan">
+              <input type="radio" name="pt-plan-{{ uid }}" value="{{ plan.id }}" data-pt-plan data-price="{{ plan_price }}" data-money="{{ plan_price | money | escape }}" data-name="{{ plan.name | escape }}" {% if plan.id == first_plan.id %}checked{% endif %}>
+              <span>{{ plan.name }}</span>
+              <b>{{ plan_price | money }}</b>
+            </label>
+          {%- else -%}
+            <input type="hidden" value="{{ plan.id }}" data-pt-plan data-price="{{ plan_price }}" data-money="{{ plan_price | money | escape }}" data-name="{{ plan.name | escape }}">
+            <p class="pt__every">{{ plan.name }}</p>
+          {%- endif -%}
+        {%- endfor -%}
       {%- endfor -%}
-    {%- endfor -%}
-    <small style="color:var(--color-muted, #5F6B66);">{{ 'products.subscriptions.terms' | t }}</small>
-  </fieldset>
+      {%- if plan_count > 1 -%}
+        </div>
+      {%- endif -%}
+      <p class="pt__note">{{ 'products.subscriptions.terms' | t }}</p>
+    </div>
+  </div>
 {%- endif -%}

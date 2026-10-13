@@ -100,7 +100,7 @@
         {%- endfor -%}
       {%- endunless -%}
 
-      {% render 'selling-plan-picker', product: product, variant: current_variant %}
+      {% render 'selling-plan-picker', product: product, variant: current_variant, uid: section.id %}
 
       <div class="buy-row">
         <div class="quantity">

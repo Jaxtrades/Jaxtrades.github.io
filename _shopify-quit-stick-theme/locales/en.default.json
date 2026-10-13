@@ -35,9 +35,12 @@
     },
     "subscriptions": {
       "legend": "How would you like it?",
-      "one_time": "One-time purchase",
+      "one_time": "One-off purchase",
       "save": "Save {{ amount }} on every delivery",
-      "terms": "Subscriptions renew automatically at the price shown until you cancel. Skip or cancel any time from your account."
+      "terms": "Subscriptions renew automatically at the price shown until you cancel. Skip or cancel any time from your account.",
+      "subscribe": "Subscribe & save",
+      "badge": "Save {{ percent }}%",
+      "heading": "Subscription"
     }
   },
   "cart": {
