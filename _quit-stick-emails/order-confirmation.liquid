@@ -131,7 +131,7 @@
           <tr><td style="padding:14px 0 4px">Subtotal</td><td align="right" style="padding:14px 0 4px">{{ subtotal_price | money }}</td></tr>
           {%- for discount_application in discount_applications -%}
             {%- if discount_application.target_selection == 'all' -%}
-            <tr><td style="padding:4px 0">Discount <span style="display:inline-block;background:#EAF1EC;color:#17332D;font-size:11px;font-weight:700;letter-spacing:.06em;padding:2px 8px;border-radius:999px">{{ discount_application.title | upcase }}</span></td><td align="right" style="padding:4px 0;color:#4E8F6C">&minus;{{ discount_application.total_allocated_amount | money }}</td></tr>
+            <tr><td style="padding:4px 0">{% if discount_application.target_type == 'shipping_line' %}Shipping discount{% else %}Discount{% endif %} <span style="display:inline-block;background:#EAF1EC;color:#17332D;font-size:11px;font-weight:700;letter-spacing:.06em;padding:2px 8px;border-radius:999px">{{ discount_application.title | upcase }}</span></td><td align="right" style="padding:4px 0;color:#4E8F6C">&minus;{{ discount_application.total_allocated_amount | money }}</td></tr>
             {%- endif -%}
           {%- endfor -%}
           {%- if requires_shipping -%}
