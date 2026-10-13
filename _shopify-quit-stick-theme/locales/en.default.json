@@ -32,6 +32,12 @@
       "unavailable": "Unavailable",
       "from_price": "From {{ price }}",
       "view_image": "View image {{ number }}"
+    },
+    "subscriptions": {
+      "legend": "How would you like it?",
+      "one_time": "One-time purchase",
+      "save": "Save {{ amount }} on every delivery",
+      "terms": "Subscriptions renew automatically at the price shown until you cancel. Skip or cancel any time from your account."
     }
   },
   "cart": {

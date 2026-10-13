@@ -1,0 +1,47 @@
+{%- comment -%}
+  One-time / subscribe choice for products with subscription plans
+  (set up in the Shopify Subscriptions app). Renders nothing otherwise.
+  Must sit inside the product form, so the chosen plan is sent as selling_plan.
+  Usage: {% render 'selling-plan-picker', product: product, variant: current_variant, id_prefix: section.id %}
+{%- endcomment -%}
+{%- if product.selling_plan_groups.size > 0 -%}
+  {%- liquid
+    assign default_plan = product.selected_selling_plan
+    if product.requires_selling_plan and default_plan == blank
+      assign default_plan = product.selling_plan_groups.first.selling_plans.first
+    endif
+  -%}
+  <fieldset class="plan-picker" style="border:0;padding:0;margin:0 0 1.4rem;display:grid;gap:.6rem;">
+    <legend style="font-weight:600;margin-bottom:.65rem;">{{ 'products.subscriptions.legend' | t }}</legend>
+    {%- unless product.requires_selling_plan -%}
+      <label class="plan-option" style="display:flex;gap:.75rem;align-items:center;padding:.85rem 1rem;border:1.5px solid var(--color-border, #E4E0D6);border-radius:12px;background:var(--color-surface, #fff);cursor:pointer;margin:0;">
+        <input type="radio" name="selling_plan" value="" {% if default_plan == blank %}checked{% endif %} style="width:18px;height:18px;flex:none;">
+        <span style="flex:1;"><b>{{ 'products.subscriptions.one_time' | t }}</b></span>
+        <span style="font-weight:600;">{{ variant.price | money }}</span>
+      </label>
+    {%- endunless -%}
+    {%- for group in product.selling_plan_groups -%}
+      {%- for plan in group.selling_plans -%}
+        {%- liquid
+          assign plan_price = variant.price
+          for allocation in variant.selling_plan_allocations
+            if allocation.selling_plan.id == plan.id
+              assign plan_price = allocation.price
+            endif
+          endfor
+          assign saving = variant.price | minus: plan_price
+          assign saving_money = saving | money
+        -%}
+        <label class="plan-option" style="display:flex;gap:.75rem;align-items:center;padding:.85rem 1rem;border:1.5px solid var(--color-border, #E4E0D6);border-radius:12px;background:var(--color-surface, #fff);cursor:pointer;margin:0;">
+          <input type="radio" name="selling_plan" value="{{ plan.id }}" {% if default_plan.id == plan.id %}checked{% endif %} style="width:18px;height:18px;flex:none;">
+          <span style="flex:1;line-height:1.3;">
+            <b>{{ plan.name }}</b>
+            {%- if saving > 0 %}<br><small style="color:#C8553D;font-weight:600;">{{ 'products.subscriptions.save' | t: amount: saving_money }}</small>{% endif -%}
+          </span>
+          <span style="font-weight:600;">{{ plan_price | money }}</span>
+        </label>
+      {%- endfor -%}
+    {%- endfor -%}
+    <small style="color:var(--color-muted, #5F6B66);">{{ 'products.subscriptions.terms' | t }}</small>
+  </fieldset>
+{%- endif -%}

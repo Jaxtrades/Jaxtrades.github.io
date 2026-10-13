@@ -100,6 +100,8 @@
         {%- endfor -%}
       {%- endunless -%}
 
+      {% render 'selling-plan-picker', product: product, variant: current_variant %}
+
       <div class="buy-row">
         <div class="quantity">
           <button type="button" data-qty="minus" aria-label="{{ 'cart.decrease' | t }}">&minus;</button>
