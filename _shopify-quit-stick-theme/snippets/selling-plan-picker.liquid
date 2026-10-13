@@ -1,6 +1,7 @@
 {%- comment -%}
   One-off / Subscribe & save toggle for a product with subscription plans
-  (set up in the Shopify Subscriptions app). Renders nothing without plans.
+  (set up in the Shopify Subscriptions app). Renders nothing unless the
+  given variant is in a plan.
 
   Writes the chosen plan id ('' for one-off) into a hidden input named input_name,
   and fires a bubbling 'pt:change' event with the current price in event.detail.
@@ -12,15 +13,15 @@
     input_name  name of the hidden plan input, default 'selling_plan'
     start       'once' or 'sub', default 'once'
 {%- endcomment -%}
-{%- if product.selling_plan_groups.size > 0 -%}
+{%- assign v = variant | default: product.selected_or_first_available_variant -%}
+{%- if product.selling_plan_groups.size > 0 and v.selling_plan_allocations.size > 0 -%}
   {%- liquid
-    assign v = variant | default: product.selected_or_first_available_variant
     assign input_name = input_name | default: 'selling_plan'
     assign start = start | default: 'once'
     if product.requires_selling_plan
       assign start = 'sub'
     endif
-    assign first_plan = product.selling_plan_groups.first.selling_plans.first
+    assign first_plan = v.selling_plan_allocations.first.selling_plan
     assign first_price = v.price
     for allocation in v.selling_plan_allocations
       if allocation.selling_plan.id == first_plan.id
