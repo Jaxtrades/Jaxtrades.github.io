@@ -49,6 +49,8 @@
 
     {% section 'cart-drawer' %}
 
+    {% render 'email-offer' %}
+
     {%- if settings.age_gate_enabled -%}
       {% render 'age-gate' %}
     {%- endif -%}

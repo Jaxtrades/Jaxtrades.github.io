@@ -1,0 +1,159 @@
+{%- comment -%}
+  Email capture popup. Shown once, the first time a visitor adds to cart or
+  heads to checkout. Signing up creates a marketing customer and applies the
+  discount code; skipping carries on with what they clicked.
+{%- endcomment -%}
+{%- if settings.offer_enabled and settings.offer_code != blank -%}
+<style>
+  .qs-offer{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:16px;background:rgba(10,25,22,.62);font-family:'Poppins',system-ui,sans-serif;color:#17332D;animation:qs-offer-in .2s ease-out}
+  .qs-offer[hidden],.qs-offer [hidden]{display:none!important}
+  .qs-offer *{box-sizing:border-box}
+  .qs-offer__box{position:relative;width:100%;max-width:760px;max-height:calc(100vh - 32px);overflow:auto;display:grid;grid-template-columns:{% if settings.offer_image %}.9fr 1.1fr{% else %}1fr{% endif %};background:#fff;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+  .qs-offer__media{background:#F4F2EC}
+  .qs-offer__media img{width:100%;height:100%;object-fit:cover;display:block}
+  .qs-offer__body{padding:clamp(26px,5vw,44px);display:grid;gap:14px;align-content:center;text-align:center;justify-items:center}
+  .qs-offer__eyebrow{margin:0;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#5F6B66}
+  .qs-offer__big{margin:0;font-size:clamp(54px,9vw,84px);font-weight:800;line-height:.95;letter-spacing:-.03em;color:#C8553D}
+  .qs-offer__big span{display:block;font-size:.32em;letter-spacing:.02em;color:#17332D}
+  .qs-offer__title{margin:0;font-size:clamp(20px,2.6vw,26px);font-weight:800;line-height:1.15;letter-spacing:-.01em}
+  .qs-offer__text{margin:0;font-size:15px;line-height:1.55;color:#5F6B66;max-width:30em}
+  .qs-offer form{display:grid;gap:10px;width:100%;margin:6px 0 0}
+  .qs-offer input[type=email]{width:100%;font:inherit;font-size:16px;padding:15px 18px;border:1.5px solid #E4E0D6;border-radius:999px;background:#fff;color:#17332D}
+  .qs-offer input[type=email]:focus{outline:none;border-color:#17332D}
+  .qs-offer__btn{width:100%;font:inherit;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:17px 24px;border:0;border-radius:999px;background:#17332D;color:#fff;cursor:pointer;transition:opacity .15s}
+  .qs-offer__btn:hover{opacity:.9}
+  .qs-offer__btn[disabled]{opacity:.6;cursor:wait}
+  .qs-offer__skip{font:inherit;font-size:13px;color:#5F6B66;background:none;border:0;padding:6px;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+  .qs-offer__x{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.9);color:#17332D;font-size:24px;line-height:1;cursor:pointer;display:grid;place-content:center}
+  .qs-offer__small{margin:0;font-size:11px;line-height:1.5;color:#8B8F8A}
+  .qs-offer__err{margin:0;font-size:13px;color:#B3261E}
+  .qs-offer__code{display:inline-flex;align-items:center;gap:10px;margin:4px 0;padding:12px 22px;border:2px dashed #17332D;border-radius:12px;font-size:22px;font-weight:800;letter-spacing:.12em}
+  .qs-offer__tick{width:52px;height:52px;border-radius:50%;background:#4E8F6C;color:#fff;display:grid;place-content:center;font-size:26px;font-weight:700}
+  @keyframes qs-offer-in{from{opacity:0}to{opacity:1}}
+  @media (max-width:640px){.qs-offer__box{grid-template-columns:1fr}.qs-offer__media{max-height:180px}}
+</style>
+<div class="qs-offer" data-qs-offer data-code="{{ settings.offer_code | escape }}" data-days="{{ settings.offer_days }}" hidden>
+  <div class="qs-offer__box" role="dialog" aria-modal="true" aria-labelledby="QsOfferTitle">
+    <button type="button" class="qs-offer__x" data-offer-skip aria-label="Close">&times;</button>
+    {%- if settings.offer_image -%}
+      <div class="qs-offer__media">{{ settings.offer_image | image_url: width: 800 | image_tag: loading: 'lazy', sizes: '(max-width: 640px) 100vw, 340px', alt: '' }}</div>
+    {%- endif -%}
+    <div class="qs-offer__body" data-offer-step="form">
+      <p class="qs-offer__eyebrow">{{ settings.offer_eyebrow }}</p>
+      <p class="qs-offer__big">{{ settings.offer_percent }}<span>off</span></p>
+      <h2 class="qs-offer__title" id="QsOfferTitle">{{ settings.offer_heading }}</h2>
+      {%- if settings.offer_text != blank -%}<p class="qs-offer__text">{{ settings.offer_text }}</p>{%- endif -%}
+      {%- form 'customer', id: 'QsOfferForm', novalidate: 'novalidate' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter,popup-offer">
+        <label for="QsOfferEmail" class="visually-hidden">Email</label>
+        <input id="QsOfferEmail" type="email" name="contact[email]" required autocomplete="email" placeholder="Your email address">
+        <p class="qs-offer__err" data-offer-error hidden>Please enter a valid email address.</p>
+        <button type="submit" class="qs-offer__btn">{{ settings.offer_button }}</button>
+      {%- endform -%}
+      <button type="button" class="qs-offer__skip" data-offer-skip>{{ settings.offer_decline }}</button>
+      {%- if settings.offer_small != blank -%}<p class="qs-offer__small">{{ settings.offer_small }}</p>{%- endif -%}
+    </div>
+    <div class="qs-offer__body" data-offer-step="done" hidden>
+      <div class="qs-offer__tick" aria-hidden="true">&#10003;</div>
+      <h2 class="qs-offer__title">You're in. Here's your {{ settings.offer_percent }} off.</h2>
+      <p class="qs-offer__code">{{ settings.offer_code }}</p>
+      <p class="qs-offer__text">We've added it to your order. You'll see the discount at checkout.</p>
+      <button type="button" class="qs-offer__btn" data-offer-continue>Continue to checkout</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var root = document.querySelector('[data-qs-offer]');
+  if (!root) return;
+  var KEY = 'qs-offer';
+  var code = root.dataset.code;
+  var days = +root.dataset.days || 0;
+  var design = !!(window.Shopify && window.Shopify.designMode);
+  var pending = null;
+  var claimed = false;
+
+  function read(){ try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { return null; } }
+  function save(s){ if (design) return; try { localStorage.setItem(KEY, JSON.stringify({ s: s, t: Date.now() })); } catch (e) {} }
+  function due(){
+    var st = read();
+    if (!st) return true;
+    if (st.s === 'claimed') return false;
+    return days > 0 && Date.now() - st.t > days * 864e5;
+  }
+  function isTarget(form, submitter){
+    if (submitter && submitter.name === 'checkout') return true;
+    return /\/cart\/add/.test(form.getAttribute('action') || '');
+  }
+  function goesToCheckout(form, submitter){
+    if (submitter && submitter.name === 'checkout') return true;
+    var r = form.querySelector('[name=return_to]');
+    return !!(r && /checkout/.test(r.value));
+  }
+  function open(){
+    root.hidden = false;
+    document.documentElement.style.overflow = 'hidden';
+    var input = root.querySelector('input[type=email]');
+    setTimeout(function(){ input && input.focus(); }, 50);
+  }
+  function close(){
+    root.hidden = true;
+    document.documentElement.style.overflow = '';
+  }
+  function resume(){
+    close();
+    if (!pending) return;
+    var p = pending;
+    pending = null;
+    p.form.dataset.offerPass = '1';
+    var btn = p.submitter && p.form.contains(p.submitter) ? p.submitter : null;
+    if (p.form.requestSubmit) p.form.requestSubmit(btn); else p.form.submit();
+  }
+  function skip(){
+    if (root.hidden) return;
+    if (!claimed) save('dismissed');
+    resume();
+  }
+
+  window.addEventListener('submit', function(e){
+    var form = e.target;
+    if (!(form instanceof HTMLFormElement)) return;
+    if (form.dataset.offerPass) { delete form.dataset.offerPass; return; }
+    if (!isTarget(form, e.submitter) || !due()) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    pending = { form: form, submitter: e.submitter };
+    root.querySelector('[data-offer-continue]').textContent = goesToCheckout(form, e.submitter) ? 'Continue to checkout' : 'Continue';
+    open();
+  }, true);
+
+  root.querySelectorAll('[data-offer-skip]').forEach(function(b){ b.addEventListener('click', skip); });
+  root.addEventListener('click', function(e){ if (e.target === root) skip(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') skip(); });
+  root.querySelector('[data-offer-continue]').addEventListener('click', resume);
+
+  var form = root.querySelector('form');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var email = form.querySelector('[type=email]');
+    var err = root.querySelector('[data-offer-error]');
+    var ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+    err.hidden = ok;
+    if (!ok) { email.focus(); return; }
+    var btn = form.querySelector('[type=submit]');
+    btn.disabled = true;
+    var signup = fetch(form.action, { method: 'POST', body: new FormData(form), credentials: 'same-origin' }).catch(function(){});
+    var apply = fetch('/discount/' + encodeURIComponent(code) + '?redirect=%2Fcart.js', { credentials: 'same-origin' }).catch(function(){});
+    Promise.all([signup, apply]).then(function(){
+      claimed = true;
+      save('claimed');
+      btn.disabled = false;
+      root.querySelector('[data-offer-step=form]').hidden = true;
+      root.querySelector('[data-offer-step=done]').hidden = false;
+      root.querySelector('[data-offer-continue]').focus();
+    });
+  }, true);
+})();
+</script>
+{%- endif -%}

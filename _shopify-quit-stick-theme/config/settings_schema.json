@@ -172,6 +172,84 @@
     ]
   },
   {
+    "name": "Email offer",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "offer_enabled",
+        "label": "Show the discount popup",
+        "default": true,
+        "info": "Pops up the first time someone adds to cart or goes to checkout."
+      },
+      {
+        "type": "text",
+        "id": "offer_code",
+        "label": "Discount code",
+        "default": "WELCOME15",
+        "info": "Must match a discount code in Shopify admin → Discounts."
+      },
+      {
+        "type": "text",
+        "id": "offer_percent",
+        "label": "Big number",
+        "default": "15%"
+      },
+      {
+        "type": "text",
+        "id": "offer_eyebrow",
+        "label": "Eyebrow",
+        "default": "Before you check out"
+      },
+      {
+        "type": "text",
+        "id": "offer_heading",
+        "label": "Heading",
+        "default": "Claim 15% off your first order"
+      },
+      {
+        "type": "textarea",
+        "id": "offer_text",
+        "label": "Text",
+        "default": "Join the Quit Stick list for quitting tips, refill reminders and new flavours. We'll add your code to this order."
+      },
+      {
+        "type": "text",
+        "id": "offer_button",
+        "label": "Button label",
+        "default": "Claim my 15% off"
+      },
+      {
+        "type": "text",
+        "id": "offer_decline",
+        "label": "Skip link",
+        "default": "No thanks, I'll pay full price"
+      },
+      {
+        "type": "text",
+        "id": "offer_small",
+        "label": "Small print",
+        "default": "One use per customer. Not valid on subscriptions. Unsubscribe any time."
+      },
+      {
+        "type": "image_picker",
+        "id": "offer_image",
+        "label": "Image",
+        "info": "Optional. Shown on the left."
+      },
+      {
+        "type": "range",
+        "id": "offer_days",
+        "label": "Show again after skipping",
+        "min": 0,
+        "max": 30,
+        "step": 1,
+        "unit": "d",
+        "default": 7,
+        "info": "0 means never show again once skipped."
+      }
+    ]
+  },
+  {
     "name": "Cart",
     "settings": [
       {
