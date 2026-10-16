@@ -6,16 +6,15 @@
         <p class="pakd-eyebrow">{{ section.settings.eyebrow | escape }}</p>
         <h2 class="pakd-h2" id="Occ-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
       </div>
-      {%- if section.settings.link != blank -%}
-        <a class="pakd-link" href="{{ section.settings.link }}">{{ section.settings.link_label | escape }}</a>
-      {%- endif -%}
+      <a class="pakd-link" href="{{ section.settings.link | default: '/pages/when-to-use' }}">{{ section.settings.link_label | escape }}</a>
     </div>
     <ul class="pakd-occasions" role="list">
+      {%- assign base_link = section.settings.link | default: '/pages/when-to-use' -%}
       {%- for block in section.blocks -%}
         {%- liquid
           assign href = block.settings.link
           if href == blank
-            assign href = section.settings.link | append: '#' | append: block.settings.anchor
+            assign href = base_link | append: '#' | append: block.settings.anchor
           endif
         -%}
         <li {{ block.shopify_attributes }}>
@@ -39,7 +38,7 @@
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "When to use" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Made for real days" },
-    { "type": "url", "id": "link", "label": "When to Use page", "default": "/pages/when-to-use" },
+    { "type": "url", "id": "link", "label": "When to Use page", "info": "Defaults to /pages/when-to-use" },
     { "type": "text", "id": "link_label", "label": "Link label", "default": "All occasions" }
   ],
   "blocks": [
