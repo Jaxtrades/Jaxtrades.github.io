@@ -7,8 +7,8 @@
         "heading": "",
         "subheading": "",
         "cta_label": "Shop Recovery",
-        "cta_link": "shopify://collections/recovery",
-        "chip_collection": "recovery",
+        "cta_link": "shopify://collections/recovery-pouches",
+        "chip_collection": "recovery-pouches",
         "flavour_product_type": "Recovery Pouches"
       }
     },
@@ -17,7 +17,7 @@
       "settings": {
         "eyebrow": "Recovery",
         "heading": "Best sellers",
-        "collection": "recovery",
+        "collection": "recovery-pouches",
         "limit": 4,
         "soldout": "notify",
         "flavour_product_type": "Recovery Pouches",
@@ -31,31 +31,31 @@
         "line_recovery": {
           "type": "line",
           "settings": {
-            "line": "pakd_line.recovery"
+            "line_handle": "recovery"
           }
         },
         "line_energy": {
           "type": "line",
           "settings": {
-            "line": "pakd_line.energy"
+            "line_handle": "energy"
           }
         },
         "line_hydration": {
           "type": "line",
           "settings": {
-            "line": "pakd_line.hydration"
+            "line_handle": "hydration"
           }
         },
         "line_performance": {
           "type": "line",
           "settings": {
-            "line": "pakd_line.performance"
+            "line_handle": "performance"
           }
         },
         "line_daily": {
           "type": "line",
           "settings": {
-            "line": "pakd_line.daily"
+            "line_handle": "daily"
           }
         }
       },
@@ -213,7 +213,7 @@
             "title": "[flavour_count] flavours",
             "text": "Pick a favourite or try them all.",
             "requires": "none",
-            "link": "shopify://collections/recovery",
+            "link": "shopify://collections/recovery-pouches",
             "link_label": "See flavours"
           }
         },
@@ -238,7 +238,7 @@
       "settings": {
         "eyebrow": "Why PAKD",
         "heading": "No bottle. No fuss.",
-        "collection": "recovery",
+        "collection": "recovery-pouches",
         "flavour_product_type": "Recovery Pouches"
       }
     },
@@ -247,7 +247,7 @@
       "settings": {
         "eyebrow": "Reviews",
         "heading": "Straight from customers",
-        "collection": "recovery"
+        "collection": "recovery-pouches"
       }
     },
     "press": {

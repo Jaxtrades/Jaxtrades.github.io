@@ -1,5 +1,5 @@
 {%- comment -%}
-  4. "Recover your way" selector tiles. Each block points at a Product line metaobject
+  4. "Recover your way" selector tiles. Each block names a Product line metaobject handle
   (Content > Metaobjects > Product line). Live lines link to their collection;
   coming-soon lines show a "Tell me first" email capture tagged waitlist-<line>.
   When a line goes live, flip its status in the metaobject. No theme edit needed.
@@ -17,7 +17,7 @@
     <ul class="pakd-tiles" role="list">
       {%- for block in section.blocks -%}
         {%- liquid
-          assign line = block.settings.line
+          assign line = shop.metaobjects.pakd_line[block.settings.line_handle]
           assign key = line.accent_key.value | default: 'recovery'
           assign is_live = false
           if line.status.value == 'Live'
@@ -71,7 +71,7 @@
   ],
   "blocks": [
     { "type": "line", "name": "Product line", "settings": [
-      { "type": "metaobject", "id": "line", "label": "Product line", "metaobject_type": "pakd_line" }
+      { "type": "text", "id": "line_handle", "label": "Product line handle", "info": "Handle of a Product line entry (Content > Metaobjects), e.g. recovery" }
     ] }
   ],
   "presets": [{ "name": "PAKD line selector" }]

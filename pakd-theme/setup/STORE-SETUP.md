@@ -63,8 +63,8 @@ Optional, status unconfirmed: `pakd-electrolytes-mango` (Mango, nicotine-free, 2
 
 ## 4. Collections and menus
 
-- Collection `recovery` (automated: product type is Recovery Pouches OR Recovery Bundle), sorted Best selling
-- `main-menu`: Shop, Recovery, About, FAQ
+- Collection `recovery-pouches` (existing collection; products added manually), sorted Best selling
+- `pakd-main-menu` (new; the live theme keeps `main-menu`): Shop, Recovery, About, FAQ
 - `footer-shop`: Shop all, Recovery, Bundles, When to use
 - `footer-help`: About, FAQ, Contact, Shipping, Returns
 - `footer-work-with-us`: Wholesale, Creator Programme, Sponsorship
