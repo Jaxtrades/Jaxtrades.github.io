@@ -1,0 +1,111 @@
+{%- comment -%}
+  PAKD product card.
+  Params:
+    product     - product object
+    section_id  - for unique ids
+    soldout     - 'notify' (back-in-stock form) | 'show' (disabled button)
+  Data sources (single source of truth):
+    price                         - Shopify variant price
+    pouches per tin               - product.metafields.pakd.line -> Product line metaobject .pouches_per_tin
+    tins in this variant          - variant.metafields.pakd.tins (default 1)
+    flavour / colour              - product.metafields.pakd.flavour / pakd.flavour_colour
+    badge                         - product tag 'badge:best-seller' or 'badge:new'
+    rating                        - product.metafields.reviews.rating / rating_count (review app)
+{%- endcomment -%}
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign line = product.metafields.pakd.line.value
+  assign line_key = line.accent_key.value | default: 'recovery'
+  assign line_name = line.name.value | default: 'Recovery'
+  assign flavour = product.metafields.pakd.flavour.value | default: product.title
+  assign colour = product.metafields.pakd.flavour_colour.value | default: '#B8F33A'
+  assign ppt = line.pouches_per_tin.value
+  assign tins = variant.metafields.pakd.tins.value | default: 1
+  assign pouches = nil
+  if ppt != blank
+    assign pouches = ppt | times: tins
+  endif
+  assign badge = ''
+  if product.tags contains 'badge:best-seller'
+    assign badge = 'Best seller'
+  elsif product.tags contains 'badge:new'
+    assign badge = 'New'
+  endif
+  assign form_id = 'pakd-card-' | append: section_id | append: '-' | append: product.id
+-%}
+<li class="pakd-card{% unless product.available %} pakd-card--soldout{% endunless %}" data-line="{{ line_key }}" style="--chip: {{ colour }}">
+  {%- if badge != '' -%}
+    <span class="pakd-card__badge{% if badge == 'New' %} pakd-card__badge--new{% endif %}">{{ badge }}</span>
+  {%- elsif product.available == false -%}
+    <span class="pakd-card__badge">Sold out</span>
+  {%- endif -%}
+
+  <div class="pakd-card__media">
+    {%- if product.featured_media -%}
+      {{ product.featured_media | image_url: width: 800 | image_tag:
+        loading: 'lazy',
+        widths: '300, 400, 600, 800',
+        sizes: '(min-width: 990px) 25vw, 50vw',
+        alt: product.featured_media.alt | default: product.title
+      }}
+    {%- else -%}
+      {%- render 'pakd-tin', colour: colour, flavour: flavour, line_name: line_name -%}
+    {%- endif -%}
+  </div>
+
+  <div class="pakd-card__body">
+    <h3 class="pakd-card__title"><a href="{{ product.url }}">{{ flavour }}</a></h3>
+    <p class="pakd-card__meta">
+      {{ line_name }} ·
+      {%- if pouches -%}
+        {{ pouches }} pouches
+      {%- else -%}
+        {% render 'pakd-ph', label: 'pouches per tin' %}
+      {%- endif -%}
+    </p>
+    {%- render 'pakd-stars',
+      rating: product.metafields.reviews.rating.value.rating,
+      count: product.metafields.reviews.rating_count.value
+    -%}
+    <p class="pakd-card__price">
+      {%- if variant.price > 0 -%}
+        <span>{{ variant.price | money }}</span>
+        {%- if pouches and pouches > 0 -%}
+          {%- assign ppp = variant.price | times: 1.0 | divided_by: pouches | round -%}
+          <span class="pakd-card__ppp">{{ ppp | money }} per pouch</span>
+        {%- endif -%}
+      {%- else -%}
+        {% render 'pakd-ph', label: 'price' %}
+      {%- endif -%}
+    </p>
+
+    {%- if product.available -%}
+      <product-form class="product-form" data-section-id="{{ section_id }}">
+        <div class="product-form__error-message-wrapper" role="alert" hidden>
+          <span class="product-form__error-message"></span>
+        </div>
+        {%- form 'product', product, id: form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+          <input type="hidden" name="id" value="{{ variant.id }}" class="product-variant-id">
+          <button type="submit" name="add" class="pakd-btn pakd-btn--sm" aria-label="Add {{ flavour | escape }} to cart">
+            <span>Add to cart</span>
+            {%- render 'loading-spinner' -%}
+          </button>
+        {%- endform -%}
+      </product-form>
+    {%- elsif soldout == 'notify' -%}
+      {%- form 'customer', id: form_id, class: 'pakd-bis' -%}
+        <input type="hidden" name="contact[tags]" value="back-in-stock,bis-{{ product.handle }}">
+        {%- if form.posted_successfully? -%}
+          <p class="pakd-form-success" role="status">Got it. We'll email you when it's back.</p>
+        {%- else -%}
+          <p>Back soon. Get an email when it's back.</p>
+          <label class="visually-hidden" for="{{ form_id }}-email">Email address</label>
+          <input class="pakd-input" id="{{ form_id }}-email" type="email" name="contact[email]" autocomplete="email" placeholder="Email" required>
+          <button type="submit" class="pakd-btn pakd-btn--sm pakd-btn--ghost">Notify me</button>
+        {%- endif -%}
+      {%- endform -%}
+    {%- else -%}
+      <div class="pakd-card__cta"><button class="pakd-btn pakd-btn--sm" disabled>Sold out</button></div>
+    {%- endif -%}
+  </div>
+</li>

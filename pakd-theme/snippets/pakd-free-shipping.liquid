@@ -1,0 +1,9 @@
+{%- comment -%}
+  Single source for the free-shipping threshold (Theme settings > PAKD facts).
+  Outputs "$X" (AUD) or a placeholder marker.
+{%- endcomment -%}
+{%- if settings.fact_free_shipping_threshold != blank -%}
+  {{- settings.fact_free_shipping_threshold | times: 100 | money_without_trailing_zeros -}}
+{%- else -%}
+  {%- render 'pakd-ph', label: 'free shipping threshold' -%}
+{%- endif -%}

@@ -1,0 +1,39 @@
+{%- comment -%}
+  9. Press strip. Renders NOTHING until real coverage is added as blocks.
+  Only add outlets that have actually published about PAKD, and link to the article.
+{%- endcomment -%}
+{%- if section.blocks.size > 0 -%}
+  <section class="pakd-section" aria-label="As featured in">
+    <div class="pakd-wrap">
+      <p class="pakd-eyebrow" style="text-align:center">{{ section.settings.heading | escape }}</p>
+      <ul class="pakd-press" role="list">
+        {%- for block in section.blocks -%}
+          <li {{ block.shopify_attributes }}>
+            <a href="{{ block.settings.article_url }}" target="_blank" rel="noopener">
+              {%- if block.settings.logo != blank -%}
+                {{ block.settings.logo | image_url: height: 80 | image_tag: loading: 'lazy', alt: block.settings.outlet }}
+              {%- else -%}{{ block.settings.outlet | escape }}{%- endif -%}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </section>
+{%- elsif request.design_mode -%}
+  <div class="pakd-wrap"><p class="pakd-form-note">Press strip is hidden: no coverage added yet. Add a block per real article to show it.</p></div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PAKD press",
+  "settings": [{ "type": "text", "id": "heading", "label": "Heading", "default": "As featured in" }],
+  "blocks": [
+    { "type": "outlet", "name": "Outlet", "settings": [
+      { "type": "text", "id": "outlet", "label": "Outlet name" },
+      { "type": "image_picker", "id": "logo", "label": "Logo (with permission)" },
+      { "type": "url", "id": "article_url", "label": "Link to the article" }
+    ] }
+  ],
+  "presets": [{ "name": "PAKD press" }]
+}
+{% endschema %}

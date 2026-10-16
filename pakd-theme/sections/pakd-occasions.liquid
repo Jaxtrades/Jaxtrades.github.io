@@ -1,0 +1,58 @@
+{%- comment -%} 6. "When to use" occasion strip. Each card links to its section on the When to Use page. {%- endcomment -%}
+<section class="pakd-section" aria-labelledby="Occ-{{ section.id }}">
+  <div class="pakd-wrap">
+    <div class="pakd-head">
+      <div>
+        <p class="pakd-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        <h2 class="pakd-h2" id="Occ-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+      </div>
+      {%- if section.settings.link != blank -%}
+        <a class="pakd-link" href="{{ section.settings.link }}">{{ section.settings.link_label | escape }}</a>
+      {%- endif -%}
+    </div>
+    <ul class="pakd-occasions" role="list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign href = block.settings.link
+          if href == blank
+            assign href = section.settings.link | append: '#' | append: block.settings.anchor
+          endif
+        -%}
+        <li {{ block.shopify_attributes }}>
+          <a class="pakd-occasion" href="{{ href }}">
+            <span class="pakd-occasion__icon">{% render 'pakd-icon', name: block.settings.icon %}</span>
+            <div>
+              <h3 class="pakd-occasion__title">{{ block.settings.title | escape }}</h3>
+              <span class="pakd-occasion__more">See how {% render 'pakd-icon', name: 'arrow' %}</span>
+            </div>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+<style>#shopify-section-{{ section.id }} .pakd-occasion__more svg { width: 1.6rem; height: 1.6rem; }</style>
+
+{% schema %}
+{
+  "name": "PAKD occasions",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "When to use" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Made for real days" },
+    { "type": "url", "id": "link", "label": "When to Use page", "default": "/pages/when-to-use" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "All occasions" }
+  ],
+  "blocks": [
+    { "type": "occasion", "name": "Occasion", "settings": [
+      { "type": "text", "id": "title", "label": "Title" },
+      { "type": "text", "id": "anchor", "label": "Anchor on When to Use page", "info": "e.g. after-the-gym" },
+      { "type": "url", "id": "link", "label": "Custom link (overrides anchor)" },
+      { "type": "select", "id": "icon", "label": "Icon", "default": "gym", "options": [
+        { "value": "gym", "label": "Gym" }, { "value": "sunrise", "label": "Morning" }, { "value": "plane", "label": "Travel" },
+        { "value": "laptop", "label": "Work" }, { "value": "ball", "label": "Game day" }, { "value": "sun", "label": "Hot weather" }
+      ] }
+    ] }
+  ],
+  "presets": [{ "name": "PAKD occasions" }]
+}
+{% endschema %}

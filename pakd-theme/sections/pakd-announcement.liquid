@@ -1,0 +1,27 @@
+{%- comment -%} 1. Slim announcement bar. Threshold + offer come from Theme settings > PAKD facts. {%- endcomment -%}
+<div class="pakd-announce" role="region" aria-label="Announcement">
+  <p>
+    {%- if section.settings.link != blank -%}<a href="{{ section.settings.link }}">{%- endif -%}
+    Free AU shipping over {% render 'pakd-free-shipping' %}
+    <span class="pakd-dot" aria-hidden="true"></span>
+    {%- if settings.fact_announcement_offer != blank -%}
+      {{ settings.fact_announcement_offer | escape }}
+    {%- else -%}
+      {% render 'pakd-ph', label: 'announcement offer' %}
+    {%- endif -%}
+    {%- if section.settings.link != blank -%}</a>{%- endif -%}
+  </p>
+</div>
+
+{% schema %}
+{
+  "name": "PAKD announcement",
+  "class": "pakd-announcement-section",
+  "settings": [
+    { "type": "paragraph", "content": "Text is built from Theme settings > PAKD facts (free shipping threshold, announcement offer) so it always matches the cart and shipping policy." },
+    { "type": "url", "id": "link", "label": "Link (optional)" }
+  ],
+  "presets": [{ "name": "PAKD announcement" }],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

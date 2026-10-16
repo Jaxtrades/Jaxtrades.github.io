@@ -1,0 +1,73 @@
+{%- comment -%}
+  8. Social proof. Reviews come ONLY from the installed review app (Judge.me or Okendo).
+  - Average and count are calculated from the standard reviews.rating / reviews.rating_count
+    product metafields the app writes, across the chosen collection.
+  - Add the app's carousel/UGC widget as an app block inside this section.
+  - With zero reviews, a "Be one of the first reviewers" prompt shows instead.
+{%- endcomment -%}
+{%- liquid
+  assign total_count = 0
+  assign weighted = 0.0
+  for p in section.settings.collection.products
+    assign c = p.metafields.reviews.rating_count.value | default: 0
+    if c > 0
+      assign r = p.metafields.reviews.rating.value.rating | times: 1.0
+      assign weighted = r | times: c | plus: weighted
+      assign total_count = total_count | plus: c
+    endif
+  endfor
+  assign has_app_block = false
+  for block in section.blocks
+    if block.type == '@app'
+      assign has_app_block = true
+    endif
+  endfor
+-%}
+<section class="pakd-section" aria-labelledby="Reviews-{{ section.id }}">
+  <div class="pakd-wrap">
+    <div class="pakd-head">
+      <div>
+        <p class="pakd-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        <h2 class="pakd-h2" id="Reviews-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+      </div>
+      {%- if total_count > 0 -%}
+        {%- assign avg = weighted | divided_by: total_count -%}
+        <div class="pakd-reviews__summary">
+          <span class="pakd-reviews__score">{{ avg | round: 1 }}</span>
+          {% render 'pakd-stars', rating: avg, count: total_count %}
+          <span>from {{ total_count }} verified review{% if total_count != 1 %}s{% endif %}</span>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if total_count == 0 -%}
+      <div class="pakd-empty">
+        <div>
+          <h3 class="pakd-empty__title">Be one of the first reviewers</h3>
+          <p>Every review here comes from a verified PAKD order. Try a tin and tell us straight.</p>
+        </div>
+        <a class="pakd-btn" href="{{ section.settings.collection.url | default: routes.all_products_collection_url }}">Shop Recovery</a>
+      </div>
+    {%- elsif has_app_block -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == '@app' -%}{% render block %}{%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+    {%- if request.design_mode and has_app_block == false -%}
+      <p class="pakd-form-note">Editor note: install Judge.me or Okendo, then add its reviews carousel as an app block in this section.</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PAKD reviews",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Reviews" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Straight from customers" },
+    { "type": "collection", "id": "collection", "label": "Collection to total ratings from" }
+  ],
+  "blocks": [{ "type": "@app" }],
+  "presets": [{ "name": "PAKD reviews" }]
+}
+{% endschema %}

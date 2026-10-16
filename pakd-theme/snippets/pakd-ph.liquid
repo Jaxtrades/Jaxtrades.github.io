@@ -1,0 +1,6 @@
+{%- comment -%}
+  Visible placeholder marker. Renders whenever a required fact is missing,
+  so nothing unconfirmed can pass as real copy.
+  Usage: {% render 'pakd-ph', label: 'Free shipping threshold' %}
+{%- endcomment -%}
+<span class="pakd-ph" data-pakd-placeholder="{{ label | escape }}">[PLACEHOLDER: {{ label }}]</span>

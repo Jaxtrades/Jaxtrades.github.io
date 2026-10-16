@@ -1,0 +1,79 @@
+{%- comment -%}
+  3. Best sellers grid. Sold-out products are hidden or show a back-in-stock form.
+  In the theme editor only, a consistency check warns if single-flavour prices differ.
+{%- endcomment -%}
+{%- liquid
+  assign products = section.settings.collection.products
+  assign shown = 0
+-%}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+<section class="pakd-section{% if section.settings.background == 'off' %} pakd-section--off{% endif %}" aria-labelledby="Grid-{{ section.id }}">
+  <div class="pakd-wrap">
+    <div class="pakd-head">
+      <div>
+        <p class="pakd-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        <h2 class="pakd-h2" id="Grid-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+      </div>
+      {%- if section.settings.collection != blank -%}
+        <a class="pakd-link" href="{{ section.settings.collection.url }}">{{ section.settings.view_all_label | escape }}</a>
+      {%- endif -%}
+    </div>
+
+    {%- if request.design_mode -%}
+      {%- liquid
+        assign ref_price = nil
+        assign mismatch = false
+        for p in products
+          if p.type == section.settings.flavour_product_type
+            if ref_price == nil
+              assign ref_price = p.price
+            elsif p.price != ref_price
+              assign mismatch = true
+            endif
+          endif
+        endfor
+      -%}
+      {%- if mismatch -%}
+        <p class="pakd-ph" role="alert">Consistency check (editor only): single-flavour tins in this collection have different prices. Make them match before launch.</p>
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if products.size > 0 -%}
+      <ul class="pakd-grid" role="list">
+        {%- for product in products limit: section.settings.limit -%}
+          {%- if product.available == false and section.settings.soldout == 'hide' -%}{%- continue -%}{%- endif -%}
+          {%- assign shown = shown | plus: 1 -%}
+          {%- render 'pakd-card', product: product, section_id: section.id, soldout: section.settings.soldout -%}
+        {%- endfor -%}
+      </ul>
+      {%- if shown == 0 -%}
+        <p class="pakd-lede">Everything's sold out right now. Back soon.</p>
+      {%- endif -%}
+    {%- else -%}
+      <p>{% render 'pakd-ph', label: 'choose a collection with your Recovery products' %}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PAKD product grid",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Recovery" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Best sellers" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Order the collection by Best selling in Shopify admin for a true best-sellers list." },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 12, "step": 1, "default": 4 },
+    { "type": "select", "id": "soldout", "label": "Sold-out products", "default": "notify", "options": [
+      { "value": "notify", "label": "Show back-in-stock form" },
+      { "value": "hide", "label": "Hide" },
+      { "value": "show", "label": "Show as sold out" }
+    ] },
+    { "type": "text", "id": "flavour_product_type", "label": "Single-flavour product type (for price check)", "default": "Recovery Pouches" },
+    { "type": "text", "id": "view_all_label", "label": "View all label", "default": "Shop all Recovery" },
+    { "type": "select", "id": "background", "label": "Background", "default": "white", "options": [
+      { "value": "white", "label": "White" }, { "value": "off", "label": "Off-white" }
+    ] }
+  ],
+  "presets": [{ "name": "PAKD product grid" }]
+}
+{% endschema %}

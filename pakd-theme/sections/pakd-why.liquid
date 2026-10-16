@@ -1,0 +1,67 @@
+{%- comment -%}
+  7. Why PAKD. Benefits are facts about the product only (not health outcomes).
+  A block marked "Requires: nicotine-free confirmation" shows a placeholder
+  until Theme settings > PAKD facts > nicotine-free is ticked.
+  Use [flavour_count] in text to insert the live number of flavours.
+{%- endcomment -%}
+{%- liquid
+  assign flavour_count = 0
+  if section.settings.collection != blank
+    assign flavour_count = section.settings.collection.products | where: 'type', section.settings.flavour_product_type | size
+  endif
+-%}
+<section class="pakd-section pakd-section--off" aria-labelledby="Why-{{ section.id }}">
+  <div class="pakd-wrap">
+    <div class="pakd-head">
+      <div>
+        <p class="pakd-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        <h2 class="pakd-h2" id="Why-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+      </div>
+    </div>
+    <ul class="pakd-why" role="list">
+      {%- for block in section.blocks -%}
+        <li {{ block.shopify_attributes }}>
+          <div class="pakd-why__icon">{% render 'pakd-icon', name: block.settings.icon %}</div>
+          {%- if block.settings.requires == 'nicotine_free' and settings.fact_nicotine_free_confirmed == false -%}
+            <h3 class="pakd-why__title">{% render 'pakd-ph', label: 'confirm nicotine-free in Theme settings' %}</h3>
+          {%- else -%}
+            <h3 class="pakd-why__title">{{ block.settings.title | replace: '[flavour_count]', flavour_count | escape }}</h3>
+          {%- endif -%}
+          <p class="pakd-why__text">
+            {{ block.settings.text | replace: '[flavour_count]', flavour_count | escape }}
+            {%- if block.settings.link != blank %} <a class="pakd-link" href="{{ block.settings.link }}">{{ block.settings.link_label | escape }}</a>{%- endif -%}
+          </p>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PAKD why",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Why PAKD" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "No bottle. No fuss." },
+    { "type": "collection", "id": "collection", "label": "Collection for flavour count" },
+    { "type": "text", "id": "flavour_product_type", "label": "Single-flavour product type", "default": "Recovery Pouches" }
+  ],
+  "max_blocks": 4,
+  "blocks": [
+    { "type": "benefit", "name": "Benefit", "settings": [
+      { "type": "select", "id": "icon", "label": "Icon", "default": "tin", "options": [
+        { "value": "no-nicotine", "label": "No nicotine" }, { "value": "tin", "label": "Tin" },
+        { "value": "flavour", "label": "Flavours" }, { "value": "list", "label": "Ingredients list" }
+      ] },
+      { "type": "text", "id": "title", "label": "Title" },
+      { "type": "text", "id": "text", "label": "Text" },
+      { "type": "url", "id": "link", "label": "Link" },
+      { "type": "text", "id": "link_label", "label": "Link label" },
+      { "type": "select", "id": "requires", "label": "Requires confirmation", "default": "none", "options": [
+        { "value": "none", "label": "None" }, { "value": "nicotine_free", "label": "Nicotine-free confirmation" }
+      ] }
+    ] }
+  ],
+  "presets": [{ "name": "PAKD why" }]
+}
+{% endschema %}

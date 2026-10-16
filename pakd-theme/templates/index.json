@@ -1,0 +1,281 @@
+{
+  "sections": {
+    "hero": {
+      "type": "pakd-hero",
+      "settings": {
+        "eyebrow": "Recovery pouches",
+        "heading": "",
+        "subheading": "",
+        "cta_label": "Shop Recovery",
+        "cta_link": "shopify://collections/recovery",
+        "chip_collection": "recovery",
+        "flavour_product_type": "Recovery Pouches"
+      }
+    },
+    "best_sellers": {
+      "type": "pakd-product-grid",
+      "settings": {
+        "eyebrow": "Recovery",
+        "heading": "Best sellers",
+        "collection": "recovery",
+        "limit": 4,
+        "soldout": "notify",
+        "flavour_product_type": "Recovery Pouches",
+        "view_all_label": "Shop all Recovery",
+        "background": "white"
+      }
+    },
+    "lines": {
+      "type": "pakd-lines",
+      "blocks": {
+        "line_recovery": {
+          "type": "line",
+          "settings": {
+            "line": "pakd_line.recovery"
+          }
+        },
+        "line_energy": {
+          "type": "line",
+          "settings": {
+            "line": "pakd_line.energy"
+          }
+        },
+        "line_hydration": {
+          "type": "line",
+          "settings": {
+            "line": "pakd_line.hydration"
+          }
+        },
+        "line_performance": {
+          "type": "line",
+          "settings": {
+            "line": "pakd_line.performance"
+          }
+        },
+        "line_daily": {
+          "type": "line",
+          "settings": {
+            "line": "pakd_line.daily"
+          }
+        }
+      },
+      "block_order": [
+        "line_recovery",
+        "line_energy",
+        "line_hydration",
+        "line_performance",
+        "line_daily"
+      ],
+      "settings": {
+        "eyebrow": "The range",
+        "heading": "Recover your way",
+        "text": "Recovery is here now. More lines are on the way."
+      }
+    },
+    "how_to": {
+      "type": "pakd-how-to",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "title": "Open the tin",
+            "text": "Pop the lid. Grab one."
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Place a pouch",
+            "text": ""
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Feel better",
+            "text": "Then get on with your day."
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "settings": {
+        "eyebrow": "How it works",
+        "heading": "Three steps. That's it.",
+        "link": "/pages/faq#how-to-use"
+      }
+    },
+    "occasions": {
+      "type": "pakd-occasions",
+      "blocks": {
+        "o0": {
+          "type": "occasion",
+          "settings": {
+            "title": "After the gym",
+            "anchor": "after-the-gym",
+            "link": "",
+            "icon": "gym"
+          }
+        },
+        "o1": {
+          "type": "occasion",
+          "settings": {
+            "title": "The morning after",
+            "anchor": "morning-after",
+            "link": "",
+            "icon": "sunrise"
+          }
+        },
+        "o2": {
+          "type": "occasion",
+          "settings": {
+            "title": "Travel days",
+            "anchor": "travel-days",
+            "link": "",
+            "icon": "plane"
+          }
+        },
+        "o3": {
+          "type": "occasion",
+          "settings": {
+            "title": "Long work days",
+            "anchor": "long-work-days",
+            "link": "",
+            "icon": "laptop"
+          }
+        },
+        "o4": {
+          "type": "occasion",
+          "settings": {
+            "title": "Game day",
+            "anchor": "game-day",
+            "link": "",
+            "icon": "ball"
+          }
+        },
+        "o5": {
+          "type": "occasion",
+          "settings": {
+            "title": "Hot weather",
+            "anchor": "hot-weather",
+            "link": "",
+            "icon": "sun"
+          }
+        }
+      },
+      "block_order": [
+        "o0",
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ],
+      "settings": {
+        "eyebrow": "When to use",
+        "heading": "Made for real days",
+        "link": "/pages/when-to-use",
+        "link_label": "All occasions"
+      }
+    },
+    "why": {
+      "type": "pakd-why",
+      "blocks": {
+        "b1": {
+          "type": "benefit",
+          "settings": {
+            "icon": "no-nicotine",
+            "title": "Nicotine-free",
+            "text": "Zero nicotine. Just the pouch.",
+            "requires": "nicotine_free",
+            "link": "",
+            "link_label": ""
+          }
+        },
+        "b2": {
+          "type": "benefit",
+          "settings": {
+            "icon": "tin",
+            "title": "Pocket tin",
+            "text": "A round, rigid tin that fits in a pocket, gym bag or carry-on.",
+            "requires": "none",
+            "link": "",
+            "link_label": ""
+          }
+        },
+        "b3": {
+          "type": "benefit",
+          "settings": {
+            "icon": "flavour",
+            "title": "[flavour_count] flavours",
+            "text": "Pick a favourite or try them all.",
+            "requires": "none",
+            "link": "shopify://collections/recovery",
+            "link_label": "See flavours"
+          }
+        },
+        "b4": {
+          "type": "benefit",
+          "settings": {
+            "icon": "list",
+            "title": "Every ingredient listed",
+            "text": "Doses per pouch, published on every product page.",
+            "requires": "none",
+            "link": "/pages/ingredients",
+            "link_label": "See ingredients"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4"
+      ],
+      "settings": {
+        "eyebrow": "Why PAKD",
+        "heading": "No bottle. No fuss.",
+        "collection": "recovery",
+        "flavour_product_type": "Recovery Pouches"
+      }
+    },
+    "reviews": {
+      "type": "pakd-reviews",
+      "settings": {
+        "eyebrow": "Reviews",
+        "heading": "Straight from customers",
+        "collection": "recovery"
+      }
+    },
+    "press": {
+      "type": "pakd-press",
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "heading": "As featured in"
+      }
+    },
+    "signup": {
+      "type": "pakd-signup",
+      "settings": {
+        "eyebrow": "Join PAKD",
+        "heading": "Get first dibs.",
+        "text": "New flavours, new lines and members-only drops. No spam."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "best_sellers",
+    "lines",
+    "how_to",
+    "occasions",
+    "why",
+    "reviews",
+    "press",
+    "signup"
+  ]
+}

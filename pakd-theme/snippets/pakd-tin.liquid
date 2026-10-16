@@ -1,0 +1,20 @@
+{%- comment -%}
+  Illustrated round tin used ONLY until real product photography is uploaded.
+  Params: colour (hex), flavour (string), line_name (string), class (string)
+{%- endcomment -%}
+{%- liquid
+  assign c = colour | default: '#B8F33A'
+  assign shade = c | color_darken: 18
+  assign rim = c | color_lighten: 12
+-%}
+<svg class="pakd-tin {{ class }}" viewBox="0 0 400 300" role="img" aria-label="Illustration of a PAKD {{ flavour | escape }} tin">
+  <ellipse cx="200" cy="210" rx="164" ry="56" fill="{{ shade }}"/>
+  <rect x="36" y="112" width="328" height="98" fill="{{ c }}"/>
+  <rect x="36" y="178" width="328" height="24" fill="#0A0A0A" opacity=".9"/>
+  <text x="200" y="195" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="13" letter-spacing="3" fill="#FFFFFF">{{ flavour | upcase | escape }} · {{ line_name | upcase | escape }}</text>
+  <ellipse cx="200" cy="112" rx="164" ry="56" fill="{{ c }}" stroke="#0A0A0A" stroke-width="3"/>
+  <ellipse cx="200" cy="112" rx="140" ry="45" fill="{{ rim }}" stroke="#0A0A0A" stroke-opacity=".25" stroke-width="2"/>
+  <g transform="translate(200 112) scale(1 .36)">
+    <text x="0" y="40" text-anchor="middle" font-family="'Bebas Neue', Impact, sans-serif" font-size="128" fill="#0A0A0A">PAKD</text>
+  </g>
+</svg>

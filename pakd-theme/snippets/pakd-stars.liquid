@@ -1,0 +1,13 @@
+{%- comment -%}
+  Star rating from the standard Shopify reviews metafields, which Judge.me and
+  Okendo both write. Renders nothing when there are no real reviews.
+  Params: rating (number), count (number)
+{%- endcomment -%}
+{%- if count != blank and count > 0 and rating != blank -%}
+  {%- assign pct = rating | times: 20.0 | round: 1 -%}
+  <span class="pakd-stars">
+    <span class="pakd-stars__track" style="--pct: {{ pct }}%" aria-hidden="true"></span>
+    <span aria-hidden="true">{{ rating | round: 1 }} ({{ count }})</span>
+    <span class="visually-hidden">Rated {{ rating | round: 1 }} out of 5 from {{ count }} reviews</span>
+  </span>
+{%- endif -%}
