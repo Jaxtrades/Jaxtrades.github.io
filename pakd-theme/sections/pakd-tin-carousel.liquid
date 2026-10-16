@@ -1,5 +1,5 @@
 {%- comment -%}
-  3. Best sellers: scrollable carousel of tins.
+  3. Best sellers: one tin at a time. Arrows, dots, swipe or arrow keys move to the next product (loops).
   One block per tin. Everything is editable in the theme editor:
   - Tin image fills the circle (upload a square, top-down shot of the tin).
   - Title, short line, badge and button label are plain text settings.
@@ -14,18 +14,15 @@
         <h2 class="pakd-h2" id="Carousel-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
         {%- if section.settings.text != blank -%}<p class="pakd-lede">{{ section.settings.text | escape }}</p>{%- endif -%}
       </div>
-      <div class="pakd-carousel__controls">
-        {%- if section.settings.view_all_label != blank and section.settings.view_all_link != blank -%}
-          <a class="pakd-link" href="{{ section.settings.view_all_link }}">{{ section.settings.view_all_label | escape }}</a>
-        {%- endif -%}
-        <button type="button" class="pakd-carousel__btn" data-dir="-1" aria-controls="Track-{{ section.id }}" aria-label="Previous tins">{% render 'pakd-icon', name: 'arrow' %}</button>
-        <button type="button" class="pakd-carousel__btn" data-dir="1" aria-controls="Track-{{ section.id }}" aria-label="Next tins">{% render 'pakd-icon', name: 'arrow' %}</button>
-      </div>
+      {%- if section.settings.view_all_label != blank and section.settings.view_all_link != blank -%}
+        <a class="pakd-link" href="{{ section.settings.view_all_link }}">{{ section.settings.view_all_label | escape }}</a>
+      {%- endif -%}
     </div>
-  </div>
 
-  <pakd-carousel class="pakd-carousel" style="--per-view: {{ section.settings.per_view }}">
-    <ul class="pakd-carousel__track" id="Track-{{ section.id }}" role="list" tabindex="0" aria-label="{{ section.settings.heading | escape }}, scroll for more">
+  <pakd-carousel class="pakd-carousel" role="region" aria-roledescription="carousel" aria-label="{{ section.settings.heading | escape }}">
+    <div class="pakd-carousel__stage">
+      <button type="button" class="pakd-carousel__btn pakd-carousel__btn--prev" data-dir="-1" aria-controls="Track-{{ section.id }}" aria-label="Previous product">{% render 'pakd-icon', name: 'arrow' %}</button>
+      <ul class="pakd-carousel__track" id="Track-{{ section.id }}" role="list" tabindex="0" aria-live="polite">
       {%- for block in section.blocks -%}
         {%- liquid
           assign p = block.settings.product
@@ -47,7 +44,7 @@
           endif
           assign form_id = 'pakd-tin-' | append: section.id | append: '-' | append: block.id
         -%}
-        <li class="pakd-tin-slide" style="--chip: {{ colour }}" aria-label="{{ forloop.index }} of {{ forloop.length }}" {{ block.shopify_attributes }}>
+        <li class="pakd-tin-slide" style="--chip: {{ colour }}" role="group" aria-roledescription="slide" aria-label="{{ forloop.index }} of {{ forloop.length }}: {{ title | escape }}" {{ block.shopify_attributes }}>
           {%- if block.settings.badge != blank -%}
             <span class="pakd-card__badge">{{ block.settings.badge | escape }}</span>
           {%- elsif p and p.available == false -%}
@@ -59,7 +56,7 @@
               {{ block.settings.image | image_url: width: 900 | image_tag:
                 loading: 'lazy',
                 widths: '300, 450, 600, 900',
-                sizes: '(min-width: 990px) 28vw, 70vw',
+                sizes: '(min-width: 750px) 44rem, 80vw',
                 alt: block.settings.image.alt | default: title
               }}
             {%- else -%}
@@ -131,80 +128,100 @@
           </div>
         </li>
       {%- endfor -%}
-    </ul>
+      </ul>
+      <button type="button" class="pakd-carousel__btn pakd-carousel__btn--next" data-dir="1" aria-controls="Track-{{ section.id }}" aria-label="Next product">{% render 'pakd-icon', name: 'arrow' %}</button>
+    </div>
+    {%- if section.blocks.size > 1 -%}
+      <div class="pakd-carousel__nav">
+        <div class="pakd-carousel__dots">
+          {%- for block in section.blocks -%}
+            <button type="button" class="pakd-carousel__dot" data-index="{{ forloop.index0 }}" aria-label="Show product {{ forloop.index }} of {{ forloop.length }}"{% if forloop.first %} aria-current="true"{% endif %}></button>
+          {%- endfor -%}
+        </div>
+        <p class="pakd-carousel__count" aria-hidden="true"><span data-current>1</span> / {{ section.blocks.size }}</p>
+      </div>
+    {%- endif -%}
   </pakd-carousel>
+  </div>
 </section>
 <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
 
 {% stylesheet %}
   .pakd-carousel { display: block; }
-  .pakd-carousel__controls { display: flex; align-items: center; gap: 0.8rem; }
-  .pakd-carousel__controls .pakd-link { margin-right: 0.8rem; }
+  .pakd-carousel__stage { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1.6rem; }
   .pakd-carousel__btn {
-    display: grid; place-items: center; width: 4.8rem; height: 4.8rem; border-radius: 50%;
-    border: 1.5px solid var(--pakd-ink); background: var(--pakd-paper); color: var(--pakd-ink); cursor: pointer;
+    display: grid; place-items: center; width: 5.6rem; height: 5.6rem; border-radius: 50%;
+    border: 2px solid var(--pakd-ink); background: var(--pakd-paper); color: var(--pakd-ink); cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease; z-index: 2;
   }
-  .pakd-carousel__btn svg { width: 2rem; height: 2rem; }
-  .pakd-carousel__btn[data-dir='-1'] svg { transform: rotate(180deg); }
-  .pakd-carousel__btn:hover:not([disabled]) { background: var(--recovery); }
-  .pakd-carousel__btn[disabled] { opacity: 0.35; cursor: default; }
+  .pakd-carousel__btn svg { width: 2.2rem; height: 2.2rem; }
+  .pakd-carousel__btn--prev svg { transform: rotate(180deg); }
+  .pakd-carousel__btn:hover { background: var(--recovery); transform: scale(1.05); }
   .pakd-carousel__btn:focus-visible { outline: 3px solid var(--pakd-ink); outline-offset: 3px; }
 
   .pakd-carousel__track {
-    --gap: 1.2rem;
-    display: grid; grid-auto-flow: column; gap: var(--gap);
-    grid-auto-columns: 72%;
+    display: grid; grid-auto-flow: column; grid-auto-columns: 100%;
     overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-behavior: smooth;
-    list-style: none; margin: 0;
-    padding-block: 0.4rem 1.6rem;
-    padding-left: max(var(--pakd-gutter), env(safe-area-inset-left, 0px));
-    padding-right: max(var(--pakd-gutter), env(safe-area-inset-right, 0px));
-    scroll-padding-inline: max(var(--pakd-gutter), env(safe-area-inset-left, 0px));
-    scrollbar-width: thin;
+    list-style: none; margin: 0; padding: 0; scrollbar-width: none;
   }
-  .pakd-carousel__track:focus-visible { outline: 3px solid var(--pakd-ink); outline-offset: -3px; }
-  @media screen and (min-width: 750px) { .pakd-carousel__track { --gap: 2rem; grid-auto-columns: calc((100% - var(--pakd-gutter) * 2 - var(--gap) * 2) / 2.5); } }
-  @media screen and (min-width: 1200px) {
-    .pakd-carousel__track {
-      grid-auto-columns: calc((min(100vw, 128rem) - var(--pakd-gutter) * 2 - var(--gap) * (var(--per-view) - 1)) / var(--per-view));
-      padding-left: max(var(--pakd-gutter), calc((100vw - 128rem) / 2 + var(--pakd-gutter)));
-      scroll-padding-inline: max(var(--pakd-gutter), calc((100vw - 128rem) / 2 + var(--pakd-gutter)));
-    }
-  }
+  .pakd-carousel__track::-webkit-scrollbar { display: none; }
+  .pakd-carousel__track:focus-visible { outline: 3px solid var(--pakd-ink); outline-offset: 4px; border-radius: var(--pakd-radius-lg); }
 
   .pakd-tin-slide {
-    position: relative; scroll-snap-align: start;
-    display: flex; flex-direction: column; gap: 1.6rem;
-    padding: 2rem; border-radius: var(--pakd-radius-lg);
-    background: var(--pakd-off); border: 1.5px solid var(--pakd-line);
+    position: relative; scroll-snap-align: start; scroll-snap-stop: always;
+    display: grid; gap: 2.4rem; align-items: center;
+    padding: 2.4rem; border-radius: var(--pakd-radius-lg);
+    background: var(--pakd-off);
   }
-  .pakd-tin-slide .pakd-card__badge { top: 2rem; left: 2rem; }
+  @media screen and (min-width: 750px) {
+    .pakd-tin-slide { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4.8rem; padding: 4.8rem; }
+  }
+  .pakd-tin-slide .pakd-card__badge { top: 2.4rem; left: 2.4rem; font-size: 1.2rem; padding: 0.7rem 1.2rem; }
   .pakd-tin-slide__circle {
     position: relative; display: grid; place-items: center;
-    width: 86%; max-width: 100%; aspect-ratio: 1; margin: 0.8rem auto 0;
+    width: min(100%, 44rem); aspect-ratio: 1; margin: 0 auto;
     border-radius: 50%; overflow: hidden;
     background: var(--chip, var(--recovery));
     border: 3px solid var(--pakd-ink);
-    box-shadow: 0 2.4rem 3.2rem -1.6rem rgba(10, 10, 10, 0.35), inset 0 0 0 1.2rem rgba(255, 255, 255, 0.28);
+    box-shadow: 0 3.2rem 4.8rem -2.4rem rgba(10, 10, 10, 0.4), inset 0 0 0 1.6rem rgba(255, 255, 255, 0.28);
     text-decoration: none; color: var(--pakd-ink);
-    transition: transform 0.25s ease;
+    transition: transform 0.4s ease;
   }
-  .pakd-tin-slide:hover .pakd-tin-slide__circle { transform: rotate(-6deg) scale(1.02); }
+  .pakd-tin-slide:hover .pakd-tin-slide__circle { transform: rotate(-6deg); }
   .pakd-tin-slide__circle img { width: 100%; height: 100%; object-fit: cover; }
-  .pakd-tin-slide__lid { font-family: var(--pakd-display); font-size: clamp(4.8rem, 9vw, 8rem); line-height: 1; letter-spacing: 0.02em; }
+  .pakd-tin-slide__lid { font-family: var(--pakd-display); font-size: clamp(6.4rem, 12vw, 11rem); line-height: 1; letter-spacing: 0.02em; }
   .pakd-tin-slide__hint {
     position: absolute; bottom: 16%; left: 50%; transform: translateX(-50%);
-    padding: 0.4rem 1rem; border-radius: 99rem; background: var(--pakd-paper);
-    font: 600 1.1rem/1.3 var(--pakd-body); white-space: nowrap;
+    padding: 0.5rem 1.2rem; border-radius: 99rem; background: var(--pakd-paper);
+    font: 600 1.2rem/1.3 var(--pakd-body); white-space: nowrap;
   }
-  .pakd-tin-slide__body { display: flex; flex-direction: column; gap: 0.6rem; flex: 1; }
-  .pakd-tin-slide__body .pakd-card__title { font-size: 3.2rem; }
+  .pakd-tin-slide__body { display: flex; flex-direction: column; gap: 1rem; max-width: 44rem; }
+  .pakd-tin-slide__body .pakd-card__title { font-size: clamp(4.8rem, 8vw, 8rem); line-height: 0.9; }
+  .pakd-tin-slide__body .pakd-card__title a { color: inherit; text-decoration: none; }
   .pakd-tin-slide__body .pakd-card__title a::after { content: none; }
-  .pakd-tin-slide__body form, .pakd-tin-slide__body > .pakd-btn { margin-top: auto; padding-top: 0.8rem; }
-  .pakd-tin-slide__body > .pakd-btn { margin-top: auto; }
+  .pakd-tin-slide__body .pakd-card__meta { font-size: 1.6rem; }
+  .pakd-tin-slide__body .pakd-card__price { font-size: 2.4rem; margin-bottom: 0.8rem; }
+  .pakd-tin-slide__body .pakd-card__ppp { font-size: 1.4rem; }
+  .pakd-tin-slide__body .pakd-btn { min-height: 5.6rem; font-size: 1.5rem; }
+
+  .pakd-carousel__nav { display: flex; align-items: center; justify-content: center; gap: 1.6rem; margin-top: 2.4rem; }
+  .pakd-carousel__dots { display: flex; gap: 0.4rem; }
+  .pakd-carousel__dot { width: 2.8rem; height: 2.8rem; border: 0; background: none; padding: 0; cursor: pointer; display: grid; place-items: center; }
+  .pakd-carousel__dot::before { content: ''; width: 1rem; height: 1rem; border-radius: 99rem; background: #c9c6bb; transition: width 0.2s ease, background 0.2s ease; }
+  .pakd-carousel__dot[aria-current='true']::before { width: 2.4rem; background: var(--pakd-ink); }
+  .pakd-carousel__dot:focus-visible { outline: 3px solid var(--pakd-ink); border-radius: 99rem; }
+  .pakd-carousel__count { margin: 0; font: 600 1.3rem/1 var(--pakd-body); color: var(--pakd-muted); font-variant-numeric: tabular-nums; }
+
+  @media screen and (max-width: 749px) {
+    .pakd-carousel__stage { grid-template-columns: minmax(0, 1fr); }
+    .pakd-carousel__btn { position: absolute; top: calc(2.4rem + min(100vw - 8rem, 44rem) / 2); transform: translateY(-50%); width: 4.8rem; height: 4.8rem; }
+    .pakd-carousel__btn:hover { transform: translateY(-50%); }
+    .pakd-carousel__btn--prev { left: 0.8rem; }
+    .pakd-carousel__btn--next { right: 0.8rem; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .pakd-carousel__track { scroll-behavior: auto; }
-    .pakd-tin-slide__circle { transition: none; }
+    .pakd-tin-slide__circle, .pakd-carousel__btn, .pakd-carousel__dot::before { transition: none; }
     .pakd-tin-slide:hover .pakd-tin-slide__circle { transform: none; }
   }
 {% endstylesheet %}
@@ -214,28 +231,40 @@
     customElements.define('pakd-carousel', class extends HTMLElement {
       connectedCallback() {
         this.track = this.querySelector('.pakd-carousel__track');
-        const section = this.closest('section');
-        this.buttons = section ? section.querySelectorAll('.pakd-carousel__btn') : [];
-        this.buttons.forEach((b) => b.addEventListener('click', () => this.go(Number(b.dataset.dir))));
-        this.track.addEventListener('scroll', () => this.update(), { passive: true });
+        this.slides = Array.from(this.track.children);
+        this.dots = Array.from(this.querySelectorAll('.pakd-carousel__dot'));
+        this.current = this.querySelector('[data-current]');
+        this.querySelectorAll('.pakd-carousel__btn').forEach((b) =>
+          b.addEventListener('click', () => this.goTo(this.index() + Number(b.dataset.dir)))
+        );
+        this.dots.forEach((d) => d.addEventListener('click', () => this.goTo(Number(d.dataset.index))));
         this.track.addEventListener('keydown', (e) => {
-          if (e.key === 'ArrowRight') { e.preventDefault(); this.go(1); }
-          if (e.key === 'ArrowLeft') { e.preventDefault(); this.go(-1); }
+          if (e.key === 'ArrowRight') { e.preventDefault(); this.goTo(this.index() + 1); }
+          if (e.key === 'ArrowLeft') { e.preventDefault(); this.goTo(this.index() - 1); }
         });
-        window.addEventListener('resize', () => this.update());
+        let t;
+        this.track.addEventListener('scroll', () => { clearTimeout(t); t = setTimeout(() => this.update(), 60); }, { passive: true });
+        document.addEventListener('shopify:block:select', (e) => {
+          const k = this.slides.indexOf(e.target);
+          if (k > -1) this.goTo(k);
+        });
         this.update();
       }
-      step() {
-        const slide = this.track.querySelector('.pakd-tin-slide');
-        if (!slide) return 0;
-        return slide.getBoundingClientRect().width + parseFloat(getComputedStyle(this.track).columnGap || 0);
+      index() { return Math.round(this.track.scrollLeft / Math.max(1, this.track.clientWidth)); }
+      goTo(i) {
+        const n = this.slides.length;
+        if (!n) return;
+        const target = ((i % n) + n) % n;
+        const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+        this.track.scrollTo({ left: target * this.track.clientWidth, behavior: smooth ? 'smooth' : 'auto' });
+        this.update(target);
       }
-      go(dir) { this.track.scrollBy({ left: dir * this.step(), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
-      update() {
-        const max = this.track.scrollWidth - this.track.clientWidth - 2;
-        this.buttons.forEach((b) => {
-          const dir = Number(b.dataset.dir);
-          b.disabled = dir < 0 ? this.track.scrollLeft <= 2 : this.track.scrollLeft >= max;
+      update(i = this.index()) {
+        this.dots.forEach((d, k) => d.setAttribute('aria-current', k === i ? 'true' : 'false'));
+        if (this.current) this.current.textContent = i + 1;
+        this.slides.forEach((s, k) => {
+          s.inert = k !== i;
+          s.setAttribute('aria-hidden', k === i ? 'false' : 'true');
         });
       }
     });
@@ -251,9 +280,6 @@
     { "type": "text", "id": "text", "label": "Text" },
     { "type": "text", "id": "view_all_label", "label": "View all label", "default": "Shop all Recovery" },
     { "type": "url", "id": "view_all_link", "label": "View all link" },
-    { "type": "select", "id": "per_view", "label": "Tins visible on desktop", "default": "3.5", "options": [
-      { "value": "3", "label": "3" }, { "value": "3.5", "label": "3.5 (hints there's more)" }, { "value": "4", "label": "4" }
-    ] },
     { "type": "select", "id": "soldout", "label": "Sold-out tins", "default": "notify", "options": [
       { "value": "notify", "label": "Show back-in-stock form" },
       { "value": "show", "label": "Show as sold out" }
