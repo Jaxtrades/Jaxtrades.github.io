@@ -13,16 +13,63 @@
       }
     },
     "best_sellers": {
-      "type": "pakd-product-grid",
+      "type": "pakd-tin-carousel",
+      "blocks": {
+        "tin_lime_mint": {
+          "type": "tin",
+          "settings": {
+            "product": "recovery-lime-mint",
+            "title": "Lime Mint",
+            "text": "",
+            "badge": "",
+            "button_label": "Add to cart"
+          }
+        },
+        "tin_lemon_mint": {
+          "type": "tin",
+          "settings": {
+            "product": "recovery-lemon-mint",
+            "title": "Lemon Mint",
+            "text": "",
+            "badge": "",
+            "button_label": "Add to cart"
+          }
+        },
+        "tin_mango": {
+          "type": "tin",
+          "settings": {
+            "product": "recovery-mango",
+            "title": "Mango",
+            "text": "",
+            "badge": "",
+            "button_label": "Add to cart"
+          }
+        },
+        "tin_grapefruit": {
+          "type": "tin",
+          "settings": {
+            "product": "recovery-grapefruit",
+            "title": "Grapefruit",
+            "text": "",
+            "badge": "",
+            "button_label": "Add to cart"
+          }
+        }
+      },
+      "block_order": [
+        "tin_lime_mint",
+        "tin_lemon_mint",
+        "tin_mango",
+        "tin_grapefruit"
+      ],
       "settings": {
         "eyebrow": "Recovery",
         "heading": "Best sellers",
-        "collection": "recovery-pouches",
-        "limit": 4,
-        "soldout": "notify",
-        "flavour_product_type": "Recovery Pouches",
+        "text": "",
         "view_all_label": "Shop all Recovery",
-        "background": "white"
+        "view_all_link": "shopify://collections/recovery-pouches",
+        "per_view": "3.5",
+        "soldout": "notify"
       }
     },
     "lines": {
