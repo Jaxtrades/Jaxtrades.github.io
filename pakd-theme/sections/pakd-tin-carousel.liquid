@@ -26,14 +26,8 @@
       {%- for block in section.blocks -%}
         {%- liquid
           assign p = block.settings.product
-          assign variant = p.selected_or_first_available_variant
           assign line = p.metafields.pakd.line.value
           assign ppt = line.pouches_per_tin.value
-          assign tins = variant.metafields.pakd.tins.value | default: 1
-          assign pouches = nil
-          if ppt != blank
-            assign pouches = ppt | times: tins
-          endif
           assign colour = block.settings.circle_colour
           if colour == blank
             assign colour = p.metafields.pakd.flavour_colour.value | default: '#B8F33A'
@@ -77,8 +71,8 @@
             <p class="pakd-card__meta">
               {%- if block.settings.text != blank -%}
                 {{ block.settings.text | escape }}
-              {%- elsif pouches -%}
-                {{ line.name.value | default: 'Recovery' }} · {{ pouches }} pouches
+              {%- elsif ppt != blank -%}
+                {{ line.name.value | default: 'Recovery' }} · {{ ppt }} pouches per tin
               {%- else -%}
                 {% render 'pakd-ph', label: 'pouches per tin' %}
               {%- endif -%}
@@ -86,44 +80,24 @@
             {%- if p -%}
               {%- render 'pakd-stars', rating: p.metafields.reviews.rating.value.rating, count: p.metafields.reviews.rating_count.value -%}
             {%- endif -%}
-            <p class="pakd-card__price">
-              {%- if p and variant.price > 0 -%}
-                <span>{{ variant.price | money }}</span>
-                {%- if pouches and pouches > 0 -%}
-                  {%- assign ppp = variant.price | times: 1.0 | divided_by: pouches | round -%}
-                  <span class="pakd-card__ppp">{{ ppp | money }} per pouch</span>
-                {%- endif -%}
-              {%- else -%}
-                {% render 'pakd-ph', label: 'price' %}
-              {%- endif -%}
-            </p>
-
             {%- if p and p.available -%}
-              <product-form class="product-form" data-section-id="{{ section.id }}">
-                <div class="product-form__error-message-wrapper" role="alert" hidden>
-                  <span class="product-form__error-message"></span>
-                </div>
-                {%- form 'product', p, id: form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
-                  <input type="hidden" name="id" value="{{ variant.id }}" class="product-variant-id">
-                  <button type="submit" name="add" class="pakd-btn pakd-btn--sm pakd-btn--block" aria-label="{{ block.settings.button_label | escape }}: {{ title | escape }}">
-                    <span>{{ block.settings.button_label | escape }}</span>
-                    {%- render 'loading-spinner' -%}
-                  </button>
-                {%- endform -%}
-              </product-form>
-            {%- elsif p and section.settings.soldout == 'notify' -%}
-              {%- form 'customer', id: form_id, class: 'pakd-bis' -%}
-                <input type="hidden" name="contact[tags]" value="back-in-stock,bis-{{ p.handle }}">
-                {%- if form.posted_successfully? -%}
-                  <p class="pakd-form-success" role="status">Got it. We'll email you when it's back.</p>
-                {%- else -%}
-                  <label class="visually-hidden" for="{{ form_id }}-email">Email address</label>
-                  <input class="pakd-input" id="{{ form_id }}-email" type="email" name="contact[email]" autocomplete="email" placeholder="Email" required>
-                  <button type="submit" class="pakd-btn pakd-btn--sm pakd-btn--ghost">Notify me</button>
-                {%- endif -%}
-              {%- endform -%}
+              {%- render 'pakd-buy-box', product: p, form_id: form_id, section_id: section.id, button_label: block.settings.button_label -%}
             {%- else -%}
-              <button class="pakd-btn pakd-btn--sm pakd-btn--block" disabled>{% if p %}Sold out{% else %}{{ block.settings.button_label | escape }}{% endif %}</button>
+              <p class="pakd-card__price">{% render 'pakd-ph', label: 'price' %}</p>
+              {%- if p and section.settings.soldout == 'notify' -%}
+                {%- form 'customer', id: form_id, class: 'pakd-bis' -%}
+                  <input type="hidden" name="contact[tags]" value="back-in-stock,bis-{{ p.handle }}">
+                  {%- if form.posted_successfully? -%}
+                    <p class="pakd-form-success" role="status">Got it. We'll email you when it's back.</p>
+                  {%- else -%}
+                    <label class="visually-hidden" for="{{ form_id }}-email">Email address</label>
+                    <input class="pakd-input" id="{{ form_id }}-email" type="email" name="contact[email]" autocomplete="email" placeholder="Email" required>
+                    <button type="submit" class="pakd-btn pakd-btn--sm pakd-btn--ghost">Notify me</button>
+                  {%- endif -%}
+                {%- endform -%}
+              {%- else -%}
+                <button class="pakd-btn pakd-btn--block" disabled>{% if p %}Sold out{% else %}{{ block.settings.button_label | escape }}{% endif %}</button>
+              {%- endif -%}
             {%- endif -%}
           </div>
         </li>
@@ -170,7 +144,7 @@
   .pakd-tin-slide {
     position: relative; scroll-snap-align: start; scroll-snap-stop: always;
     display: grid; gap: 2.4rem; align-items: center;
-    padding: 2.4rem; border-radius: var(--pakd-radius-lg);
+    padding: 2.4rem 1.6rem; border-radius: var(--pakd-radius-lg);
     background: var(--pakd-off);
   }
   @media screen and (min-width: 750px) {
@@ -195,7 +169,7 @@
     padding: 0.5rem 1.2rem; border-radius: 99rem; background: var(--pakd-paper);
     font: 600 1.2rem/1.3 var(--pakd-body); white-space: nowrap;
   }
-  .pakd-tin-slide__body { display: flex; flex-direction: column; gap: 1rem; max-width: 44rem; }
+  .pakd-tin-slide__body { display: flex; flex-direction: column; gap: 1rem; max-width: 52rem; min-width: 0; }
   .pakd-tin-slide__body .pakd-card__title { font-size: clamp(4.8rem, 8vw, 8rem); line-height: 0.9; }
   .pakd-tin-slide__body .pakd-card__title a { color: inherit; text-decoration: none; }
   .pakd-tin-slide__body .pakd-card__title a::after { content: none; }
@@ -214,7 +188,7 @@
 
   @media screen and (max-width: 749px) {
     .pakd-carousel__stage { grid-template-columns: minmax(0, 1fr); }
-    .pakd-carousel__btn { position: absolute; top: calc(2.4rem + min(100vw - 8rem, 44rem) / 2); transform: translateY(-50%); width: 4.8rem; height: 4.8rem; }
+    .pakd-carousel__btn { position: absolute; top: calc(2.4rem + min(100vw - 6.4rem, 44rem) / 2); transform: translateY(-50%); width: 4.8rem; height: 4.8rem; }
     .pakd-carousel__btn:hover { transform: translateY(-50%); }
     .pakd-carousel__btn--prev { left: 0.8rem; }
     .pakd-carousel__btn--next { right: 0.8rem; }
@@ -290,7 +264,7 @@
       { "type": "image_picker", "id": "image", "label": "Tin image", "info": "Fills the circle. Use a square, top-down photo of the tin, at least 900 x 900px." },
       { "type": "product", "id": "product", "label": "Product", "info": "Adds live price, price per pouch, rating and add to cart." },
       { "type": "text", "id": "title", "label": "Title", "info": "Leave blank to use the product's flavour name." },
-      { "type": "text", "id": "text", "label": "Short line", "info": "Leave blank to show the line and pouch count from Shopify." },
+      { "type": "text", "id": "text", "label": "Short line", "info": "Leave blank to show pouches per tin from Shopify." },
       { "type": "text", "id": "badge", "label": "Badge", "info": "e.g. Best seller or New. Leave blank for none." },
       { "type": "text", "id": "button_label", "label": "Button label", "default": "Add to cart" },
       { "type": "color", "id": "circle_colour", "label": "Circle colour", "info": "Shows behind or instead of the image. Leave blank to use the product's flavour colour." }

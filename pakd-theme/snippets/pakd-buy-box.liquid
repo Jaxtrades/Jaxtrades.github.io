@@ -1,0 +1,182 @@
+{%- comment -%}
+  PAKD buy box: One-time purchase / Subscribe & save + pack-size cards.
+
+  Params:
+    product      - product object
+    form_id      - unique id for the product form
+    section_id   - section id (for the cart drawer refresh)
+    button_label - add-to-cart label (default "Add to cart")
+
+  Every number is calculated from Shopify, never typed:
+    pack size       - variant.metafields.pakd.tins (1 if blank)
+    pouches         - tins x Product line pouches_per_tin
+    price           - variant.price
+    subscribe price - the variant's price in the product's first selling plan
+                      (needs a subscriptions app, e.g. Shopify Subscriptions)
+    % off / saving  - compared with buying single tins one-time
+    "Most popular"  - variant.metafields.pakd.badge (any text)
+{%- endcomment -%}
+{%- liquid
+  assign ppt = product.metafields.pakd.line.value.pouches_per_tin.value
+  assign label = button_label | default: 'Add to cart'
+
+  comment
+    Base = the single-tin variant (first variant with tins = 1), used for % off and dollar savings.
+  endcomment
+  assign base = product.variants.first
+  for v in product.variants
+    assign t = v.metafields.pakd.tins.value | default: 1
+    if t == 1
+      assign base = v
+      break
+    endif
+  endfor
+  assign base_price = base.price
+
+  assign plan = nil
+  if product.selling_plan_groups.size > 0
+    assign plan = product.selling_plan_groups.first.selling_plans.first
+  endif
+
+  assign selected = product.selected_or_first_available_variant
+  assign mode_default = 'once'
+-%}
+{{ 'pakd-buy-box.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'pakd-buy-box.js' | asset_url }}" defer="defer"></script>
+
+<pakd-buy-box class="pakd-buy" data-mode="{{ mode_default }}">
+  {%- comment -%} Purchase type {%- endcomment -%}
+  <fieldset class="pakd-buy__modes">
+    <legend class="visually-hidden">Purchase type</legend>
+    <label class="pakd-buy__mode">
+      <input type="radio" name="{{ form_id }}-mode" value="once" checked>
+      <span class="pakd-buy__mode-title">One-time purchase</span>
+    </label>
+    <label class="pakd-buy__mode{% unless plan %} is-unavailable{% endunless %}">
+      <input type="radio" name="{{ form_id }}-mode" value="sub"{% unless plan %} disabled{% endunless %}>
+      <span class="pakd-buy__mode-title">Subscribe &amp; save</span>
+      <span class="pakd-buy__mode-sub">
+        {%- if plan -%}
+          {{ plan.name | escape }}, cancel anytime
+        {%- elsif request.design_mode -%}
+          Add a subscription plan to turn this on
+        {%- else -%}
+          Coming soon
+        {%- endif -%}
+      </span>
+    </label>
+  </fieldset>
+
+  {%- comment -%} Pack sizes {%- endcomment -%}
+  <p class="pakd-buy__legend" id="{{ form_id }}-packs" aria-hidden="true">Choose your pack</p>
+  <fieldset class="pakd-buy__packs{% if product.variants.size == 1 %} is-single{% endif %}">
+    <legend class="visually-hidden">Choose your pack</legend>
+    {%- for v in product.variants -%}
+      {%- liquid
+        assign tins = v.metafields.pakd.tins.value | default: 1
+        assign pouches = nil
+        if ppt != blank
+          assign pouches = ppt | times: tins
+        endif
+
+        assign once = v.price
+        assign sub = nil
+        if plan
+          for a in v.selling_plan_allocations
+            if a.selling_plan.id == plan.id
+              assign sub = a.price
+            endif
+          endfor
+        endif
+
+        assign full = base_price | times: tins
+        assign save_once = full | minus: once
+        assign off_once = 0
+        if full > 0 and save_once > 0
+          assign off_once = save_once | times: 100.0 | divided_by: full | round
+        endif
+        if sub
+          assign save_sub = full | minus: sub
+          assign off_sub = 0
+          if full > 0 and save_sub > 0
+            assign off_sub = save_sub | times: 100.0 | divided_by: full | round
+          endif
+        endif
+      -%}
+      <label class="pakd-pack{% unless v.available %} is-soldout{% endunless %}">
+        <input
+          type="radio"
+          name="{{ form_id }}-pack"
+          value="{{ v.id }}"
+          {% if v.id == selected.id %}checked{% endif %}
+          {% unless v.available %}disabled{% endunless %}
+          data-price-once="{{ once | money }}"
+          {% if sub %}data-price-sub="{{ sub | money }}"{% endif %}
+        >
+        <span class="pakd-pack__tags">
+          {%- if off_once > 0 -%}<span class="pakd-pack__off" data-show="once">{{ off_once }}% off</span>{%- endif -%}
+          {%- if sub and off_sub > 0 -%}<span class="pakd-pack__off" data-show="sub">{{ off_sub }}% off</span>{%- endif -%}
+          {%- if v.metafields.pakd.badge.value != blank -%}<span class="pakd-pack__badge">{{ v.metafields.pakd.badge.value | escape }}</span>{%- endif -%}
+        </span>
+        <span class="pakd-pack__head">
+          <span class="pakd-pack__dot" aria-hidden="true"></span>
+          <span class="pakd-pack__tins">{{ tins }} {% if tins == 1 %}tin{% else %}tins{% endif %}</span>
+          <span class="pakd-pack__pouches">
+            {%- if pouches -%}{{ pouches }} pouches{%- else -%}{% render 'pakd-ph', label: 'pouches per tin' %}{%- endif -%}
+          </span>
+        </span>
+        <span class="pakd-pack__deal">
+          {%- if once > 0 -%}
+            <span data-show="once">
+              <strong class="pakd-pack__price">{{ once | money }}</strong>
+              {%- if pouches -%}<span class="pakd-pack__ppp">{{ once | times: 1.0 | divided_by: pouches | round | money }} per pouch</span>{%- endif -%}
+              {%- if save_once > 0 -%}<span class="pakd-pack__save">Save {{ save_once | money }}</span>{%- endif -%}
+            </span>
+            {%- if sub -%}
+              <span data-show="sub">
+                <strong class="pakd-pack__price">{{ sub | money }}</strong>
+                {%- if pouches -%}<span class="pakd-pack__ppp">{{ sub | times: 1.0 | divided_by: pouches | round | money }} per pouch</span>{%- endif -%}
+                {%- if save_sub > 0 -%}<span class="pakd-pack__save">Save {{ save_sub | money }} every delivery</span>{%- endif -%}
+              </span>
+            {%- endif -%}
+          {%- else -%}
+            {% render 'pakd-ph', label: 'price' %}
+          {%- endif -%}
+        </span>
+        {%- unless v.available -%}<span class="pakd-pack__soldout">Sold out</span>{%- endunless -%}
+      </label>
+    {%- endfor -%}
+  </fieldset>
+
+  <product-form class="product-form" data-section-id="{{ section_id }}">
+    <div class="product-form__error-message-wrapper" role="alert" hidden>
+      <span class="product-form__error-message"></span>
+    </div>
+    {%- form 'product', product, id: form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+      <input type="hidden" name="id" value="{{ selected.id }}" class="product-variant-id"{% unless selected.available %} disabled{% endunless %}>
+      {%- if plan -%}
+        <input type="hidden" name="selling_plan" value="{{ plan.id }}" disabled data-selling-plan>
+      {%- endif -%}
+      <button type="submit" name="add" class="pakd-btn pakd-btn--block pakd-buy__submit"{% unless selected.available %} disabled{% endunless %}>
+        <span>
+          {%- if selected.available -%}
+            {{ label | escape }}{% if selected.price > 0 %} · <span data-button-price>{{ selected.price | money }}</span>{% endif %}
+          {%- else -%}
+            Sold out
+          {%- endif -%}
+        </span>
+        {%- render 'loading-spinner' -%}
+      </button>
+    {%- endform -%}
+  </product-form>
+
+  <ul class="pakd-buy__trust" role="list">
+    <li>Secure checkout</li>
+    <li>
+      {%- if settings.fact_dispatch_time != blank -%}Ships {{ settings.fact_dispatch_time | escape }}{%- else -%}{% render 'pakd-ph', label: 'dispatch time' %}{%- endif -%}
+    </li>
+    <li>
+      {%- if settings.fact_returns_window_days != blank -%}{{ settings.fact_returns_window_days }}-day returns{%- else -%}{% render 'pakd-ph', label: 'returns window' %}{%- endif -%}
+    </li>
+  </ul>
+</pakd-buy-box>

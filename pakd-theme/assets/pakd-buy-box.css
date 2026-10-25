@@ -1,0 +1,75 @@
+/* PAKD buy box. Bright accents are fills under black text only (AA). */
+.pakd-buy { display: grid; gap: 1.6rem; }
+.pakd-buy fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+
+/* Show the numbers for the active purchase type only */
+.pakd-buy[data-mode='once'] [data-show='sub'],
+.pakd-buy[data-mode='sub'] [data-show='once'] { display: none !important; }
+
+/* Purchase type: two columns */
+.pakd-buy__modes { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+.pakd-buy__mode {
+  position: relative; display: grid; gap: 0.2rem; align-content: center;
+  min-height: 6.4rem; padding: 1.2rem 1.4rem; cursor: pointer;
+  border: 2px solid var(--pakd-line); border-radius: 1.4rem; background: var(--pakd-paper);
+}
+.pakd-buy__mode input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: inherit; }
+.pakd-buy__mode-title { font: 800 1.4rem/1.2 var(--pakd-body); letter-spacing: 0.02em; text-transform: uppercase; }
+.pakd-buy__mode-sub { font-size: 1.2rem; color: var(--pakd-muted); }
+.pakd-buy__mode:has(input:checked) { border-color: var(--pakd-ink); background: var(--recovery); }
+.pakd-buy__mode:has(input:checked) .pakd-buy__mode-sub { color: var(--pakd-ink); }
+.pakd-buy__mode:has(input:focus-visible) { outline: 3px solid var(--pakd-ink); outline-offset: 2px; }
+.pakd-buy__mode.is-unavailable { cursor: not-allowed; opacity: 0.6; }
+
+/* Pack cards: 2 x 2 like a bundle picker */
+.pakd-buy__legend { font: 800 1.2rem/1 var(--pakd-body); letter-spacing: 0.14em; text-transform: uppercase; margin: 0.4rem 0 0.6rem; }
+.pakd-buy__packs { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 1rem; padding-top: 0.4rem; }
+.pakd-buy__packs.is-single { grid-template-columns: 1fr; }
+.pakd-pack {
+  position: relative; display: grid; gap: 1rem; align-content: start;
+  padding: 1.8rem 1.4rem 1.4rem; cursor: pointer;
+  border: 2px solid var(--pakd-line); border-radius: 1.4rem; background: var(--pakd-paper);
+  transition: border-color 0.15s ease;
+}
+.pakd-pack input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: inherit; }
+.pakd-pack:hover { border-color: #9c998f; }
+.pakd-pack:has(input:checked) { border-color: var(--pakd-ink); box-shadow: 0 0 0 1px var(--pakd-ink); }
+.pakd-pack:has(input:focus-visible) { outline: 3px solid var(--pakd-ink); outline-offset: 2px; }
+.pakd-pack.is-soldout { cursor: not-allowed; opacity: 0.5; }
+
+.pakd-pack__tags { position: absolute; top: 0; left: 50%; transform: translate(-50%, -55%); display: flex; gap: 0.4rem; white-space: nowrap; }
+.pakd-pack__off, .pakd-pack__badge {
+  padding: 0.4rem 0.9rem; border-radius: 99rem;
+  font: 800 1.05rem/1.2 var(--pakd-body); letter-spacing: 0.06em; text-transform: uppercase;
+}
+.pakd-pack__off { background: var(--pakd-ink); color: var(--pakd-paper); }
+.pakd-pack__badge { background: var(--recovery); color: var(--pakd-ink); border: 1.5px solid var(--pakd-ink); }
+
+.pakd-pack__head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.8rem; }
+.pakd-pack__dot { width: 1.8rem; height: 1.8rem; border-radius: 50%; border: 2px solid var(--pakd-ink); flex: none; display: grid; place-items: center; }
+.pakd-pack:has(input:checked) .pakd-pack__dot::after { content: ''; width: 0.8rem; height: 0.8rem; border-radius: 50%; background: var(--pakd-ink); }
+.pakd-pack__tins { font-family: var(--pakd-display); font-size: 2.8rem; line-height: 1; text-transform: uppercase; }
+.pakd-pack__pouches { font: 600 1.15rem/1.2 var(--pakd-body); letter-spacing: 0.06em; text-transform: uppercase; color: var(--pakd-muted); }
+
+.pakd-pack__deal { display: block; padding: 1rem 1.2rem; border-radius: 1rem; background: var(--pakd-off); }
+.pakd-pack:has(input:checked) .pakd-pack__deal { background: color-mix(in srgb, var(--recovery) 35%, #fff); }
+.pakd-pack__deal > span { display: grid; gap: 0.2rem; }
+.pakd-pack__price { font: 800 1.9rem/1.1 var(--pakd-body); }
+.pakd-pack__ppp { font: 600 1.25rem/1.3 var(--pakd-body); }
+.pakd-pack__save { font: 600 1.2rem/1.3 var(--pakd-body); color: var(--recovery-ink); }
+.pakd-pack:has(input:checked) .pakd-pack__save { color: var(--pakd-ink); }
+.pakd-pack__soldout { font: 800 1.1rem/1 var(--pakd-body); text-transform: uppercase; letter-spacing: 0.08em; }
+
+.pakd-buy__submit { min-height: 5.6rem; font-size: 1.5rem; }
+.pakd-buy__trust { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1.6rem; list-style: none; margin: 0; padding: 0; font: 600 1.2rem/1.4 var(--pakd-body); color: var(--pakd-muted); }
+.pakd-buy__trust li::before { content: '✓'; margin-right: 0.5rem; color: var(--pakd-ink); }
+
+@media (prefers-reduced-motion: reduce) { .pakd-pack { transition: none; } }
+
+@media screen and (max-width: 749px) {
+  .pakd-pack__tags { position: static; transform: none; flex-wrap: wrap; white-space: normal; }
+  .pakd-pack__tags:empty { display: none; }
+  .pakd-buy__packs { gap: 1rem; }
+  .pakd-pack { padding-inline: 1.2rem; }
+  .pakd-pack__deal { padding: 0.9rem 1rem; }
+}
