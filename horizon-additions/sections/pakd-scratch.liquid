@@ -1,0 +1,270 @@
+{%- comment -%}
+  PAKD scratch card pop-up.
+  1. Pops up once per visitor after a short delay (not again for "Show again after" days, never after claiming).
+  2. The shopper scratches the tin (finger or mouse) or taps "Reveal it" to see the reward.
+  3. To claim, they enter their email: they're added as a customer with email marketing
+     consent and tagged (default "scratch-10").
+  4. Only after a successful sign-up does the page show the discount code, with a button that
+     applies it at checkout. The code never appears in the page before then.
+  The discount itself is a normal discount code in Shopify admin > Discounts; type its code below.
+{%- endcomment -%}
+{%- render 'pakd-tokens' -%}
+{%- liquid
+  assign form_id = 'PakdScratch-' | append: section.id
+  assign tags = 'newsletter,' | append: section.settings.tag
+  assign code = section.settings.code | strip
+  assign shop_url = section.settings.shop_link | default: routes.all_products_collection_url
+  assign apply_url = shop_url
+  if code != blank
+    assign apply_url = '/discount/' | append: code | append: '?redirect=' | append: shop_url
+  endif
+-%}
+{%- if section.settings.enabled or request.design_mode -%}
+<pakd-scratch
+  class="pakd-scratch pakd-scratch-{{ section.id }}"
+  data-delay="{{ section.settings.delay }}"
+  data-days="{{ section.settings.days }}"
+  data-key="pakd-scratch-{{ section.id }}"
+  {% if request.design_mode %}data-editor{% endif %}
+>
+  <dialog class="pakd-scratch__dialog" aria-labelledby="{{ form_id }}-title">
+    <button type="button" class="pakd-scratch__close" data-close aria-label="Close">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+
+    {%- form 'customer', id: form_id, class: 'pakd-scratch__form' -%}
+      {%- if form.posted_successfully? -%}
+        <div class="pakd-scratch__claimed" data-state="claimed">
+          <p class="pakd-scratch__eyebrow">{{ section.settings.success_eyebrow }}</p>
+          <h2 class="pakd-scratch__title" id="{{ form_id }}-title">{{ section.settings.success_heading }}</h2>
+          {%- if code != blank -%}
+            <p class="pakd-scratch__text">{{ section.settings.success_text }}</p>
+            <div class="pakd-scratch__code">
+              <span class="pakd-scratch__code-value" data-code>{{ code | escape }}</span>
+              <button type="button" class="pakd-scratch__copy" data-copy>Copy</button>
+            </div>
+            <a class="pakd-scratch__cta" href="{{ apply_url }}">{{ section.settings.success_button }}</a>
+          {%- else -%}
+            <p class="pakd-scratch__text">Thanks, you're on the list.</p>
+            {%- if request.design_mode -%}<p class="pakd-scratch__warn">Editor note: add the discount code in this section's settings.</p>{%- endif -%}
+          {%- endif -%}
+        </div>
+      {%- else -%}
+        <p class="pakd-scratch__eyebrow">{{ section.settings.eyebrow }}</p>
+        <h2 class="pakd-scratch__title" id="{{ form_id }}-title">{{ section.settings.heading }}</h2>
+
+        <div class="pakd-scratch__card">
+          <div class="pakd-scratch__prize" aria-live="polite">
+            <span class="pakd-scratch__prize-big">{{ section.settings.prize }}</span>
+            <span class="pakd-scratch__prize-sub">{{ section.settings.prize_sub }}</span>
+          </div>
+          <canvas class="pakd-scratch__foil" aria-hidden="true"></canvas>
+        </div>
+        <p class="pakd-scratch__hint" data-hint>{{ section.settings.hint }}</p>
+        <button type="button" class="pakd-scratch__reveal" data-reveal>Reveal it</button>
+
+        <div class="pakd-scratch__claim" data-claim hidden>
+          <input type="hidden" name="contact[tags]" value="{{ tags | escape }}">
+          <input type="hidden" name="contact[accepts_marketing]" value="true">
+          <label class="pakd-sr" for="{{ form_id }}-email">Email</label>
+          <div class="pakd-scratch__field">
+            <input id="{{ form_id }}-email" class="pakd-scratch__input" type="email" name="contact[email]" placeholder="Your email" autocomplete="email" autocapitalize="off" spellcheck="false" required>
+            <button type="submit" class="pakd-scratch__submit">{{ section.settings.button }}</button>
+          </div>
+          {%- if form.errors -%}
+            <p class="pakd-scratch__error" data-state="error">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+          {%- endif -%}
+          {%- if section.settings.fine_print != blank -%}<p class="pakd-scratch__fine">{{ section.settings.fine_print }}</p>{%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endform -%}
+  </dialog>
+</pakd-scratch>
+{%- endif -%}
+
+<style>
+  .pakd-scratch-{{ section.id }} { --scratch-accent: {{ section.settings.accent }}; --scratch-bg: {{ section.settings.background }}; }
+</style>
+
+{% stylesheet %}
+  .pakd-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .pakd-scratch__dialog {
+    box-sizing: border-box; width: min(420px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto;
+    border: 0; border-radius: 24px; padding: 32px 24px 24px; color: var(--pakd-ink, #0A2540);
+    background: var(--scratch-bg, #fff); box-shadow: 0 30px 80px rgba(10, 37, 64, .35); text-align: center;
+  }
+  .pakd-scratch__dialog::backdrop { background: rgba(10, 37, 64, .55); backdrop-filter: blur(3px); }
+  .pakd-scratch__dialog[open] { animation: pakd-pop .35s cubic-bezier(.2, .9, .3, 1.2); }
+  @keyframes pakd-pop { from { transform: scale(.9) translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .pakd-scratch__close { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border: 0; border-radius: 50%; background: transparent; color: inherit; cursor: pointer; display: grid; place-items: center; }
+  .pakd-scratch__close:hover { background: rgba(10, 37, 64, .06); }
+  .pakd-scratch__close:focus-visible, .pakd-scratch__reveal:focus-visible, .pakd-scratch__submit:focus-visible, .pakd-scratch__cta:focus-visible, .pakd-scratch__copy:focus-visible { outline: 3px solid rgba(0, 119, 255, .4); outline-offset: 2px; }
+  .pakd-scratch__form { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .pakd-scratch__eyebrow { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--scratch-accent, #0077FF); }
+  .pakd-scratch__title { margin: 0; font-family: var(--font-heading--family, inherit); font-size: clamp(24px, 6vw, 30px); line-height: 1.1; letter-spacing: -.02em; font-weight: 600; color: var(--pakd-ink, #0A2540); }
+
+  .pakd-scratch__card { position: relative; width: min(260px, 70vw); aspect-ratio: 1; margin: 8px auto 0; border-radius: 50%; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none;
+    box-shadow: 0 0 0 8px #fff, 0 0 0 10px var(--pakd-line, #D6E9F5), 0 18px 40px rgba(10, 37, 64, .2); }
+  .pakd-scratch__prize { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: var(--scratch-accent, #0077FF); color: #fff; }
+  .pakd-scratch__prize-big { font-family: var(--font-heading--family, inherit); font-size: clamp(44px, 13vw, 58px); font-weight: 700; line-height: .95; letter-spacing: -.03em; }
+  .pakd-scratch__prize-sub { font-size: 14px; font-weight: 600; opacity: .9; }
+  .pakd-scratch__foil { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; transition: opacity .5s ease; }
+  .pakd-scratch__foil:active { cursor: grabbing; }
+  .pakd-scratch.is-revealed .pakd-scratch__foil { opacity: 0; pointer-events: none; }
+  .pakd-scratch__hint { margin: 0; font-size: 14px; color: var(--pakd-support, #2D5778); }
+  .pakd-scratch.is-revealed .pakd-scratch__hint, .pakd-scratch.is-revealed .pakd-scratch__reveal { display: none; }
+  .pakd-scratch__reveal { border: 0; background: none; padding: 4px 8px; font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; color: var(--pakd-support, #2D5778); cursor: pointer; }
+
+  .pakd-scratch__claim { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+  .pakd-scratch__claim[hidden] { display: none; }
+  .pakd-scratch.is-revealed .pakd-scratch__claim { animation: pakd-rise .4s ease both; }
+  @keyframes pakd-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .pakd-scratch__field { display: flex; flex-direction: column; gap: 8px; }
+  .pakd-scratch__input { width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; padding: 14px 16px; border: 1.5px solid var(--pakd-line, #D6E9F5); border-radius: 12px; color: var(--pakd-ink, #0A2540); background: #fff; }
+  .pakd-scratch__input:focus { outline: 2px solid var(--scratch-accent, #0077FF); outline-offset: 1px; }
+  .pakd-scratch__submit, .pakd-scratch__cta { display: block; width: 100%; box-sizing: border-box; border: 0; border-radius: 12px; padding: 15px 16px; font: inherit; font-size: 15px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; text-decoration: none; text-align: center; cursor: pointer; background: var(--pakd-ink, #0A2540); color: #fff; transition: background .2s ease; }
+  .pakd-scratch__submit:hover, .pakd-scratch__cta:hover { background: var(--scratch-accent, #0077FF); }
+  .pakd-scratch__error { margin: 0; font-size: 13px; color: #A32D2D; }
+  .pakd-scratch__fine { margin: 0; font-size: 11.5px; line-height: 1.4; color: var(--pakd-support, #2D5778); }
+  .pakd-scratch__warn { margin: 0; font-size: 12px; color: #A35B00; }
+
+  .pakd-scratch__claimed { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; }
+  .pakd-scratch__text { margin: 0; font-size: 15px; color: var(--pakd-support, #2D5778); }
+  .pakd-scratch__code { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; box-sizing: border-box; padding: 8px 8px 8px 16px; border: 2px dashed var(--scratch-accent, #0077FF); border-radius: 14px; background: var(--pakd-ice, #EAF6FD); }
+  .pakd-scratch__code-value { font-size: 22px; font-weight: 700; letter-spacing: .12em; font-variant-numeric: tabular-nums; }
+  .pakd-scratch__copy { border: 0; border-radius: 10px; padding: 10px 14px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; background: var(--scratch-accent, #0077FF); color: #fff; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pakd-scratch__dialog[open], .pakd-scratch.is-revealed .pakd-scratch__claim { animation: none; }
+    .pakd-scratch__foil { transition: none; }
+  }
+{% endstylesheet %}
+
+<script>
+  if (!customElements.get('pakd-scratch')) {
+    customElements.define('pakd-scratch', class extends HTMLElement {
+      connectedCallback() {
+        this.dialog = this.querySelector('dialog');
+        this.canvas = this.querySelector('.pakd-scratch__foil');
+        this.claim = this.querySelector('[data-claim]');
+        this.querySelector('[data-close]')?.addEventListener('click', () => this.close());
+        this.dialog.addEventListener('cancel', () => this.remember('dismissed'));
+        this.dialog.addEventListener('click', (e) => { if (e.target === this.dialog) this.close(); });
+        this.querySelector('[data-reveal]')?.addEventListener('click', () => this.reveal());
+        this.querySelector('[data-copy]')?.addEventListener('click', (e) => this.copy(e.currentTarget));
+
+        const claimed = this.querySelector('[data-state="claimed"]');
+        const errored = this.querySelector('[data-state="error"]');
+        if (claimed) { this.remember('claimed'); this.open(); return; }
+        if (errored) { this.open(); this.reveal(); return; }
+
+        if (this.hasAttribute('data-editor')) {
+          document.addEventListener('shopify:section:select', (e) => { if (this.closest('.shopify-section')?.contains(e.target) || e.target.contains(this)) this.open(); });
+          document.addEventListener('shopify:section:deselect', (e) => { if (e.target.contains(this)) this.dialog.close(); });
+          return;
+        }
+        if (!this.shouldShow()) return;
+        setTimeout(() => this.open(), Math.max(0, Number(this.dataset.delay || 0)) * 1000);
+      }
+
+      store() { try { return JSON.parse(localStorage.getItem(this.dataset.key) || 'null'); } catch (e) { return null; } }
+      remember(state) { try { localStorage.setItem(this.dataset.key, JSON.stringify({ state, at: Date.now() })); } catch (e) {} }
+      shouldShow() {
+        const s = this.store();
+        if (!s) return true;
+        if (s.state === 'claimed') return false;
+        const days = Number(this.dataset.days || 0);
+        return Date.now() - s.at > days * 86400000;
+      }
+
+      open() {
+        if (this.dialog.open) return;
+        this.dialog.showModal();
+        if (!this.ready && this.canvas) { this.ready = true; requestAnimationFrame(() => this.setupFoil()); }
+      }
+      close() { this.dialog.close(); if (!this.querySelector('[data-state="claimed"]')) this.remember('dismissed'); }
+
+      setupFoil() {
+        const c = this.canvas, box = c.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+        c.width = Math.round(box.width * dpr); c.height = Math.round(box.height * dpr);
+        const ctx = c.getContext('2d'); this.ctx = ctx; this.dpr = dpr;
+        const w = c.width, h = c.height;
+        const g = ctx.createLinearGradient(0, 0, w, h);
+        g.addColorStop(0, '#c9d3dc'); g.addColorStop(.25, '#f4f7fa'); g.addColorStop(.5, '#aeb9c4'); g.addColorStop(.75, '#eef2f6'); g.addColorStop(1, '#b8c2cc');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+        for (let i = 0; i < 900; i++) { ctx.fillStyle = `rgba(255,255,255,${Math.random() * .35})`; ctx.fillRect(Math.random() * w, Math.random() * h, dpr, dpr); }
+        ctx.fillStyle = 'rgba(10,37,64,.75)'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.font = `700 ${Math.round(w * .085)}px system-ui, sans-serif`;
+        ctx.fillText('SCRATCH', w / 2, h / 2 - w * .06);
+        ctx.fillText('HERE', w / 2, h / 2 + w * .06);
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = w * .14;
+
+        let drawing = false, last = null, moves = 0;
+        const point = (e) => { const r = c.getBoundingClientRect(); return { x: (e.clientX - r.left) * dpr, y: (e.clientY - r.top) * dpr }; };
+        c.addEventListener('pointerdown', (e) => { drawing = true; last = point(e); c.setPointerCapture(e.pointerId); this.scratch(last, last); });
+        c.addEventListener('pointermove', (e) => {
+          if (!drawing) return;
+          const p = point(e); this.scratch(last, p); last = p;
+          if (++moves % 8 === 0 && this.cleared() > .45) this.reveal();
+        });
+        const stop = () => { drawing = false; if (this.cleared() > .45) this.reveal(); };
+        c.addEventListener('pointerup', stop); c.addEventListener('pointercancel', stop);
+      }
+      scratch(a, b) { const ctx = this.ctx; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+      cleared() {
+        if (!this.ctx) return 0;
+        const { width: w, height: h } = this.canvas, data = this.ctx.getImageData(0, 0, w, h).data;
+        let clear = 0, total = 0;
+        for (let i = 3; i < data.length; i += 4 * 24) { total++; if (data[i] === 0) clear++; }
+        return total ? clear / total : 0;
+      }
+
+      reveal() {
+        if (this.classList.contains('is-revealed')) return;
+        this.classList.add('is-revealed');
+        if (this.claim) { this.claim.hidden = false; setTimeout(() => this.claim.querySelector('input[type="email"]')?.focus(), 350); }
+        if (!this.store()) this.remember('dismissed');
+      }
+
+      async copy(button) {
+        const code = this.querySelector('[data-code]')?.textContent.trim();
+        if (!code) return;
+        try { await navigator.clipboard.writeText(code); button.textContent = 'Copied ✓'; }
+        catch (e) { const r = document.createRange(); r.selectNodeContents(this.querySelector('[data-code]')); getSelection().removeAllRanges(); getSelection().addRange(r); }
+      }
+    });
+  }
+</script>
+
+{% schema %}
+{
+  "name": "PAKD scratch pop-up",
+  "tag": "div",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Show the pop-up", "default": true },
+    { "type": "range", "id": "delay", "label": "Show after", "min": 0, "max": 60, "step": 1, "unit": "s", "default": 6 },
+    { "type": "range", "id": "days", "label": "Show again after (if closed without claiming)", "min": 1, "max": 60, "step": 1, "unit": "d", "default": 14 },
+    { "type": "header", "content": "Scratch card" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Welcome to PAKD" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Scratch to reveal your reward" },
+    { "type": "text", "id": "hint", "label": "Hint", "default": "Use your finger or mouse to scratch the tin." },
+    { "type": "text", "id": "prize", "label": "Reward (big text)", "default": "10% OFF" },
+    { "type": "text", "id": "prize_sub", "label": "Reward (small text)", "default": "your first order" },
+    { "type": "color", "id": "accent", "label": "Reward colour", "default": "#0077FF" },
+    { "type": "color", "id": "background", "label": "Pop-up background", "default": "#FFFFFF" },
+    { "type": "header", "content": "Claim" },
+    { "type": "text", "id": "button", "label": "Claim button", "default": "Claim my 10% off" },
+    { "type": "text", "id": "tag", "label": "Customer tag", "default": "scratch-10", "info": "Sign-ups get this tag, so you can find them in Customers or email them later." },
+    { "type": "text", "id": "fine_print", "label": "Fine print", "default": "Every scratch reveals 10% off. One use per customer. By signing up you agree to get PAKD emails. Unsubscribe anytime." },
+    { "type": "header", "content": "After they claim" },
+    { "type": "text", "id": "code", "label": "Discount code", "default": "SCRATCH10", "info": "Must match a code in Shopify admin > Discounts. Only shown after sign-up." },
+    { "type": "text", "id": "success_eyebrow", "label": "Eyebrow", "default": "You're in" },
+    { "type": "text", "id": "success_heading", "label": "Heading", "default": "Your 10% off is ready" },
+    { "type": "text", "id": "success_text", "label": "Text", "default": "Use this code at checkout, or tap below and we'll apply it for you." },
+    { "type": "text", "id": "success_button", "label": "Button", "default": "Shop with 10% off" },
+    { "type": "url", "id": "shop_link", "label": "Button goes to" }
+  ],
+  "presets": [{ "name": "PAKD scratch pop-up", "category": "PAKD" }]
+}
+{% endschema %}

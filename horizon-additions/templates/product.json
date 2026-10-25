@@ -1,0 +1,792 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "product-information",
+      "blocks": {
+        "disclosures_g9mWze": {
+          "type": "disclosures",
+          "name": "t:names.disclosures",
+          "settings": {
+            "heading": "Disclosures",
+            "heading_preset": "h5",
+            "open_by_default": false,
+            "icon": "caret",
+            "disclosure_heading_preset": "h6",
+            "text_color": "",
+            "dividers": true,
+            "divider_color": "{{ settings.color_palette.color2 }}",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "media-gallery": {
+          "type": "_product-media-gallery",
+          "static": true,
+          "settings": {
+            "media_presentation": "carousel",
+            "media_columns": "two",
+            "image_gap": 4,
+            "large_first_image": false,
+            "icons_style": "chevron",
+            "slideshow_controls_style": "thumbnails",
+            "slideshow_mobile_controls_style": "dots",
+            "thumbnail_position": "bottom",
+            "thumbnail_width": 56,
+            "thumbnail_radius": 50,
+            "aspect_ratio": "1",
+            "constrain_to_viewport": true,
+            "media_fit": "contain",
+            "media_radius": 24,
+            "extend_media": false,
+            "zoom": true,
+            "video_loop": false,
+            "hide_variants": false,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "product-details": {
+          "type": "_product-details",
+          "static": true,
+          "settings": {
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "details_position": "flex-start",
+            "gap": 16,
+            "sticky_details_desktop": true,
+            "background_media": "none",
+            "background_color": "",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "padding-block-start": 8,
+            "padding-block-end": 8,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "group_icgrde": {
+              "type": "group",
+              "name": "t:names.header",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "center",
+                "gap": 12,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "background_media": "none",
+                "background_color": "",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0,
+                "open_in_new_tab": false,
+                "placeholder": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "text_xrnftG": {
+                  "type": "text",
+                  "name": "t:names.product_title",
+                  "settings": {
+                    "text": "<h1>{{ closest.product.title }}</h1>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "h3",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "price_tVjtKg": {
+                  "type": "price",
+                  "disabled": true,
+                  "settings": {
+                    "show_sale_price_first": true,
+                    "show_installments": false,
+                    "show_tax_info": false,
+                    "type_preset": "paragraph",
+                    "width": "100%",
+                    "alignment": "left",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "text_color": "",
+                    "padding-block-start": 4,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "pakd_shop_all": {
+                  "type": "text",
+                  "name": "Shop all link",
+                  "settings": {
+                    "text": "<p><a href=\"/collections/all\">&lsaquo; Shop all</a></p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "#2D5778",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "pakd_shop_all",
+                "text_xrnftG",
+                "price_tVjtKg"
+              ]
+            },
+            "pakd_intro": {
+              "type": "pakd-product-intro",
+              "settings": {
+                "backdrop": "plain",
+                "card": false,
+                "fallback_tint": "#5CC8FF",
+                "photo_style": "plain",
+                "float": true,
+                "photo_size": 100,
+                "show_title": true,
+                "brand_label": "",
+                "pouches": 20,
+                "size_label": "Tin of 20",
+                "intro": "Nicotine-free electrolyte pouches. No water, no shaker. Just pop one in and go.",
+                "flavours": [
+                  "pakd-electrolytes-mythic-mango",
+                  "pakd-electrolytes-spearmint"
+                ],
+                "flavour_label": "Flavour",
+                "chips": "100% nicotine-free, 70mg sodium per pouch, Magnesium + potassium, Pocket-sized"
+              },
+              "blocks": {}
+            },
+            "divider_VJhene": {
+              "type": "_divider",
+              "name": "t:names.divider",
+              "disabled": true,
+              "settings": {
+                "thickness": 1,
+                "corner_radius": "square",
+                "divider_color": "{{ settings.color_palette.color2 }}",
+                "width_percent": 100,
+                "padding-block-start": 0,
+                "padding-block-end": 0
+              },
+              "blocks": {}
+            },
+            "variant_picker_R3rGDr": {
+              "type": "variant-picker",
+              "settings": {
+                "variant_style": "buttons",
+                "show_swatches": false,
+                "option_label_text_color": "",
+                "variant_style_class": "default",
+                "custom_variant_background": "{{ settings.color_palette.background }}",
+                "custom_variant_text": "{{ settings.color_palette.foreground }}",
+                "custom_variant_border": "{{ settings.color_palette.foreground }}",
+                "selected_variant_style_class": "default",
+                "custom_selected_variant_background": "{{ settings.color_palette.foreground }}",
+                "custom_selected_variant_text": "{{ settings.color_palette.background }}",
+                "custom_selected_variant_border": "{{ settings.color_palette.foreground }}",
+                "alignment": "left",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "pakd_options": {
+              "type": "pakd-purchase-options",
+              "settings": {
+                "preview_in_editor": true,
+                "default_mode": "sub",
+                "sub_title": "Subscribe & Save [pct]%",
+                "badge": "Best value",
+                "tick_1": "[pct]% off every delivery",
+                "tick_2": "Never run out",
+                "tick_3": "Skip or cancel anytime",
+                "popular_match": "6 week",
+                "sub_button_label": "Add subscription to cart",
+                "one_title": "One-time purchase",
+                "demo_percent": 15,
+                "demo_frequencies": "Every 4 weeks, Every 6 weeks, Every 8 weeks",
+                "show_duo": true,
+                "flavours": [
+                  "pakd-electrolytes-mythic-mango",
+                  "pakd-electrolytes-spearmint"
+                ],
+                "duo_title": "Make it a Duo: add [flavour]",
+                "show_duo_saving": false,
+                "duo_saving": "Save 20% when you buy 2+ tins"
+              },
+              "blocks": {}
+            },
+            "buy_buttons_eYQEYi": {
+              "type": "buy-buttons",
+              "settings": {
+                "stacking": true,
+                "text_color": "",
+                "show_pickup_availability": false,
+                "gift_card_form": true,
+                "recipient_button_style": "default",
+                "recipient_button_background": "{{ settings.color_palette.background }}",
+                "recipient_button_text": "{{ settings.color_palette.foreground }}",
+                "recipient_button_border": "{{ settings.color_palette.foreground }}",
+                "selected_recipient_button_style": "default",
+                "selected_recipient_button_background": "{{ settings.color_palette.foreground }}",
+                "selected_recipient_button_text": "{{ settings.color_palette.background }}",
+                "selected_recipient_button_border": "{{ settings.color_palette.foreground }}",
+                "input_style": "default",
+                "input_background_color": "{{ settings.color_palette.background }}",
+                "input_text_color": "{{ settings.color_palette.foreground }}",
+                "input_border_color": "{{ settings.color_palette.foreground }}",
+                "border_width": 1,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "quantity": {
+                  "type": "quantity",
+                  "static": true,
+                  "settings": {
+                    "input_style": "default",
+                    "input_background_color": "{{ settings.color_palette.background }}",
+                    "input_text_color": "{{ settings.color_palette.foreground }}",
+                    "input_border_color": "{{ settings.color_palette.foreground }}",
+                    "border_width": 1,
+                    "border_radius": 0
+                  },
+                  "blocks": {}
+                },
+                "add-to-cart": {
+                  "type": "add-to-cart",
+                  "static": true,
+                  "settings": {
+                    "style_class": "button",
+                    "custom_button_background": "{{ settings.color_palette.foreground }}",
+                    "custom_button_text": "{{ settings.color_palette.background }}",
+                    "custom_button_border": "{{ settings.color_palette.background }}"
+                  },
+                  "blocks": {}
+                },
+                "accelerated-checkout": {
+                  "type": "accelerated-checkout",
+                  "static": true,
+                  "settings": {},
+                  "blocks": {}
+                }
+              },
+              "block_order": []
+            },
+            "pakd_ship_note": {
+              "type": "text",
+              "name": "Ships from note",
+              "disabled": true,
+              "settings": {
+                "text": "<p>Ships from Australia</p>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "center",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "text_color": "#2D5778",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "text_aEtTtq": {
+              "type": "text",
+              "name": "t:names.product_description",
+              "disabled": true,
+              "settings": {
+                "text": "{{ closest.product.description }}",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "text_color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "pakd_info": {
+              "type": "accordion",
+              "name": "PAKD info rows",
+              "settings": {
+                "icon": "plus",
+                "dividers": true,
+                "divider_color": "#D6E9F5",
+                "type_preset": "paragraph",
+                "background_color": "",
+                "text_color": "",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0,
+                "padding-block-start": 8,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "row_use": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "How to use",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Place one pouch under your upper lip. [How long to keep it in, and max pouches per day: to be confirmed.]</p>",
+                        "width": "100%"
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text"
+                  ]
+                },
+                "row_ingredients": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Full ingredients",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p><strong>Electrolytes per pouch:</strong> sodium chloride 70mg, potassium chloride 70mg, magnesium citrate 100mg.</p><p>[Full ingredient list: to be confirmed.]</p><p>20 pouches per tin. 100% nicotine-free.</p>",
+                        "width": "100%"
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text"
+                  ]
+                },
+                "row_shipping": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Shipping",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Ships from Australia. [Delivery regions, times and costs: to be confirmed.]</p>",
+                        "width": "100%"
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text"
+                  ]
+                }
+              },
+              "block_order": [
+                "row_use",
+                "row_ingredients",
+                "row_shipping"
+              ]
+            },
+            "pakd_trust": {
+              "type": "pakd-trust",
+              "settings": {
+                "point_1": "Nicotine-free",
+                "point_2": "Ships from Australia",
+                "point_3": "Secure checkout"
+              },
+              "blocks": {}
+            },
+            "pakd_packs": {
+              "type": "pakd-packs",
+              "settings": {
+                "heading": "Choose your bundle",
+                "option_name": "Pack",
+                "pouches": 20,
+                "popular_value": "5 Tins",
+                "popular_label": "Most popular",
+                "preview_in_editor": true,
+                "demo_tins": "1, 3, 5, 10",
+                "demo_discounts": "0, 15, 25, 35"
+              }
+            }
+          },
+          "block_order": [
+            "group_icgrde",
+            "pakd_intro",
+            "divider_VJhene",
+            "variant_picker_R3rGDr",
+            "pakd_packs",
+            "pakd_options",
+            "buy_buttons_eYQEYi",
+            "pakd_trust",
+            "pakd_ship_note",
+            "pakd_info",
+            "text_aEtTtq"
+          ]
+        }
+      },
+      "block_order": [
+        "disclosures_g9mWze"
+      ],
+      "settings": {
+        "content_width": "content-center-aligned",
+        "desktop_media_position": "left",
+        "equal_columns": false,
+        "limit_details_width": false,
+        "gap": 48,
+        "enable_sticky_add_to_cart": true,
+        "background_color": "#FFFFFF",
+        "padding-block-start": 40,
+        "padding-block-end": 56
+      }
+    },
+    "product_recommendations_qggXJq": {
+      "type": "product-recommendations",
+      "blocks": {
+        "text_cbcgyb": {
+          "type": "text",
+          "name": "t:names.header",
+          "settings": {
+            "text": "<h3>You may also like </h3>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h4",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "static-product-card": {
+          "type": "_product-card",
+          "name": "t:names.product_card",
+          "static": true,
+          "settings": {
+            "product_card_gap": 8,
+            "background_color": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 8,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "product_card_gallery_DNizbJ": {
+              "type": "_product-card-gallery",
+              "name": "t:names.product_card_media",
+              "settings": {
+                "image_ratio": "adapt",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "product_title_M7MJkb": {
+              "type": "product-title",
+              "name": "t:names.product_title",
+              "settings": {
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "text_color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 4,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "price_gLWgA6": {
+              "type": "price",
+              "settings": {
+                "show_sale_price_first": true,
+                "show_installments": false,
+                "show_tax_info": false,
+                "type_preset": "h6",
+                "width": "100%",
+                "alignment": "left",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "text_color": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "product_card_gallery_DNizbJ",
+            "product_title_M7MJkb",
+            "price_gLWgA6"
+          ]
+        }
+      },
+      "block_order": [
+        "text_cbcgyb"
+      ],
+      "disabled": true,
+      "name": "t:names.product_recommendations",
+      "settings": {
+        "product": "{{ closest.product }}",
+        "recommendation_type": "related",
+        "layout_type": "grid",
+        "carousel_on_mobile": false,
+        "max_products": 4,
+        "columns": 4,
+        "mobile_columns": "2",
+        "columns_gap": 12,
+        "rows_gap": 24,
+        "icons_style": "arrow",
+        "icons_shape": "none",
+        "section_width": "page-width",
+        "gap": 28,
+        "background_color": "{{ settings.color_palette.background }}",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "pakd_expect": {
+      "type": "pakd-expect",
+      "blocks": {
+        "p1": {
+          "type": "point",
+          "settings": {
+            "title": "Hydration on the go",
+            "text": "Electrolytes in your pocket. No water, no shaker."
+          }
+        },
+        "p2": {
+          "type": "point",
+          "settings": {
+            "title": "Nicotine-free, always",
+            "text": "All the pouch habit, none of the nicotine."
+          }
+        },
+        "p3": {
+          "type": "point",
+          "settings": {
+            "title": "Fits your day",
+            "text": "Gym, job site, desk or beach. One tin, 20 pouches."
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "settings": {
+        "eyebrow": "What to expect",
+        "background": "#FFFFFF"
+      }
+    },
+    "pakd_inside": {
+      "type": "pakd-inside",
+      "blocks": {
+        "i1": {
+          "type": "ingredient",
+          "settings": {
+            "amount": "70mg",
+            "name": "Sodium chloride",
+            "text": "A core electrolyte, per pouch."
+          }
+        },
+        "i2": {
+          "type": "ingredient",
+          "settings": {
+            "amount": "70mg",
+            "name": "Potassium chloride",
+            "text": "A core electrolyte, per pouch."
+          }
+        },
+        "i3": {
+          "type": "ingredient",
+          "settings": {
+            "amount": "100mg",
+            "name": "Magnesium citrate",
+            "text": "Per pouch."
+          }
+        },
+        "i4": {
+          "type": "ingredient",
+          "settings": {
+            "amount": "0mg",
+            "name": "Nicotine",
+            "text": "Every PAKD pouch is 100% nicotine-free."
+          }
+        }
+      },
+      "block_order": [
+        "i1",
+        "i2",
+        "i3",
+        "i4"
+      ],
+      "settings": {
+        "eyebrow": "What's inside?",
+        "heading": "Simple, by design",
+        "subheading": "Each pouch contains:",
+        "background": "#FFFFFF",
+        "card_colour": "#EAF6FD"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "pakd_expect",
+    "pakd_inside",
+    "product_recommendations_qggXJq"
+  ]
+}
