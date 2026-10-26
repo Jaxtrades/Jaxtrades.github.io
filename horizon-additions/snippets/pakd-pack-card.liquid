@@ -1,38 +1,56 @@
 {%- doc -%}
   Inside of one PAKD pack card (used by blocks/pakd-packs.liquid).
+  Savings compare this pack with buying single tins one-time (base_price x tins).
   @param {number} tins
-  @param {number} pouches
-  @param {number} once - one-time price (cents)
-  @param {number} [sub] - subscription price (cents)
-  @param {number} off_once
-  @param {number} off_sub
-  @param {number} save_once
-  @param {number} save_sub
+  @param {number} pouches_per_tin
+  @param {number} base_price - one-time price of a single tin (cents)
+  @param {number} once - this pack's one-time price (cents)
+  @param {number} [sub] - this pack's subscription price (cents), if any
   @param {string} popular_label
   @param {boolean} is_popular
   @param {boolean} available
 {%- enddoc -%}
-<span class="pakd-pack__tags">
-  {%- if off_once > 0 -%}<span class="pakd-pack__off" data-show="one">{{ off_once }}% off</span>{%- endif -%}
-  {%- if sub and off_sub > 0 -%}<span class="pakd-pack__off" data-show="sub">{{ off_sub }}% off</span>{%- endif -%}
-  {%- if is_popular and popular_label != blank -%}<span class="pakd-pack__pop">★ {{ popular_label }}</span>{%- endif -%}
-</span>
-<span class="pakd-pack__head">
+{%- liquid
+  assign pouches = pouches_per_tin | times: tins
+  assign full = base_price | times: tins
+  assign save_once = full | minus: once
+  assign off_once = 0
+  if full > 0 and save_once > 0
+    assign off_once = save_once | times: 100.0 | divided_by: full | round
+  endif
+  assign sub_price = sub | default: once
+  assign save_sub = full | minus: sub_price
+  assign off_sub = 0
+  if full > 0 and save_sub > 0
+    assign off_sub = save_sub | times: 100.0 | divided_by: full | round
+  endif
+-%}
+{%- if is_popular and popular_label != blank -%}<span class="pakd-pack__pop">★ {{ popular_label }}</span>{%- endif -%}
+<span class="pakd-pack__row">
   <span class="pakd-pack__dot" aria-hidden="true"></span>
+  <span class="pakd-pack__tags">
+    {%- if off_once > 0 -%}<span class="pakd-pack__off" data-show="one">{{ off_once }}% off</span>{%- endif -%}
+    {%- if off_sub > 0 -%}<span class="pakd-pack__off" data-show="sub">{{ off_sub }}% off</span>{%- endif -%}
+  </span>
+</span>
+<span class="pakd-pack__name">
   <span class="pakd-pack__tins">{{ tins }} {% if tins == 1 %}Tin{% else %}Tins{% endif %}</span>
   <span class="pakd-pack__pouches">{{ pouches }} pouches</span>
 </span>
-<span class="pakd-pack__deal">
-  <span class="pakd-pack__price" data-show="one">{{ once | money }}</span>
-  <span class="pakd-pack__ppp" data-show="one">{{ once | times: 1.0 | divided_by: pouches | round | money }} per pouch</span>
-  {%- if save_once > 0 -%}<span class="pakd-pack__save" data-show="one">Save {{ save_once | money }}</span>{%- endif -%}
-  {%- if sub -%}
-    <span class="pakd-pack__price" data-show="sub">{{ sub | money }}</span>
-    <span class="pakd-pack__ppp" data-show="sub">{{ sub | times: 1.0 | divided_by: pouches | round | money }} per pouch</span>
-    {%- if save_sub > 0 -%}<span class="pakd-pack__save" data-show="sub">Save {{ save_sub | money }} every delivery</span>{%- endif -%}
-  {%- else -%}
-    <span class="pakd-pack__price" data-show="sub">{{ once | money }}</span>
-    <span class="pakd-pack__ppp" data-show="sub">{{ once | times: 1.0 | divided_by: pouches | round | money }} per pouch</span>
-  {%- endif -%}
+<span class="pakd-pack__deal" data-show="one">
+  <span class="pakd-pack__prices">
+    <span class="pakd-pack__price">{{ once | money }}</span>
+    {%- if save_once > 0 -%}<s class="pakd-pack__was">{{ full | money }}</s>{%- endif -%}
+  </span>
+  <span class="pakd-pack__ppp">{{ once | times: 1.0 | divided_by: pouches | round | money }} per pouch</span>
+  <span class="pakd-pack__save">{% if save_once > 0 %}Save {{ save_once | money }}{% endif %}</span>
+</span>
+<span class="pakd-pack__deal" data-show="sub">
+  <span class="pakd-pack__prices">
+    <span class="pakd-pack__price">{{ sub_price | money }}</span>
+    {%- if save_sub > 0 -%}<s class="pakd-pack__was">{{ full | money }}</s>{%- endif -%}
+  </span>
+  <span class="pakd-pack__ppp">{{ sub_price | times: 1.0 | divided_by: pouches | round | money }} per pouch</span>
+  <span class="pakd-pack__save">{% if save_sub > 0 %}Save {{ save_sub | money }} every delivery{% endif %}</span>
 </span>
 {%- unless available -%}<span class="pakd-pack__soldout">Sold out</span>{%- endunless -%}

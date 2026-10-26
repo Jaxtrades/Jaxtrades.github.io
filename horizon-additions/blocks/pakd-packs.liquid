@@ -1,15 +1,17 @@
 {%- comment -%}
-  PAKD pack cards ("Choose your bundle"): 1 / 3 / 5 / 10 tins with pouches, price per pouch,
-  % off and dollar saving, plus an optional "Most popular" tag.
+  PAKD bundle picker: "Subscribe & Save / One-time purchase" switch on top, then pack cards
+  (1 / 3 / 5 / 10 tins) with pouches, price, struck-through full price, price per pouch,
+  % off, dollar saving and an optional "Most popular" tag.
 
   How it works
-  - Needs a product option named like the "Pack option name" setting (default "Pack"),
-    with values that start with the tin count, e.g. "1 Tin", "3 Tins", "5 Tins", "10 Tins".
-  - Each card selects that pack through Horizon's own variant picker (hidden for this option),
-    so price, URL, Add to cart and the cart drawer all keep working as normal.
-  - Prices come from Shopify: the variant price (one-time) and its subscription price when the
-    shopper picks "Subscribe & Save" in the PAKD purchase options block.
-  - % off and saving compare each pack with buying single tins one-time.
+  - Pack cards need a product option named like "Pack option name" (default "Pack") whose
+    values start with the tin count: "1 Tin", "3 Tins", "5 Tins", "10 Tins".
+    Each card selects that pack through Horizon's own variant picker (hidden for this option).
+  - The switch drives the PAKD purchase options block in the same section (its own cards are
+    hidden), so the chosen subscription plan still goes to the cart through its selling_plan input.
+  - Subscription prices come from the variant's selling plan (Shopify Subscriptions). With no plan
+    yet, Subscribe & Save shows only in draft previews, using the sample saving below.
+  - The one-time offer line uses the product's compare-at price ("was $29.99"), only when there is one.
   - With no Pack option yet, sample cards show in draft previews only, never to customers.
 {%- endcomment -%}
 {%- render 'pakd-tokens' -%}
@@ -18,8 +20,14 @@
   if request.visual_preview_mode and product == blank
     assign product = collections.all.products.first
   endif
+  assign current = product.selected_or_first_available_variant
   assign opt_name = block.settings.option_name | default: 'Pack' | strip
   assign pouches_per_tin = block.settings.pouches | default: 20
+
+  assign is_preview = false
+  if request.design_mode or theme.role == 'unpublished'
+    assign is_preview = true
+  endif
 
   assign pack_option = blank
   for o in product.options_with_values
@@ -27,34 +35,109 @@
       assign pack_option = o
     endif
   endfor
-
-  assign demo = false
-  if pack_option == blank and block.settings.preview_in_editor
-    if request.design_mode or theme.role == 'unpublished'
-      assign demo = true
-    endif
+  assign demo_packs = false
+  if pack_option == blank and block.settings.preview_in_editor and is_preview
+    assign demo_packs = true
   endif
 
-  # Base = the 1-tin price used for % off and savings
-  assign base_price = product.selected_or_first_available_variant.price
+  assign real_sub = false
+  if product.selling_plan_groups.size > 0
+    assign real_sub = true
+  endif
+  assign demo_sub = false
+  if real_sub == false and block.settings.preview_in_editor and is_preview
+    assign demo_sub = true
+  endif
+  assign show_switch = false
+  if real_sub or demo_sub
+    assign show_switch = true
+  endif
+  assign demo_keep = 100 | minus: block.settings.demo_sub_percent
+
+  # Base = the 1-tin variant, used for % off, savings and the struck-through price
+  assign base = current
   if pack_option != blank
     for val in pack_option.values
       assign t = val.name | split: ' ' | first | plus: 0
       if t == 1 and val.variant
-        assign base_price = val.variant.price
+        assign base = val.variant
         break
       endif
     endfor
+  endif
+  assign base_price = base.price
+
+  # Headline saving on the Subscribe tab (single tin)
+  assign sub_pct = block.settings.demo_sub_percent
+  if real_sub and base.selling_plan_allocations.size > 0
+    assign base_sub = base.selling_plan_allocations.first.price
+    assign sub_pct = base_price | minus: base_sub | times: 100.0 | divided_by: base_price | round
+  endif
+
+  # One-time offer line from the compare-at price
+  assign was = base.compare_at_price
+  assign once_pct = 0
+  if was > base_price
+    assign once_pct = was | minus: base_price | times: 100.0 | divided_by: was | round
+  endif
+
+  assign mode = 'one'
+  if show_switch and block.settings.default_mode == 'sub'
+    assign mode = 'sub'
   endif
 -%}
 <pakd-live-block
   class="pakd-packs"
   data-block-id="{{ block.id }}"
-  data-mode="one"
+  data-mode="{{ mode }}"
   data-option-name="{{ opt_name | escape }}"
   {{ block.shopify_attributes }}
 >
-  {%- if pack_option != blank or demo -%}
+  {%- if show_switch -%}
+    <div class="pakd-switch" role="radiogroup" aria-label="Purchase type">
+      <button type="button" class="pakd-switch__opt" role="radio" data-mode-btn="sub" aria-checked="{% if mode == 'sub' %}true{% else %}false{% endif %}">
+        <span class="pakd-switch__top">
+          <span class="pakd-switch__dot" aria-hidden="true"></span>
+          <span class="pakd-switch__title">{{ block.settings.sub_title }}</span>
+        </span>
+        {%- if sub_pct > 0 -%}<span class="pakd-switch__badge">Save {{ sub_pct }}%</span>{%- endif -%}
+        <span class="pakd-switch__line">{{ block.settings.sub_line }}</span>
+      </button>
+      <button type="button" class="pakd-switch__opt" role="radio" data-mode-btn="one" aria-checked="{% if mode == 'one' %}true{% else %}false{% endif %}">
+        <span class="pakd-switch__top">
+          <span class="pakd-switch__dot" aria-hidden="true"></span>
+          <span class="pakd-switch__title">{{ block.settings.one_title }}</span>
+        </span>
+        {%- if once_pct > 0 -%}<span class="pakd-switch__badge pakd-switch__badge--alt">{{ once_pct }}% off</span>{%- endif -%}
+        <span class="pakd-switch__line">
+          {%- if once_pct > 0 -%}
+            {{ block.settings.one_offer_line | replace: '[was]', was | money_without_trailing_zeros }}
+          {%- else -%}
+            {{ block.settings.one_line }}
+          {%- endif -%}
+        </span>
+      </button>
+    </div>
+    <div class="pakd-switch__freq" data-show="sub">
+      <label class="pakd-switch__freq-label" for="PakdFreq-{{ block.id }}">Deliver</label>
+      <span class="pakd-switch__select">
+        <select id="PakdFreq-{{ block.id }}" class="pakd-switch__select-el" data-freq>
+          {%- if real_sub -%}
+            {%- for alloc in current.selling_plan_allocations -%}
+              <option value="{{ alloc.selling_plan.name | escape }}">{{ alloc.selling_plan.name }}</option>
+            {%- endfor -%}
+          {%- else -%}
+            {%- assign demo_freqs = block.settings.demo_frequencies | split: ',' -%}
+            {%- for f in demo_freqs -%}<option value="{{ f | strip | escape }}">{{ f | strip }}</option>{%- endfor -%}
+          {%- endif -%}
+        </select>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </span>
+      <span class="pakd-switch__perks">{{ block.settings.sub_perks }}</span>
+    </div>
+  {%- endif -%}
+
+  {%- if pack_option != blank or demo_packs -%}
     <p class="pakd-packs__heading" id="PakdPacks-{{ block.id }}">{{ block.settings.heading }}</p>
     <div class="pakd-packs__grid" role="radiogroup" aria-labelledby="PakdPacks-{{ block.id }}">
       {%- if pack_option != blank -%}
@@ -68,46 +151,19 @@
             if tins < 1
               assign tins = 1
             endif
-            assign pouches = pouches_per_tin | times: tins
-            assign full = base_price | times: tins
-
-            assign once = v.price
             assign sub = nil
-            if v.selling_plan_allocations.size > 0
+            if real_sub and v.selling_plan_allocations.size > 0
               assign sub = v.selling_plan_allocations.first.price
-            endif
-
-            assign save_once = full | minus: once
-            assign off_once = 0
-            if full > 0 and save_once > 0
-              assign off_once = save_once | times: 100.0 | divided_by: full | round
-            endif
-            assign save_sub = 0
-            assign off_sub = 0
-            if sub
-              assign save_sub = full | minus: sub
-              if full > 0 and save_sub > 0
-                assign off_sub = save_sub | times: 100.0 | divided_by: full | round
-              endif
+            elsif demo_sub
+              assign sub = v.price | times: demo_keep | divided_by: 100
             endif
             assign is_popular = false
             if block.settings.popular_value != blank and val.name == block.settings.popular_value
               assign is_popular = true
             endif
           -%}
-          <button
-            type="button"
-            class="pakd-pack{% if val.selected %} is-selected{% endif %}{% if is_popular %} is-popular{% endif %}"
-            role="radio"
-            aria-checked="{% if val.selected %}true{% else %}false{% endif %}"
-            data-pack-value="{{ val.name | escape }}"
-            {% unless val.available %}aria-disabled="true"{% endunless %}
-          >
-            {%- render 'pakd-pack-card',
-              tins: tins, pouches: pouches, once: once, sub: sub,
-              off_once: off_once, off_sub: off_sub, save_once: save_once, save_sub: save_sub,
-              popular_label: block.settings.popular_label, is_popular: is_popular, available: val.available
-            -%}
+          <button type="button" class="pakd-pack{% if val.selected %} is-selected{% endif %}{% if is_popular %} is-popular{% endif %}" role="radio" aria-checked="{% if val.selected %}true{% else %}false{% endif %}" data-pack-value="{{ val.name | escape }}"{% unless val.available %} aria-disabled="true"{% endunless %}>
+            {%- render 'pakd-pack-card', tins: tins, pouches_per_tin: pouches_per_tin, base_price: base_price, once: v.price, sub: sub, popular_label: block.settings.popular_label, is_popular: is_popular, available: val.available -%}
           </button>
         {%- endfor -%}
       {%- else -%}
@@ -117,100 +173,161 @@
           {%- liquid
             assign tins = raw | strip | plus: 0
             assign off = demo_offs[forloop.index0] | strip | plus: 0
-            assign pouches = pouches_per_tin | times: tins
-            assign full = base_price | times: tins
             assign keep = 100 | minus: off
-            assign once = full | times: keep | divided_by: 100
-            assign save_once = full | minus: once
-            assign is_popular = false
+            assign once = base_price | times: tins | times: keep | divided_by: 100
+            assign sub = nil
+            if show_switch
+              assign sub = once | times: demo_keep | divided_by: 100
+            endif
             assign label_value = tins | append: ' Tins'
             if tins == 1
               assign label_value = '1 Tin'
             endif
+            assign is_popular = false
             if block.settings.popular_value != blank and label_value == block.settings.popular_value
               assign is_popular = true
             endif
           -%}
           <button type="button" class="pakd-pack{% if forloop.first %} is-selected{% endif %}{% if is_popular %} is-popular{% endif %}" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" data-demo>
-            {%- render 'pakd-pack-card',
-              tins: tins, pouches: pouches, once: once, sub: nil,
-              off_once: off, off_sub: 0, save_once: save_once, save_sub: 0,
-              popular_label: block.settings.popular_label, is_popular: is_popular, available: true
-            -%}
+            {%- render 'pakd-pack-card', tins: tins, pouches_per_tin: pouches_per_tin, base_price: base_price, once: once, sub: sub, popular_label: block.settings.popular_label, is_popular: is_popular, available: true -%}
           </button>
         {%- endfor -%}
       {%- endif -%}
     </div>
-    {%- if demo -%}
-      <p class="pakd-packs__demo">Draft preview only, with sample discounts. Add a "{{ opt_name }}" option (1 Tin, 3 Tins, 5 Tins, 10 Tins) with real prices to show this to customers.</p>
-    {%- endif -%}
+  {%- endif -%}
+
+  {%- if demo_packs or demo_sub -%}
+    <p class="pakd-packs__demo">
+      Draft preview only, with sample numbers.
+      {% if demo_packs %}Add a "{{ opt_name }}" option (1 Tin, 3 Tins, 5 Tins, 10 Tins) with real prices.{% endif %}
+      {% if demo_sub %}Subscribe &amp; Save appears to customers once a plan exists in Shopify Subscriptions.{% endif %}
+    </p>
   {%- endif -%}
 </pakd-live-block>
 
 <style>
-  /* Hide Horizon's own picker for the pack option; the cards drive it instead. */
   {%- if pack_option != blank -%}
+  /* Horizon's own picker for the pack option is driven by the cards instead */
   #shopify-section-{{ section.id }} variant-picker fieldset:has(input[data-option-name="{{ opt_name | escape }}"]),
   #shopify-section-{{ section.id }} variant-picker .variant-option--dropdowns:has(select[name="options[{{ opt_name | escape }}]"]) { display: none; }
+  {%- endif -%}
+  {%- if show_switch -%}
+  /* The switch above replaces the purchase options block's own cards (its Duo upsell stays) */
+  #shopify-section-{{ section.id }} pakd-live-block.pakd-buy .pakd-buy__options { display: none; }
   {%- endif -%}
 </style>
 
 {% stylesheet %}
-  .pakd-packs { display: flex; flex-direction: column; gap: 12px; width: 100%; color: var(--pakd-ink, #0A2540); }
-  .pakd-packs__heading { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--pakd-support, #2D5778); }
-  .pakd-packs__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 10px; padding-top: 10px; }
+  .pakd-packs { display: flex; flex-direction: column; gap: 14px; width: 100%; color: var(--pakd-ink, #0A2540); }
+  .pakd-packs[data-mode='one'] [data-show='sub'], .pakd-packs[data-mode='sub'] [data-show='one'] { display: none !important; }
+
+  /* Purchase type switch */
+  .pakd-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; border-radius: 18px; background: var(--pakd-ice, #EAF6FD); }
+  .pakd-switch__opt {
+    display: flex; flex-direction: column; gap: 6px; align-items: flex-start; text-align: left;
+    font: inherit; color: inherit; cursor: pointer; border: 1.5px solid transparent; border-radius: 14px;
+    padding: 12px 12px 11px; background: transparent; transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .pakd-switch__opt[aria-checked='true'] { background: #fff; border-color: var(--pakd-primary, #0077FF); box-shadow: 0 6px 18px rgba(10, 37, 64, .08); }
+  .pakd-switch__opt:focus-visible { outline: 3px solid rgba(0, 119, 255, .35); outline-offset: 2px; }
+  .pakd-switch__top { display: flex; align-items: flex-start; gap: 8px; }
+  .pakd-switch__top .pakd-switch__dot { margin-top: 1px; }
+  .pakd-switch__dot { flex: 0 0 16px; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #9cc9ec; display: grid; place-items: center; background: #fff; }
+  .pakd-switch__opt[aria-checked='true'] .pakd-switch__dot { border-color: var(--pakd-primary, #0077FF); }
+  .pakd-switch__opt[aria-checked='true'] .pakd-switch__dot::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--pakd-primary, #0077FF); }
+  .pakd-switch__title { font-weight: 700; font-size: 15px; letter-spacing: -.01em; }
+  .pakd-switch__badge { margin-left: 24px; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: var(--pakd-primary, #0077FF); color: #fff; }
+  .pakd-switch__badge--alt { background: var(--pakd-ink, #0A2540); }
+  .pakd-switch__line { font-size: 12.5px; line-height: 1.35; color: var(--pakd-support, #2D5778); padding-left: 24px; }
+
+  .pakd-switch__freq { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+  .pakd-switch__freq-label { font-size: 13px; font-weight: 600; }
+  .pakd-switch__select { position: relative; }
+  .pakd-switch__select-el { appearance: none; -webkit-appearance: none; font: inherit; font-size: 14px; color: var(--pakd-ink, #0A2540); background: #fff; border: 1px solid var(--pakd-line, #D6E9F5); border-radius: 10px; padding: 8px 34px 8px 12px; cursor: pointer; }
+  .pakd-switch__select-el:focus-visible { outline: 2px solid var(--pakd-primary, #0077FF); outline-offset: 1px; }
+  .pakd-switch__select svg { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+  .pakd-switch__perks { font-size: 12.5px; color: var(--pakd-support, #2D5778); }
+
+  /* Pack cards */
+  .pakd-packs__heading { margin: 4px 0 0; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--pakd-support, #2D5778); }
+  .pakd-packs__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 10px; padding-top: 6px; }
   .pakd-pack {
-    position: relative; display: flex; flex-direction: column; gap: 10px; text-align: left;
-    font: inherit; color: inherit; cursor: pointer;
-    padding: 18px 12px 12px; border-radius: 16px; background: #fff;
-    border: 1.5px solid var(--pakd-line, #D6E9F5);
-    transition: border-color .2s ease, box-shadow .2s ease;
+    position: relative; display: flex; flex-direction: column; gap: 10px; text-align: left; height: 100%;
+    font: inherit; color: inherit; cursor: pointer; padding: 12px; border-radius: 16px; background: #fff;
+    border: 1.5px solid var(--pakd-line, #D6E9F5); transition: border-color .2s ease, box-shadow .2s ease;
   }
   .pakd-pack:hover { border-color: #9cc9ec; }
   .pakd-pack.is-selected { border-color: var(--pakd-primary, #0077FF); box-shadow: 0 0 0 1px var(--pakd-primary, #0077FF); }
   .pakd-pack:focus-visible { outline: 3px solid rgba(0, 119, 255, .35); outline-offset: 2px; }
   .pakd-pack[aria-disabled='true'] { opacity: .5; cursor: not-allowed; }
-  .pakd-pack__tags { position: absolute; top: 0; left: 50%; transform: translate(-50%, -55%); display: flex; gap: 4px; white-space: nowrap; }
-  .pakd-pack__off, .pakd-pack__pop { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; }
+  .pakd-pack__row { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 22px; }
+  .pakd-pack__tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+  .pakd-pack__off, .pakd-pack__pop { font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
   .pakd-pack__off { background: var(--pakd-primary, #0077FF); color: #fff; }
-  .pakd-pack__pop { background: var(--pakd-ink, #0A2540); color: #fff; }
-  .pakd-pack__head { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; }
-  .pakd-pack__dot { flex: 0 0 18px; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--pakd-line, #D6E9F5); display: grid; place-items: center; }
+  .pakd-pack__pop { position: absolute; top: 0; left: 50%; transform: translate(-50%, -55%); background: var(--pakd-ink, #0A2540); color: #fff; }
+  .pakd-pack.is-popular { border-color: var(--pakd-ink, #0A2540); }
+  .pakd-pack.is-popular.is-selected { border-color: var(--pakd-primary, #0077FF); }
+  .pakd-pack__dot { flex: 0 0 18px; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #9cc9ec; display: grid; place-items: center; }
   .pakd-pack.is-selected .pakd-pack__dot { border-color: var(--pakd-primary, #0077FF); }
   .pakd-pack.is-selected .pakd-pack__dot::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--pakd-primary, #0077FF); }
-  .pakd-pack__tins { font-weight: 700; font-size: 17px; letter-spacing: -.01em; }
+  .pakd-pack__name { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; }
+  .pakd-pack__tins { font-weight: 700; font-size: 18px; letter-spacing: -.01em; }
   .pakd-pack__pouches { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--pakd-support, #2D5778); }
-  .pakd-pack__deal { display: grid; gap: 2px; padding: 10px 12px; border-radius: 12px; background: var(--pakd-ice, #EAF6FD); }
-  .pakd-pack__price { font-size: 17px; font-weight: 700; }
-  .pakd-pack__ppp { font-size: 13px; font-weight: 600; color: var(--pakd-ink, #0A2540); }
-  .pakd-pack__save { font-size: 12px; color: #0B6B4F; font-weight: 600; }
+  .pakd-pack__deal { margin-top: auto; display: grid; gap: 2px; padding: 10px 12px; border-radius: 12px; background: var(--pakd-ice, #EAF6FD); }
+  .pakd-pack__prices { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; }
+  .pakd-pack__price { font-size: 18px; font-weight: 700; }
+  .pakd-pack__was { font-size: 13px; color: var(--pakd-support, #2D5778); opacity: .75; }
+  .pakd-pack__ppp { font-size: 13px; font-weight: 600; }
+  .pakd-pack__save { font-size: 12px; font-weight: 600; color: #0B6B4F; min-height: 1.35em; }
   .pakd-pack__soldout { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--pakd-support, #2D5778); }
-  .pakd-packs[data-mode='one'] [data-show='sub'], .pakd-packs[data-mode='sub'] [data-show='one'] { display: none !important; }
   .pakd-packs__demo { margin: 0; font-size: 12px; color: #A35B00; }
-  @media (max-width: 480px) {
-    .pakd-packs__grid { gap: 10px; padding-top: 0; }
-    .pakd-pack__tags { position: static; transform: none; flex-wrap: wrap; white-space: normal; }
-    .pakd-pack__tags:empty { display: none; }
+  @media (max-width: 420px) {
+    .pakd-switch__opt { padding: 10px 9px; }
+    .pakd-pack { padding: 10px; }
+    .pakd-pack__deal { padding: 9px 10px; }
   }
-  @media (prefers-reduced-motion: reduce) { .pakd-pack { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .pakd-pack, .pakd-switch__opt { transition: none; } }
 {% endstylesheet %}
 
 {% render 'pakd-live-block-script' %}
 
 <script type="module">
-  if (!window.pakdPacks) {
-    window.pakdPacks = true;
+  if (!window.pakdPacks2) {
+    window.pakdPacks2 = true;
 
-    // Follow the One-time / Subscribe choice in the PAKD purchase options block of the same section
-    const syncMode = (packs) => {
-      const section = packs.closest('.shopify-section, dialog');
-      const buy = section?.querySelector('pakd-live-block.pakd-buy');
-      const mode = buy?.dataset.mode === 'sub' && buy.querySelector('[data-plan-input]:not([data-demo])') ? 'sub' : 'one';
-      packs.dataset.mode = mode;
+    const sectionOf = (el) => el.closest('.shopify-section, dialog');
+    const buyOf = (packs) => sectionOf(packs)?.querySelector('pakd-live-block.pakd-buy');
+
+    // Paint the switch + cards for the current mode
+    const paint = (packs) => {
+      const mode = packs.dataset.mode || 'one';
+      packs.querySelectorAll('[data-mode-btn]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.modeBtn === mode)));
     };
-    const syncAll = () => document.querySelectorAll('pakd-live-block.pakd-packs').forEach(syncMode);
 
-    const choose = (button) => {
+    // Push the mode (and delivery frequency) into the purchase options block, which owns selling_plan
+    const pushToBuy = (packs) => {
+      const buy = buyOf(packs);
+      if (!buy) return;
+      const mode = packs.dataset.mode;
+      const radio = buy.querySelector(`.pakd-opt__radio[value="${mode}"]`);
+      if (radio && !radio.checked) {
+        radio.checked = true;
+        radio.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      const mine = packs.querySelector('[data-freq]');
+      const theirs = buy.querySelector('.pakd-opt__freq');
+      if (mode === 'sub' && mine && theirs) {
+        const idx = Array.from(theirs.options).findIndex((o) => o.textContent.replace('(most popular)', '').trim() === mine.value);
+        if (idx > -1 && theirs.selectedIndex !== idx) {
+          theirs.selectedIndex = idx;
+          theirs.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
+    };
+
+    const setMode = (packs, mode) => { packs.dataset.mode = mode; paint(packs); pushToBuy(packs); };
+
+    const choosePack = (button) => {
       const packs = button.closest('pakd-live-block.pakd-packs');
       if (!packs || button.getAttribute('aria-disabled') === 'true') return;
       packs.querySelectorAll('.pakd-pack').forEach((b) => {
@@ -219,55 +336,78 @@
         b.setAttribute('aria-checked', String(on));
       });
       if (button.hasAttribute('data-demo')) return;
-      const value = button.dataset.packValue;
-      const name = packs.dataset.optionName;
-      const section = packs.closest('.shopify-section, dialog');
-      const radio = Array.from(section?.querySelectorAll(`variant-picker input[type="radio"][data-option-name]`) || [])
+      const value = button.dataset.packValue, name = packs.dataset.optionName, section = sectionOf(packs);
+      const radio = Array.from(section?.querySelectorAll('variant-picker input[type="radio"][data-option-name]') || [])
         .find((i) => i.dataset.optionName === name && i.value === value);
       if (radio) { if (!radio.checked) radio.click(); return; }
       const select = section?.querySelector(`variant-picker select[name="options[${CSS.escape(name)}]"]`);
-      if (select && select.value !== value) {
-        select.value = value;
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-      }
+      if (select && select.value !== value) { select.value = value; select.dispatchEvent(new Event('change', { bubbles: true })); }
+    };
+
+    const arrowNav = (event, selector, act) => {
+      if (!['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'].includes(event.key)) return false;
+      const current = event.target.closest(selector);
+      const all = Array.from(current.parentElement.querySelectorAll(`${selector}:not([aria-disabled="true"])`));
+      const step = ['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1;
+      const next = all[(all.indexOf(current) + step + all.length) % all.length];
+      event.preventDefault(); next?.focus(); if (next) act(next);
+      return true;
     };
 
     document.addEventListener('click', (event) => {
-      const button = event.target.closest?.('pakd-live-block.pakd-packs .pakd-pack');
-      if (button) choose(button);
+      const modeBtn = event.target.closest?.('pakd-live-block.pakd-packs [data-mode-btn]');
+      if (modeBtn) return setMode(modeBtn.closest('pakd-live-block.pakd-packs'), modeBtn.dataset.modeBtn);
+      const pack = event.target.closest?.('pakd-live-block.pakd-packs .pakd-pack');
+      if (pack) choosePack(pack);
     });
     document.addEventListener('keydown', (event) => {
-      const button = event.target.closest?.('pakd-live-block.pakd-packs .pakd-pack');
-      if (!button || !['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'].includes(event.key)) return;
-      event.preventDefault();
-      const all = Array.from(button.parentElement.querySelectorAll('.pakd-pack:not([aria-disabled="true"])'));
-      const step = ['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1;
-      const next = all[(all.indexOf(button) + step + all.length) % all.length];
-      next?.focus();
-      if (next) choose(next);
+      if (event.target.closest?.('pakd-live-block.pakd-packs [data-mode-btn]')) {
+        arrowNav(event, '[data-mode-btn]', (b) => setMode(b.closest('pakd-live-block.pakd-packs'), b.dataset.modeBtn));
+      } else if (event.target.closest?.('pakd-live-block.pakd-packs .pakd-pack')) {
+        arrowNav(event, '.pakd-pack', choosePack);
+      }
     });
-    document.addEventListener('change', () => setTimeout(syncAll, 0));
-    document.addEventListener('pakd:refresh', () => setTimeout(syncAll, 0), true);
-    syncAll();
+    document.addEventListener('change', (event) => {
+      const freq = event.target.closest?.('pakd-live-block.pakd-packs [data-freq]');
+      if (freq) pushToBuy(freq.closest('pakd-live-block.pakd-packs'));
+    });
+    // After Horizon swaps in fresh markup (new pack selected), keep the shopper's mode
+    document.addEventListener('pakd:refresh', (event) => {
+      if (event.target.matches?.('pakd-live-block.pakd-packs')) { paint(event.target); pushToBuy(event.target); }
+    }, true);
+
+    const init = () => document.querySelectorAll('pakd-live-block.pakd-packs').forEach((p) => { paint(p); pushToBuy(p); });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   }
 </script>
 
 {% schema %}
 {
-  "name": "PAKD pack cards",
+  "name": "PAKD bundle picker",
   "tag": null,
   "settings": [
-    { "type": "paragraph", "content": "Shows bundle cards for a product option such as Pack: 1 Tin, 3 Tins, 5 Tins, 10 Tins. Prices, % off and savings are worked out from the real variant and subscription prices." },
+    { "type": "paragraph", "content": "Subscribe & Save / One-time switch, then bundle cards for a product option such as Pack: 1 Tin, 3 Tins, 5 Tins, 10 Tins. Prices, % off and savings come from the real variant and subscription prices." },
+    { "type": "header", "content": "Purchase type switch" },
+    { "type": "select", "id": "default_mode", "label": "Selected first", "options": [ { "value": "sub", "label": "Subscribe & Save" }, { "value": "one", "label": "One-time purchase" } ], "default": "sub" },
+    { "type": "text", "id": "sub_title", "label": "Subscribe title", "default": "Subscribe & Save" },
+    { "type": "text", "id": "sub_line", "label": "Subscribe line", "default": "Lowest price, delivered on repeat" },
+    { "type": "text", "id": "sub_perks", "label": "Subscribe perks (under the delivery dropdown)", "default": "Skip, pause or cancel anytime" },
+    { "type": "text", "id": "one_title", "label": "One-time title", "default": "One-time purchase" },
+    { "type": "text", "id": "one_offer_line", "label": "One-time line when on sale", "info": "[was] becomes the compare-at price.", "default": "Launch price, was [was]" },
+    { "type": "text", "id": "one_line", "label": "One-time line (no sale)", "default": "Buy once, no commitment" },
+    { "type": "header", "content": "Bundle cards" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Choose your bundle" },
     { "type": "text", "id": "option_name", "label": "Pack option name", "default": "Pack", "info": "Must match the product option name exactly. Values should start with the tin count, e.g. 3 Tins." },
     { "type": "range", "id": "pouches", "label": "Pouches per tin", "min": 1, "max": 60, "step": 1, "default": 20 },
     { "type": "text", "id": "popular_value", "label": "Most popular pack", "default": "5 Tins", "info": "The pack value to tag, e.g. 5 Tins. Leave blank for none." },
     { "type": "text", "id": "popular_label", "label": "Most popular tag", "default": "Most popular" },
-    { "type": "header", "content": "Draft preview (no Pack option yet)" },
-    { "type": "checkbox", "id": "preview_in_editor", "label": "Show sample cards in draft previews", "default": true },
+    { "type": "header", "content": "Draft preview (before real packs and plans exist)" },
+    { "type": "checkbox", "id": "preview_in_editor", "label": "Show sample numbers in draft previews", "default": true },
+    { "type": "range", "id": "demo_sub_percent", "label": "Sample subscribe saving", "min": 5, "max": 30, "step": 1, "unit": "%", "default": 15 },
+    { "type": "text", "id": "demo_frequencies", "label": "Sample delivery options", "default": "Every 4 weeks, Every 6 weeks, Every 8 weeks" },
     { "type": "text", "id": "demo_tins", "label": "Sample pack sizes", "default": "1, 3, 5, 10" },
-    { "type": "text", "id": "demo_discounts", "label": "Sample % off per pack", "default": "0, 15, 25, 35", "info": "Preview only. Real discounts come from your variant prices." }
+    { "type": "text", "id": "demo_discounts", "label": "Sample % off per pack", "default": "0, 15, 25, 35" }
   ],
-  "presets": [{ "name": "PAKD pack cards", "category": "PAKD" }]
+  "presets": [{ "name": "PAKD bundle picker", "category": "PAKD" }]
 }
 {% endschema %}
