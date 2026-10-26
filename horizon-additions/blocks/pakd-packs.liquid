@@ -144,6 +144,12 @@
             {%- assign demo_freqs = block.settings.demo_frequencies | split: ',' -%}
             {%- for f in demo_freqs -%}<option value="{{ f | strip | escape }}">{{ f | strip }}</option>{%- endfor -%}
           {%- endif -%}
+        </select>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </span>
+      <span class="pakd-switch__perks">{{ block.settings.sub_perks }}</span>
+    </div>
+  {%- endif -%}
   {%- if pack_option != blank or demo_packs -%}
     <p class="pakd-packs__heading" id="PakdPacks-{{ block.id }}">{{ block.settings.heading }}</p>
     <div class="pakd-packs__grid" role="radiogroup" aria-labelledby="PakdPacks-{{ block.id }}">
