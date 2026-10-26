@@ -12,7 +12,8 @@
     hidden), so the chosen subscription plan still goes to the cart through its selling_plan input.
   - Subscription prices come from the variant's selling plan (Shopify Subscriptions). With no plan
     yet, Subscribe & Save shows only in draft previews, using the sample saving below.
-  - The one-time offer line uses the product's compare-at price ("was $29.99"), only when there is one.
+  - The switch badges both compare with the same price: the compare-at ("was") price when there is one,
+    otherwise the one-time price. So Subscribe & Save always shows its full saving.
   - With no Pack option yet, sample cards show in draft previews only, never to customers.
 {%- endcomment -%}
 {%- render 'pakd-tokens' -%}
@@ -68,18 +69,27 @@
   endif
   assign base_price = base.price
 
-  # Headline saving on the Subscribe tab (single tin)
-  assign sub_pct = block.settings.demo_sub_percent
+  # Switch badges: both measured against the same reference price, so they can be compared.
+  # Reference = the single tin's compare-at ("was") price when it has one, otherwise its one-time price.
+  assign was = base.compare_at_price
+  assign ref = base_price
+  if was > base_price
+    assign ref = was
+  endif
+  assign was_text = ref | money
+
+  assign base_sub = base_price | times: demo_keep | divided_by: 100
   if real_sub and base.selling_plan_allocations.size > 0
     assign base_sub = base.selling_plan_allocations.first.price
-    assign sub_pct = base_price | minus: base_sub | times: 100.0 | divided_by: base_price | round
   endif
 
-  # One-time offer line from the compare-at price
-  assign was = base.compare_at_price
   assign once_pct = 0
-  if was > base_price
-    assign once_pct = was | minus: base_price | times: 100.0 | divided_by: was | round
+  if ref > base_price
+    assign once_pct = ref | minus: base_price | times: 100.0 | divided_by: ref | round
+  endif
+  assign sub_pct = 0
+  if ref > base_sub
+    assign sub_pct = ref | minus: base_sub | times: 100.0 | divided_by: ref | round
   endif
 
   assign mode = 'one'
@@ -161,7 +171,7 @@
           <span class="pakd-switch__title">{{ block.settings.sub_title }}</span>
         </span>
         {%- if sub_pct > 0 -%}<span class="pakd-switch__badge">Save {{ sub_pct }}%</span>{%- endif -%}
-        <span class="pakd-switch__line">{{ block.settings.sub_line }}</span>
+        <span class="pakd-switch__line">{{ block.settings.sub_line | replace: '[was]', was_text }}</span>
       </button>
       <button type="button" class="pakd-switch__opt" role="radio" data-mode-btn="one" aria-checked="{% if mode == 'one' %}true{% else %}false{% endif %}">
         <span class="pakd-switch__top">
@@ -171,7 +181,7 @@
         {%- if once_pct > 0 -%}<span class="pakd-switch__badge pakd-switch__badge--alt">{{ once_pct }}% off</span>{%- endif -%}
         <span class="pakd-switch__line">
           {%- if once_pct > 0 -%}
-            {{ block.settings.one_offer_line | replace: '[was]', was | money_without_trailing_zeros }}
+            {{ block.settings.one_offer_line | replace: '[was]', was_text }}
           {%- else -%}
             {{ block.settings.one_line }}
           {%- endif -%}
@@ -391,7 +401,7 @@
     { "type": "header", "content": "Purchase type switch" },
     { "type": "select", "id": "default_mode", "label": "Selected first", "options": [ { "value": "sub", "label": "Subscribe & Save" }, { "value": "one", "label": "One-time purchase" } ], "default": "sub" },
     { "type": "text", "id": "sub_title", "label": "Subscribe title", "default": "Subscribe & Save" },
-    { "type": "text", "id": "sub_line", "label": "Subscribe line", "default": "Lowest price, delivered on repeat" },
+    { "type": "text", "id": "sub_line", "label": "Subscribe line", "info": "[was] becomes the compare-at price.", "default": "Lowest price, delivered on repeat" },
     { "type": "text", "id": "sub_perks", "label": "Subscribe perks (under the delivery dropdown)", "default": "Skip, pause or cancel anytime" },
     { "type": "text", "id": "one_title", "label": "One-time title", "default": "One-time purchase" },
     { "type": "text", "id": "one_offer_line", "label": "One-time line when on sale", "info": "[was] becomes the compare-at price.", "default": "Launch price, was [was]" },

@@ -1,0 +1,92 @@
+{%- doc -%}
+  PAKD additions inside the cart drawer. Rendered inside Horizon's cart-items area, so it
+  re-renders automatically whenever the cart changes. Settings: Theme settings > PAKD cart.
+  @param {string} position - 'top' (free shipping bar), 'bottom' (add-ons + trust row) or 'empty'
+{%- enddoc -%}
+{%- liquid
+  assign threshold = settings.pakd_cart_free_ship
+-%}
+{%- case position -%}
+  {%- when 'top' -%}
+    {%- if threshold != blank and threshold > 0 -%}
+      {%- liquid
+        assign goal = threshold | times: 100
+        assign remaining = goal | minus: cart.total_price
+        assign pct = cart.total_price | times: 100 | divided_by: goal
+        if pct > 100
+          assign pct = 100
+        endif
+      -%}
+      <div class="pakd-cart-ship{% if remaining <= 0 %} is-done{% endif %}">
+        <p class="pakd-cart-ship__text">
+          {%- if remaining > 0 -%}
+            {{ settings.pakd_cart_free_ship_msg | replace: '[amount]', remaining | money }}
+          {%- else -%}
+            {{ settings.pakd_cart_free_ship_done }}
+          {%- endif -%}
+        </p>
+        <div class="pakd-cart-ship__bar" role="progressbar" aria-label="Progress to free shipping" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ pct }}">
+          <span style="width: {{ pct }}%"></span>
+        </div>
+      </div>
+    {%- endif -%}
+
+  {%- when 'bottom' -%}
+    {%- liquid
+      assign in_cart = cart.items | map: 'product_id'
+      assign shown = 0
+    -%}
+    {%- capture addons -%}
+      {%- for p in settings.pakd_cart_upsell -%}
+        {%- if shown >= 2 -%}{%- break -%}{%- endif -%}
+        {%- if in_cart contains p.id or p.available == false -%}{%- continue -%}{%- endif -%}
+        {%- liquid
+          assign v = p.selected_or_first_available_variant
+          assign name = p.title
+          if p.title contains '– '
+            assign name = p.title | split: '– ' | last
+          endif
+          assign img = v.featured_image | default: p.featured_image
+          assign shown = shown | plus: 1
+        -%}
+        <li class="pakd-cart-addon">
+          {%- if img -%}
+            {{ img | image_url: width: 120 | image_tag: class: 'pakd-cart-addon__img', loading: 'lazy', width: 48, height: 48, alt: name }}
+          {%- endif -%}
+          <span class="pakd-cart-addon__text">
+            <span class="pakd-cart-addon__name">{{ name }}</span>
+            <span class="pakd-cart-addon__price">
+              {{ v.price | money }}
+              {%- if v.compare_at_price > v.price %} <s>{{ v.compare_at_price | money }}</s>{% endif -%}
+            </span>
+          </span>
+          <button type="button" class="pakd-cart-addon__add" data-pakd-cart-add="{{ v.id }}" aria-label="Add {{ name | escape }} to cart">
+            <span data-label>+ Add</span>
+          </button>
+        </li>
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- if shown > 0 -%}
+      <div class="pakd-cart-addons">
+        <p class="pakd-cart-addons__title">{{ settings.pakd_cart_upsell_title }}</p>
+        <ul class="pakd-cart-addons__list" role="list">{{ addons }}</ul>
+      </div>
+    {%- endif -%}
+
+  {%- when 'trust' -%}
+    {%- if settings.pakd_cart_trust_1 != blank or settings.pakd_cart_trust_2 != blank or settings.pakd_cart_trust_3 != blank -%}
+      <ul class="pakd-cart-trust" role="list">
+        {%- for i in (1..3) -%}
+          {%- assign key = 'pakd_cart_trust_' | append: i -%}
+          {%- if settings[key] != blank -%}
+            <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>{{ settings[key] }}</li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+  {%- when 'empty' -%}
+    {%- if settings.pakd_cart_empty_cta != blank -%}
+      <a class="pakd-cart-empty-cta" href="{{ settings.pakd_cart_empty_link | default: routes.all_products_collection_url }}">{{ settings.pakd_cart_empty_cta }}</a>
+    {%- endif -%}
+{%- endcase -%}

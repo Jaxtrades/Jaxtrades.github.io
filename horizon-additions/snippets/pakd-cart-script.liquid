@@ -1,0 +1,73 @@
+{%- comment -%}
+  PAKD cart drawer: styles and the "+ Add" handler for cart add-ons. Rendered once,
+  outside the part of the drawer that re-renders, so it is never duplicated.
+{%- endcomment -%}
+{%- render 'pakd-tokens' -%}
+<style>
+  .pakd-cart-ship { padding: 12px var(--cart-drawer-padding, 20px) 14px; background: var(--pakd-ice, #EAF6FD); border-bottom: 1px solid var(--pakd-line, #D6E9F5); margin-bottom: 16px; }
+  .pakd-cart-ship__text { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: var(--pakd-ink, #0A2540); line-height: 1.3; }
+  .pakd-cart-ship__bar { height: 8px; border-radius: 999px; background: #fff; overflow: hidden; box-shadow: inset 0 0 0 1px var(--pakd-line, #D6E9F5); }
+  .pakd-cart-ship__bar span { display: block; height: 100%; border-radius: inherit; background: var(--pakd-primary, #0077FF); transition: width .4s ease; }
+  .pakd-cart-ship.is-done .pakd-cart-ship__bar span { background: #0B6B4F; }
+
+  .pakd-cart-addons { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+  .pakd-cart-addons__title { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--pakd-support, #2D5778); }
+  .pakd-cart-addons__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .pakd-cart-addon { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; background: var(--pakd-ice, #EAF6FD); }
+  .pakd-cart-addon__img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: #fff; flex: 0 0 auto; }
+  .pakd-cart-addon__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .pakd-cart-addon__name { font-weight: 600; font-size: 14px; color: var(--pakd-ink, #0A2540); }
+  .pakd-cart-addon__price { font-size: 13px; color: var(--pakd-ink, #0A2540); }
+  .pakd-cart-addon__price s { color: var(--pakd-support, #2D5778); opacity: .7; margin-left: 4px; }
+  .pakd-cart-addon__add { font: inherit; font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--pakd-primary, #0077FF); background: #fff; color: var(--pakd-primary, #0077FF); cursor: pointer; white-space: nowrap; }
+  .pakd-cart-addon__add:hover:not([disabled]) { background: var(--pakd-primary, #0077FF); color: #fff; }
+  .pakd-cart-addon__add[disabled] { opacity: .6; cursor: default; }
+
+  .pakd-cart-trust { list-style: none; margin: 0; padding: 0; width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; font-size: 12.5px; font-weight: 500; color: var(--pakd-support, #2D5778); }
+  .pakd-cart-trust li { display: inline-flex; align-items: center; gap: 6px; }
+  .pakd-cart-trust svg { color: var(--pakd-primary, #0077FF); }
+
+  .pakd-cart-empty-cta { display: inline-block; margin-top: 16px; padding: 14px 28px; border-radius: 10px; background: var(--pakd-ink, #0A2540); color: #fff; font-weight: 600; font-size: 14px; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; }
+  .pakd-cart-empty-cta:hover { background: var(--pakd-primary, #0077FF); }
+
+  {%- if settings.pakd_cart_style -%}
+  #cart-drawer .cart__checkout-button { width: 100%; min-height: 54px; border-radius: 10px; background: var(--pakd-ink, #0A2540); border-color: var(--pakd-ink, #0A2540); color: #fff; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+  #cart-drawer .cart__checkout-button:hover { background: var(--pakd-primary, #0077FF); border-color: var(--pakd-primary, #0077FF); }
+  #cart-drawer .cart-items__media img, #cart-drawer .cart-items__media-image { border-radius: 12px; background: var(--pakd-ice, #EAF6FD); }
+  #cart-drawer .theme-drawer__title { font-weight: 600; letter-spacing: -.01em; }
+  #cart-drawer .theme-drawer__badge { background: var(--pakd-primary, #0077FF); color: #fff; }
+  {%- endif -%}
+  @media (prefers-reduced-motion: reduce) { .pakd-cart-ship__bar span { transition: none; } }
+</style>
+<script type="module">
+  import { CartLinesUpdateEvent } from '@shopify/events';
+
+  if (!window.pakdCartAddons) {
+    window.pakdCartAddons = true;
+    document.addEventListener('click', async (event) => {
+      const button = event.target.closest?.('[data-pakd-cart-add]');
+      if (!button || button.disabled) return;
+      const id = button.dataset.pakdCartAdd;
+      const label = button.querySelector('[data-label]');
+      button.disabled = true;
+      if (label) label.textContent = 'Adding…';
+      const deferred = CartLinesUpdateEvent.createPromise();
+      button.dispatchEvent(new CartLinesUpdateEvent({ action: 'add', context: 'cart', lines: [{ merchandiseId: String(id), quantity: 1 }], promise: deferred.promise }));
+      try {
+        const res = await fetch(Theme.routes.cart_add_url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ items: [{ id: Number(id), quantity: 1 }] }),
+        });
+        const data = await res.json();
+        const cart = await fetch(`${Theme.routes.cart_url}.json`, { headers: { Accept: 'application/json' } }).then((r) => r.json());
+        deferred.resolve({ cart: CartLinesUpdateEvent.createCartFromAjaxResponse(cart), detail: { items: cart.items, source: 'pakd-cart-addon', itemCount: 1, didError: Boolean(data.status) } });
+        if (data.status) throw new Error(data.description || data.message);
+      } catch (error) {
+        deferred.reject(error);
+        if (label) label.textContent = 'Try again';
+        button.disabled = false;
+      }
+    });
+  }
+</script>
