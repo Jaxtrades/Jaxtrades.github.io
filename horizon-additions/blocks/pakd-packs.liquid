@@ -1,5 +1,5 @@
 {%- comment -%}
-  PAKD bundle picker: pack cards, then a "Subscribe & Save / One-time purchase" switch below them.
+  PAKD bundle picker: "Subscribe & Save / One-time purchase" tabs sitting on top of the price list.
   Pack cards
   (1 / 3 / 5 / 10 tins) with pouches, price, struck-through full price, price per pouch,
   % off, dollar saving and an optional "Most popular" tag.
@@ -104,6 +104,46 @@
   data-option-name="{{ opt_name | escape }}"
   {{ block.shopify_attributes }}
 >
+  {%- if show_switch -%}
+    <div class="pakd-switch" role="radiogroup" aria-label="Purchase type">
+      <button type="button" class="pakd-switch__opt" role="radio" data-mode-btn="sub" aria-checked="{% if mode == 'sub' %}true{% else %}false{% endif %}">
+        <span class="pakd-switch__top">
+          <span class="pakd-switch__dot" aria-hidden="true"></span>
+          <span class="pakd-switch__title">{{ block.settings.sub_title }}</span>
+        </span>
+        {%- if sub_pct > 0 -%}<span class="pakd-switch__badge">Save {{ sub_pct }}%</span>{%- endif -%}
+        <span class="pakd-switch__line">{{ block.settings.sub_line | replace: '[was]', was_text }}</span>
+      </button>
+      <button type="button" class="pakd-switch__opt" role="radio" data-mode-btn="one" aria-checked="{% if mode == 'one' %}true{% else %}false{% endif %}">
+        <span class="pakd-switch__top">
+          <span class="pakd-switch__dot" aria-hidden="true"></span>
+          <span class="pakd-switch__title">{{ block.settings.one_title }}</span>
+        </span>
+        {%- if once_pct > 0 -%}<span class="pakd-switch__badge pakd-switch__badge--alt">{{ once_pct }}% off</span>{%- endif -%}
+        <span class="pakd-switch__line">
+          {%- if once_pct > 0 -%}
+            {{ block.settings.one_offer_line | replace: '[was]', was_text }}
+          {%- else -%}
+            {{ block.settings.one_line }}
+          {%- endif -%}
+        </span>
+      </button>
+    </div>
+  {%- endif -%}
+  <div class="pakd-panel{% if show_switch %} pakd-panel--tabbed{% endif %}">
+  {%- if show_switch -%}
+    <div class="pakd-switch__freq" data-show="sub">
+      <label class="pakd-switch__freq-label" for="PakdFreq-{{ block.id }}">Deliver</label>
+      <span class="pakd-switch__select">
+        <select id="PakdFreq-{{ block.id }}" class="pakd-switch__select-el" data-freq>
+          {%- if real_sub -%}
+            {%- for alloc in current.selling_plan_allocations -%}
+              <option value="{{ alloc.selling_plan.name | escape }}">{{ alloc.selling_plan.name }}</option>
+            {%- endfor -%}
+          {%- else -%}
+            {%- assign demo_freqs = block.settings.demo_frequencies | split: ',' -%}
+            {%- for f in demo_freqs -%}<option value="{{ f | strip | escape }}">{{ f | strip }}</option>{%- endfor -%}
+          {%- endif -%}
   {%- if pack_option != blank or demo_packs -%}
     <p class="pakd-packs__heading" id="PakdPacks-{{ block.id }}">{{ block.settings.heading }}</p>
     <div class="pakd-packs__grid" role="radiogroup" aria-labelledby="PakdPacks-{{ block.id }}">
@@ -163,50 +203,7 @@
     </div>
   {%- endif -%}
 
-  {%- if show_switch -%}
-    <div class="pakd-switch" role="radiogroup" aria-label="Purchase type">
-      <button type="button" class="pakd-switch__opt" role="radio" data-mode-btn="sub" aria-checked="{% if mode == 'sub' %}true{% else %}false{% endif %}">
-        <span class="pakd-switch__top">
-          <span class="pakd-switch__dot" aria-hidden="true"></span>
-          <span class="pakd-switch__title">{{ block.settings.sub_title }}</span>
-        </span>
-        {%- if sub_pct > 0 -%}<span class="pakd-switch__badge">Save {{ sub_pct }}%</span>{%- endif -%}
-        <span class="pakd-switch__line">{{ block.settings.sub_line | replace: '[was]', was_text }}</span>
-      </button>
-      <button type="button" class="pakd-switch__opt" role="radio" data-mode-btn="one" aria-checked="{% if mode == 'one' %}true{% else %}false{% endif %}">
-        <span class="pakd-switch__top">
-          <span class="pakd-switch__dot" aria-hidden="true"></span>
-          <span class="pakd-switch__title">{{ block.settings.one_title }}</span>
-        </span>
-        {%- if once_pct > 0 -%}<span class="pakd-switch__badge pakd-switch__badge--alt">{{ once_pct }}% off</span>{%- endif -%}
-        <span class="pakd-switch__line">
-          {%- if once_pct > 0 -%}
-            {{ block.settings.one_offer_line | replace: '[was]', was_text }}
-          {%- else -%}
-            {{ block.settings.one_line }}
-          {%- endif -%}
-        </span>
-      </button>
-    </div>
-    <div class="pakd-switch__freq" data-show="sub">
-      <label class="pakd-switch__freq-label" for="PakdFreq-{{ block.id }}">Deliver</label>
-      <span class="pakd-switch__select">
-        <select id="PakdFreq-{{ block.id }}" class="pakd-switch__select-el" data-freq>
-          {%- if real_sub -%}
-            {%- for alloc in current.selling_plan_allocations -%}
-              <option value="{{ alloc.selling_plan.name | escape }}">{{ alloc.selling_plan.name }}</option>
-            {%- endfor -%}
-          {%- else -%}
-            {%- assign demo_freqs = block.settings.demo_frequencies | split: ',' -%}
-            {%- for f in demo_freqs -%}<option value="{{ f | strip | escape }}">{{ f | strip }}</option>{%- endfor -%}
-          {%- endif -%}
-        </select>
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-      </span>
-      <span class="pakd-switch__perks">{{ block.settings.sub_perks }}</span>
-    </div>
-  {%- endif -%}
-
+  </div>
   {%- if demo_packs or demo_sub -%}
     <p class="pakd-packs__demo">
       Draft preview only, with sample numbers.
@@ -232,14 +229,18 @@
   .pakd-packs { display: flex; flex-direction: column; gap: 14px; width: 100%; color: var(--pakd-ink, #0A2540); }
   .pakd-packs[data-mode='one'] [data-show='sub'], .pakd-packs[data-mode='sub'] [data-show='one'] { display: none !important; }
 
-  /* Purchase type switch */
-  .pakd-switch { margin-top: 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; border-radius: 18px; background: var(--pakd-ice, #EAF6FD); }
+  /* Purchase type tabs, attached to the top of the price list panel */
+  .pakd-switch { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .pakd-packs > .pakd-switch + .pakd-panel { margin-top: calc(-14px - 1.5px); }
   .pakd-switch__opt {
     display: flex; flex-direction: column; gap: 6px; align-items: flex-start; text-align: left;
-    font: inherit; color: inherit; cursor: pointer; border: 1.5px solid transparent; border-radius: 14px;
-    padding: 12px 12px 11px; background: transparent; transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+    font: inherit; color: inherit; cursor: pointer;
+    padding: 12px 12px 12px; border-radius: 16px 16px 0 0;
+    border: 1.5px solid var(--pakd-line, #D6E9F5); border-top-width: 3px; border-top-color: transparent;
+    background: var(--pakd-ice, #EAF6FD); transition: background .2s ease, border-color .2s ease;
   }
-  .pakd-switch__opt[aria-checked='true'] { background: #fff; border-color: var(--pakd-primary, #0077FF); box-shadow: 0 6px 18px rgba(10, 37, 64, .08); }
+  .pakd-switch__opt[aria-checked='true'] { background: #fff; border-top-color: var(--pakd-primary, #0077FF); border-bottom-color: #fff; }
+  .pakd-switch__opt:not([aria-checked='true']):hover { background: #dff0fb; }
   .pakd-switch__opt:focus-visible { outline: 3px solid rgba(0, 119, 255, .35); outline-offset: 2px; }
   .pakd-switch__top { display: flex; align-items: flex-start; gap: 8px; }
   .pakd-switch__top .pakd-switch__dot { margin-top: 1px; }
@@ -250,6 +251,9 @@
   .pakd-switch__badge { margin-left: 24px; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: var(--pakd-primary, #0077FF); color: #fff; }
   .pakd-switch__badge--alt { background: var(--pakd-ink, #0A2540); }
   .pakd-switch__line { font-size: 12.5px; line-height: 1.35; color: var(--pakd-support, #2D5778); padding-left: 24px; }
+
+  .pakd-panel { display: flex; flex-direction: column; gap: 12px; }
+  .pakd-panel--tabbed { padding: 14px 12px 12px; border: 1.5px solid var(--pakd-line, #D6E9F5); border-radius: 0 0 18px 18px; background: #fff; }
 
   .pakd-switch__freq { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
   .pakd-switch__freq-label { font-size: 13px; font-weight: 600; }
