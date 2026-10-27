@@ -1,0 +1,358 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "pakd_banner": {
+      "type": "pakd-hero-banner",
+      "settings": {
+        "image": "shopify://shop_images/PAKD_Cans_in_Midair_enhanced.jpg",
+        "eyebrow": "100% nicotine-free",
+        "heading": "Pocket sized fuel.",
+        "subheading": "<p>Electrolyte pouches that fit in your pocket.</p><p>Gym, run, work, wherever.<br/></p>",
+        "button_label": "Shop the range",
+        "button_link": "shopify://collections/all",
+        "type_style": "relaxed",
+        "text_position": "bottom-right",
+        "height": "full",
+        "overlay": 45,
+        "text_color": "#ffffff"
+      }
+    },
+    "pakd_ticker": {
+      "type": "pakd-ticker",
+      "blocks": {
+        "t1": {
+          "type": "item",
+          "settings": {
+            "text": "Nicotine-free"
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "text": "Pocket-sized"
+          }
+        },
+        "t3": {
+          "type": "item",
+          "settings": {
+            "text": "Big flavour"
+          }
+        },
+        "t4": {
+          "type": "item",
+          "settings": {
+            "text": "No water needed"
+          }
+        },
+        "t5": {
+          "type": "item",
+          "settings": {
+            "text": "Made for active days"
+          }
+        },
+        "t6": {
+          "type": "item",
+          "settings": {
+            "text": "Electrolytes on the go"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6"
+      ],
+      "settings": {
+        "aria_label": "PAKD highlights",
+        "size": "large",
+        "speed": 26,
+        "always_scroll": true,
+        "background": "#0077ff",
+        "text_color": "#ffffff"
+      }
+    },
+    "pakd_tin_wall": {
+      "type": "pakd-tin-wall",
+      "blocks": {
+        "tin_mango": {
+          "type": "tin",
+          "settings": {
+            "image": "shopify://shop_images/Mythic_Mango_Electrolyte_Lid.png",
+            "zoom": 104,
+            "product": "pakd-electrolytes-mythic-mango",
+            "flavour": "",
+            "label": "",
+            "notes": "Juicy · tropical · sweet",
+            "colour": "#ff7a00"
+          }
+        },
+        "tin_spearmint": {
+          "type": "tin",
+          "settings": {
+            "image": "shopify://shop_images/PAKD_Spearmint_Electrolyte_Tin_Label.png",
+            "zoom": 108,
+            "product": "pakd-electrolytes-spearmint",
+            "flavour": "",
+            "label": "",
+            "notes": "Cool · crisp · fresh",
+            "colour": "#5cc8ff"
+          }
+        }
+      },
+      "block_order": [
+        "tin_mango",
+        "tin_spearmint"
+      ],
+      "settings": {
+        "heading": "The range",
+        "subheading": "Pick your tin. 100% nicotine-free.",
+        "layout": "playful",
+        "float": true,
+        "view_label": "View",
+        "lid_motion": "lift",
+        "tin_size": 300,
+        "tin_size_mobile": 240,
+        "background": "#eaf6fd",
+        "show_next": true,
+        "next_label": "Drop 02",
+        "next_text": "???",
+        "next_heading": "Be first to try it",
+        "next_body": "New flavour landing soon.",
+        "next_button": "Notify me",
+        "next_fine": "Unsubscribe anytime.",
+        "next_success": "You're on the list ✓",
+        "next_tag": "next-drop"
+      }
+    },
+    "pakd_flavours": {
+      "type": "pakd-flavours",
+      "blocks": {
+        "electrolytes": {
+          "type": "flavour",
+          "settings": {
+            "name": "Electrolytes",
+            "text": "<p>Our first drop. Electrolyte pouches in Mythic Mango and Spearmint.</p>",
+            "cta": "Shop Electrolytes",
+            "link": "shopify://collections/electrolytes",
+            "background": "#ff7a00",
+            "text_color": "#0a2540",
+            "border_color": ""
+          }
+        },
+        "next_drop": {
+          "type": "flavour",
+          "settings": {
+            "name": "Coming Soon",
+            "text": "<p>New PAKD pouches are on the way. Sign up below to hear first.</p>",
+            "cta": "Coming soon",
+            "link": "",
+            "background": "#eaf6fd",
+            "text_color": "#0a2540",
+            "border_color": "#0a2540"
+          }
+        }
+      },
+      "block_order": [
+        "electrolytes",
+        "next_drop"
+      ],
+      "disabled": true,
+      "settings": {
+        "heading": "Shop by range"
+      }
+    },
+    "pakd_steps": {
+      "type": "pakd-cards",
+      "blocks": {
+        "s1": {
+          "type": "card",
+          "settings": {
+            "icon": "⚡",
+            "title": "Pick",
+            "text": "<p>Choose your pouch and flavour.</p>"
+          }
+        },
+        "s2": {
+          "type": "card",
+          "settings": {
+            "icon": "⚡",
+            "title": "Pop",
+            "text": "<p>Place one pouch under your upper lip.</p>"
+          }
+        },
+        "s3": {
+          "type": "card",
+          "settings": {
+            "icon": "⚡",
+            "title": "Go",
+            "text": "<p>No water, no shaker, no mess. Get moving.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "settings": {
+        "style": "timeline",
+        "heading": "How it works",
+        "background": "#eaf6fd",
+        "text_color": "#0a2540",
+        "accent": "#0077ff",
+        "badge_text": "#ffffff"
+      },
+      "disabled": true
+    },
+    "pakd_why": {
+      "type": "pakd-cards",
+      "blocks": {
+        "w1": {
+          "type": "card",
+          "settings": {
+            "icon": "🚫",
+            "title": "Nicotine-free, always",
+            "text": "<p>Every PAKD pouch is 100% nicotine-free. No exceptions.</p>"
+          }
+        },
+        "w2": {
+          "type": "card",
+          "settings": {
+            "icon": "⚡",
+            "title": "Pocket-sized",
+            "text": "<p>A tin in your pocket, ready anywhere: the gym, the desk or the beach.</p>"
+          }
+        },
+        "w3": {
+          "type": "card",
+          "settings": {
+            "icon": "🥭",
+            "title": "Big flavour",
+            "text": "<p>Bold flavours you'll actually look forward to.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "w1",
+        "w2",
+        "w3"
+      ],
+      "settings": {
+        "style": "icons",
+        "heading": "Why PAKD",
+        "background": "#ffffff",
+        "text_color": "#0a2540",
+        "accent": "#3fe0b0",
+        "badge_text": "#0a2540"
+      }
+    },
+    "pakd_faq": {
+      "type": "pakd-faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Are PAKD pouches nicotine-free?",
+            "answer": "<p>Yes. Every PAKD pouch is 100% nicotine-free.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "How do I use a PAKD pouch?",
+            "answer": "<p>Place one pouch under your upper lip. [Owner to confirm: how long, and max pouches per day.] Check each product page for details.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Where do you ship?",
+            "answer": "<p>Australia-wide, with free shipping on orders of 3 or more tins. See our <a href=\"/policies/shipping-policy\">Shipping Policy</a> for delivery times and costs.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Will there be more flavours and products?",
+            "answer": "<p>Yes. Electrolytes are just our first drop. Sign up below to hear about new releases first.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4"
+      ],
+      "settings": {
+        "heading": "FAQ"
+      }
+    },
+    "pakd_how": {
+      "type": "pakd-how-steps",
+      "blocks": {
+        "h1": {
+          "type": "step",
+          "settings": {
+            "label": "Step 1",
+            "title": "Pop the lid",
+            "text": "<p>Twist open the tin and grab a pouch.</p>",
+            "tile_colour": "#FFD7B0"
+          }
+        },
+        "h2": {
+          "type": "step",
+          "settings": {
+            "label": "Step 2",
+            "title": "Tuck it in",
+            "text": "<p>Place one pouch under your upper lip.</p>",
+            "tile_colour": "#BFE3FA"
+          }
+        },
+        "h3": {
+          "type": "step",
+          "settings": {
+            "label": "Step 3",
+            "title": "Get on with it",
+            "text": "<p>Back to your set, your run, your day. No water, no shaker, no mess.</p>",
+            "tile_colour": "#C9F5E8"
+          }
+        }
+      },
+      "block_order": [
+        "h1",
+        "h2",
+        "h3"
+      ],
+      "settings": {
+        "heading": "How it works",
+        "start": "photo",
+        "background": "#EAF6FD",
+        "tile_colour": "#BFE3FA",
+        "text_color": "#0A2540",
+        "radius": 16
+      }
+    }
+  },
+  "order": [
+    "pakd_banner",
+    "pakd_ticker",
+    "pakd_tin_wall",
+    "pakd_flavours",
+    "pakd_steps",
+    "pakd_how",
+    "pakd_why",
+    "pakd_faq"
+  ]
+}

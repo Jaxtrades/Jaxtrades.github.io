@@ -1,0 +1,104 @@
+{%- comment -%}
+  PAKD "How it works": zig-zag rows, each a photo (or short looping video) tile beside a coloured
+  text tile. Sides swap every row; on mobile each row stacks photo first, then its text.
+  Each step is a block: photo/video, label, heading, text and tile colour.
+{%- endcomment -%}
+{%- render 'pakd-tokens' -%}
+<section class="pakd-how pakd-how-{{ section.id }}{% if section.settings.start == 'text' %} pakd-how--text-first{% endif %}" aria-labelledby="PakdHow-{{ section.id }}">
+  <div class="pakd-how__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="pakd-how__heading" id="PakdHow-{{ section.id }}">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    <ol class="pakd-how__list" role="list">
+      {%- for block in section.blocks -%}
+        {%- assign tile = block.settings.tile_colour | default: section.settings.tile_colour -%}
+        <li class="pakd-how__row" {{ block.shopify_attributes }}>
+          <div class="pakd-how__media">
+            {%- if block.settings.video != blank -%}
+              {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, class: 'pakd-how__img', image_size: '1000x' }}
+            {%- elsif block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 600, 800, 1000, 1200', sizes: '(min-width: 750px) 50vw, 100vw', class: 'pakd-how__img', alt: block.settings.image.alt | default: block.settings.title }}
+            {%- else -%}
+              <span class="pakd-how__placeholder" aria-hidden="true">{{ forloop.index }}</span>
+              {%- if request.design_mode -%}<span class="pakd-how__hint">Add a photo or video for this step</span>{%- endif -%}
+            {%- endif -%}
+          </div>
+          <div class="pakd-how__text" style="--tile: {{ tile }};">
+            {%- if block.settings.label != blank -%}<p class="pakd-how__label">{{ block.settings.label }}</p>{%- endif -%}
+            <h3 class="pakd-how__title">{{ block.settings.title }}</h3>
+            {%- if block.settings.text != blank -%}<div class="pakd-how__body">{{ block.settings.text }}</div>{%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .pakd-how-{{ section.id }} { --how-bg: {{ section.settings.background }}; --how-ink: {{ section.settings.text_color }}; --how-radius: {{ section.settings.radius }}px; }
+</style>
+
+{% stylesheet %}
+  .pakd-how { background: var(--how-bg, #EAF6FD); color: var(--how-ink, #0A2540); padding: clamp(48px, 7vw, 96px) 20px; }
+  .pakd-how__inner { max-width: 1100px; margin: 0 auto; }
+  .pakd-how__heading { margin: 0 0 clamp(24px, 4vw, 40px); font-family: var(--font-heading--family, inherit); text-transform: var(--pakd-heading-case, none); font-weight: var(--pakd-heading-weight, 600); letter-spacing: var(--pakd-heading-tracking, -0.02em); font-size: clamp(28px, 4vw, 48px); line-height: 1.05; color: inherit; }
+  .pakd-how__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .pakd-how__row { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 750px) {
+    .pakd-how__row { grid-template-columns: 1fr 1fr; }
+    .pakd-how__row:nth-child(even) .pakd-how__media { order: 2; }
+    .pakd-how--text-first .pakd-how__row:nth-child(odd) .pakd-how__media { order: 2; }
+    .pakd-how--text-first .pakd-how__row:nth-child(even) .pakd-how__media { order: 0; }
+  }
+  .pakd-how__media { position: relative; overflow: hidden; border-radius: var(--how-radius, 16px); background: #fff; aspect-ratio: 4 / 3; display: grid; place-items: center; }
+  .pakd-how__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pakd-how__placeholder { font-family: var(--font-heading--family, inherit); font-weight: 700; font-size: clamp(72px, 12vw, 140px); line-height: 1; color: var(--pakd-line, #D6E9F5); }
+  .pakd-how__hint { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: 600; background: #fff; border: 1px dashed var(--pakd-support, #2D5778); color: var(--pakd-support, #2D5778); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .pakd-how__text { border-radius: var(--how-radius, 16px); background: var(--tile, #BFE3FA); padding: clamp(22px, 3.5vw, 40px); display: flex; flex-direction: column; justify-content: flex-start; gap: 8px; min-height: 100%; }
+  @media (min-width: 750px) { .pakd-how__text { justify-content: center; } }
+  .pakd-how__label { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .pakd-how__title { margin: 0; font-family: var(--font-heading--family, inherit); font-weight: 700; font-size: clamp(24px, 3vw, 36px); line-height: 1.05; letter-spacing: -.02em; text-transform: uppercase; color: inherit; }
+  .pakd-how__body { font-size: 15px; line-height: 1.55; max-width: 48ch; }
+  .pakd-how__body p { margin: 0 0 8px; }
+  .pakd-how__body p:last-child { margin-bottom: 0; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PAKD how it works",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "How it works" },
+    { "type": "select", "id": "start", "label": "First row starts with", "options": [ { "value": "photo", "label": "Photo on the left" }, { "value": "text", "label": "Text on the left" } ], "default": "photo" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#EAF6FD" },
+    { "type": "color", "id": "tile_colour", "label": "Text tile colour", "default": "#BFE3FA", "info": "Each step can override this." },
+    { "type": "color", "id": "text_color", "label": "Text colour", "default": "#0A2540" },
+    { "type": "range", "id": "radius", "label": "Corner rounding", "min": 0, "max": 32, "step": 2, "unit": "px", "default": 16 }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo", "info": "Landscape 4:3 works best, at least 1200px wide." },
+        { "type": "video", "id": "video", "label": "Video (optional)", "info": "Short, muted loop. Replaces the photo. Keep it under 5MB so the page stays fast." },
+        { "type": "text", "id": "label", "label": "Label", "default": "Step 1" },
+        { "type": "text", "id": "title", "label": "Heading", "default": "Pop the lid" },
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Twist open the tin and grab a pouch.</p>" },
+        { "type": "color", "id": "tile_colour", "label": "Tile colour (optional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PAKD how it works",
+      "category": "PAKD",
+      "blocks": [
+        { "type": "step", "settings": { "label": "Step 1", "title": "Pop the lid", "text": "<p>Twist open the tin and grab a pouch.</p>" } },
+        { "type": "step", "settings": { "label": "Step 2", "title": "Tuck it in", "text": "<p>Place one pouch under your upper lip.</p>" } },
+        { "type": "step", "settings": { "label": "Step 3", "title": "Get on with it", "text": "<p>Back to your set, your run, your day. No water, no shaker, no mess.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
