@@ -114,7 +114,10 @@
       "pakd-electrolytes-mythic-mango",
       "pakd-electrolytes-spearmint"
     ],
-    "pakd_cart_style": true
+    "pakd_cart_style": true,
+    "pakd_gw_enabled": true,
+    "pakd_gw_min_tins": 3,
+    "pakd_gw_terms": "shopify://pages/giveaway-terms"
   },
   "presets": {
     "Horizon": {

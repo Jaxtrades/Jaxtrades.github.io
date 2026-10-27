@@ -10,6 +10,13 @@
   .pakd-cart-ship__bar span { display: block; height: 100%; border-radius: inherit; background: var(--pakd-primary, #0077FF); transition: width .4s ease; }
   .pakd-cart-ship.is-done .pakd-cart-ship__bar span { background: #0B6B4F; }
 
+  .pakd-cart-gw { display: flex; gap: 10px; align-items: flex-start; margin: 0 var(--cart-drawer-padding, 20px) 16px; padding: 12px 14px; border-radius: 14px; border: 1.5px dashed var(--pakd-primary, #0077FF); background: #fff; color: var(--pakd-ink, #0A2540); }
+  .pakd-cart-gw.is-in { border-style: solid; background: var(--pakd-ice, #EAF6FD); }
+  .pakd-cart-gw__icon { font-size: 20px; line-height: 1.1; }
+  .pakd-cart-gw__text { display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 1.35; }
+  .pakd-cart-gw__text strong { font-size: 14px; }
+  .pakd-cart-gw__text span { color: var(--pakd-support, #2D5778); }
+  .pakd-cart-gw__text a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
   .pakd-cart-addons { width: 100%; display: flex; flex-direction: column; gap: 8px; }
   .pakd-cart-addons__title { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--pakd-support, #2D5778); }
   .pakd-cart-addons__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }

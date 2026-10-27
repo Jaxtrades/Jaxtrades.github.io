@@ -33,6 +33,10 @@
     {%- if off_sub > 0 -%}<span class="pakd-pack__off" data-show="sub">{{ off_sub }}% off</span>{%- endif -%}
   </span>
 </span>
+{%- if settings.pakd_gw_enabled and tins >= settings.pakd_gw_min_tins -%}
+  {%- assign entries_text = tins | append: '' -%}
+  <span class="pakd-pack__entries">{{ settings.pakd_gw_card_label | replace: '[entries]', entries_text }}</span>
+{%- endif -%}
 <span class="pakd-pack__name">
   <span class="pakd-pack__tins">{{ tins }} {% if tins == 1 %}Tin{% else %}Tins{% endif %}</span>
   <span class="pakd-pack__pouches">{{ pouches }} pouches</span>

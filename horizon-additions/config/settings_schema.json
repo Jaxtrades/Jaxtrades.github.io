@@ -2208,5 +2208,62 @@
         "label": "Button link"
       }
     ]
+  },
+  {
+    "name": "PAKD giveaway",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Launch giveaway: 1 entry per tin on orders with at least the minimum number of tins. Shows entry tags on the bundle cards and a message in the cart. Turn off when the promotion closes."
+      },
+      {
+        "type": "checkbox",
+        "id": "pakd_gw_enabled",
+        "label": "Giveaway is running",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "pakd_gw_min_tins",
+        "label": "Minimum tins per order to enter",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "text",
+        "id": "pakd_gw_card_label",
+        "label": "Bundle card tag",
+        "info": "[entries] becomes the number of entries.",
+        "default": "🎟 [entries] entries"
+      },
+      {
+        "type": "text",
+        "id": "pakd_gw_cart_more",
+        "label": "Cart message (not entered yet)",
+        "info": "[n] becomes the tins still needed.",
+        "default": "Add [n] more [tins] to enter our launch giveaway"
+      },
+      {
+        "type": "text",
+        "id": "pakd_gw_cart_in",
+        "label": "Cart message (entered)",
+        "info": "[entries] becomes the number of entries.",
+        "default": "You're in the draw with [entries] entries"
+      },
+      {
+        "type": "text",
+        "id": "pakd_gw_prize",
+        "label": "Prize line (under the cart message)",
+        "default": "Win a year of PAKD, Acis Mega Blasts and $500"
+      },
+      {
+        "type": "url",
+        "id": "pakd_gw_terms",
+        "label": "Terms and conditions page",
+        "info": "e.g. the Launch Giveaway – Terms and Conditions page."
+      }
+    ]
   }
 ]

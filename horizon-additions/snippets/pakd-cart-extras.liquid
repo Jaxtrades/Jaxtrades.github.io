@@ -31,6 +31,49 @@
       </div>
     {%- endif -%}
 
+    {%- if settings.pakd_gw_enabled -%}
+      {%- liquid
+        # Count tins: pakd.tins on the variant, else the number at the start of the "Pack" option (e.g. "5 Tins"), else 1
+        assign tin_total = 0
+        for item in cart.items
+          assign per = item.variant.metafields.pakd.tins.value
+          if per == blank
+            assign per = 1
+            for opt in item.options_with_values
+              if opt.name == 'Pack'
+                assign n = opt.value | split: ' ' | first | plus: 0
+                if n > 0
+                  assign per = n
+                endif
+              endif
+            endfor
+          endif
+          assign tin_total = per | times: item.quantity | plus: tin_total
+        endfor
+        assign min_tins = settings.pakd_gw_min_tins
+        assign need = min_tins | minus: tin_total
+        assign need_text = need | append: ''
+        assign entries_text = tin_total | append: ''
+        assign tin_word = 'tins'
+        if need == 1
+          assign tin_word = 'tin'
+        endif
+      -%}
+      <div class="pakd-cart-gw{% if need <= 0 %} is-in{% endif %}">
+        <span class="pakd-cart-gw__icon" aria-hidden="true">🎟</span>
+        <span class="pakd-cart-gw__text">
+          <strong>
+            {%- if need > 0 -%}
+              {{ settings.pakd_gw_cart_more | replace: '[n]', need_text | replace: '[tins]', tin_word }}
+            {%- else -%}
+              {{ settings.pakd_gw_cart_in | replace: '[entries]', entries_text }}
+            {%- endif -%}
+          </strong>
+          {%- if settings.pakd_gw_prize != blank -%}<span>{{ settings.pakd_gw_prize }}{% if settings.pakd_gw_terms != blank %} · <a href="{{ settings.pakd_gw_terms }}">T&amp;Cs</a>{% endif %}</span>{%- endif -%}
+        </span>
+      </div>
+    {%- endif -%}
+
   {%- when 'bottom' -%}
     {%- liquid
       assign in_cart = cart.items | map: 'product_id'
