@@ -12,8 +12,8 @@
     hidden), so the chosen subscription plan still goes to the cart through its selling_plan input.
   - Subscription prices come from the variant's selling plan (Shopify Subscriptions). With no plan
     yet, Subscribe & Save shows only in draft previews, using the sample saving below.
-  - The switch badges both compare with the same price: the compare-at ("was") price when there is one,
-    otherwise the one-time price. So Subscribe & Save always shows its full saving.
+  - Subscribe badge = the plan's extra saving on today's one-time price ("Extra 20% off").
+    One-time badge = saving against the compare-at ("was") price, only when there is one.
   - With no Pack option yet, sample cards show in draft previews only, never to customers.
 {%- endcomment -%}
 {%- render 'pakd-tokens' -%}
@@ -69,8 +69,7 @@
   endif
   assign base_price = base.price
 
-  # Switch badges: both measured against the same reference price, so they can be compared.
-  # Reference = the single tin's compare-at ("was") price when it has one, otherwise its one-time price.
+  # One-time badge: saving against the single tin's compare-at ("was") price, when it has one.
   assign was = base.compare_at_price
   assign ref = base_price
   if was > base_price
@@ -87,10 +86,12 @@
   if ref > base_price
     assign once_pct = ref | minus: base_price | times: 100.0 | divided_by: ref | round
   endif
+  # Subscribe badge = the plan's own extra saving on today's one-time price (e.g. "Extra 20% off")
   assign sub_pct = 0
-  if ref > base_sub
-    assign sub_pct = ref | minus: base_sub | times: 100.0 | divided_by: ref | round
+  if base_price > base_sub
+    assign sub_pct = base_price | minus: base_sub | times: 100.0 | divided_by: base_price | round
   endif
+  assign sub_pct_text = sub_pct | append: ''
 
   assign mode = 'one'
   if show_switch and block.settings.default_mode == 'sub'
@@ -111,7 +112,7 @@
           <span class="pakd-switch__dot" aria-hidden="true"></span>
           <span class="pakd-switch__title">{{ block.settings.sub_title }}</span>
         </span>
-        {%- if sub_pct > 0 -%}<span class="pakd-switch__badge">Save {{ sub_pct }}%</span>{%- endif -%}
+        {%- if sub_pct > 0 -%}<span class="pakd-switch__badge">{{ block.settings.sub_badge | replace: '[pct]', sub_pct_text }}</span>{%- endif -%}
         <span class="pakd-switch__line">{{ block.settings.sub_line | replace: '[was]', was_text }}</span>
       </button>
       <button type="button" class="pakd-switch__opt" role="radio" data-mode-btn="one" aria-checked="{% if mode == 'one' %}true{% else %}false{% endif %}">
@@ -411,6 +412,7 @@
     { "type": "header", "content": "Purchase type switch" },
     { "type": "select", "id": "default_mode", "label": "Selected first", "options": [ { "value": "sub", "label": "Subscribe & Save" }, { "value": "one", "label": "One-time purchase" } ], "default": "sub" },
     { "type": "text", "id": "sub_title", "label": "Subscribe title", "default": "Subscribe & Save" },
+    { "type": "text", "id": "sub_badge", "label": "Subscribe badge", "info": "[pct] becomes the plan's saving on the one-time price.", "default": "Extra [pct]% off" },
     { "type": "text", "id": "sub_line", "label": "Subscribe line", "info": "[was] becomes the compare-at price.", "default": "Lowest price, delivered on repeat" },
     { "type": "text", "id": "sub_perks", "label": "Subscribe perks (under the delivery dropdown)", "default": "Skip, pause or cancel anytime" },
     { "type": "text", "id": "one_title", "label": "One-time title", "default": "One-time purchase" },
