@@ -9,6 +9,7 @@
   @param {string} popular_label
   @param {boolean} is_popular
   @param {boolean} available
+  @param {string} [pack_label] - e.g. Training Week
 {%- enddoc -%}
 {%- liquid
   assign pouches = pouches_per_tin | times: tins
@@ -37,6 +38,7 @@
   {%- assign entries_text = tins | append: '' -%}
   <span class="pakd-pack__entries">{{ settings.pakd_gw_card_label | replace: '[entries]', entries_text }}</span>
 {%- endif -%}
+{%- if pack_label != blank -%}<span class="pakd-pack__label">{{ pack_label }}</span>{%- endif -%}
 <span class="pakd-pack__name">
   <span class="pakd-pack__tins">{{ tins }} {% if tins == 1 %}Tin{% else %}Tins{% endif %}</span>
   <span class="pakd-pack__pouches">{{ pouches }} pouches</span>

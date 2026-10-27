@@ -93,6 +93,9 @@
   endif
   assign sub_pct_text = sub_pct | append: ''
 
+  # Pack names, e.g. "3 Tins: Training Week"
+  assign pack_names = block.settings.pack_names | split: ','
+
   assign mode = 'one'
   if show_switch and block.settings.default_mode == 'sub'
     assign mode = 'sub'
@@ -152,6 +155,23 @@
     </div>
   {%- endif -%}
   {%- if pack_option != blank or demo_packs -%}
+    {%- if block.settings.show_picker -%}
+      {%- assign weeks = block.settings.picker_weeks -%}
+      {%- assign pps = block.settings.pouches_per_session -%}
+      <div class="pakd-train" data-weeks="{{ weeks }}" data-pps="{{ pps }}">
+        <p class="pakd-train__q" id="PakdTrain-{{ block.id }}">{{ block.settings.picker_heading }}</p>
+        <div class="pakd-train__chips" role="group" aria-labelledby="PakdTrain-{{ block.id }}">
+          {%- assign opts = block.settings.picker_options | split: ',' -%}
+          {%- for o in opts -%}
+            {%- assign kv = o | split: ':' -%}
+            {%- assign per_week = kv.last | strip | plus: 0 -%}
+            {%- assign need = per_week | times: weeks | times: pps -%}
+            <button type="button" class="pakd-train__chip" data-need="{{ need }}" data-sessions="{{ per_week | times: weeks }}" aria-pressed="false">{{ kv.first | strip }}</button>
+          {%- endfor -%}
+        </div>
+        <p class="pakd-train__result" aria-live="polite" data-template="{{ block.settings.picker_result | escape }}" hidden></p>
+      </div>
+    {%- endif -%}
     <p class="pakd-packs__heading" id="PakdPacks-{{ block.id }}">{{ block.settings.heading }}</p>
     <div class="pakd-packs__grid" role="radiogroup" aria-labelledby="PakdPacks-{{ block.id }}">
       {%- if pack_option != blank -%}
@@ -175,9 +195,18 @@
             if block.settings.popular_value != blank and val.name == block.settings.popular_value
               assign is_popular = true
             endif
+            assign pack_label = ''
+            for pair in pack_names
+              assign kv = pair | split: ':'
+              assign k = kv.first | strip
+              if k == val.name
+                assign pack_label = kv.last | strip
+              endif
+            endfor
+            assign card_pouches = pouches_per_tin | times: tins
           -%}
-          <button type="button" class="pakd-pack{% if val.selected %} is-selected{% endif %}{% if is_popular %} is-popular{% endif %}" role="radio" aria-checked="{% if val.selected %}true{% else %}false{% endif %}" data-pack-value="{{ val.name | escape }}"{% unless val.available %} aria-disabled="true"{% endunless %}>
-            {%- render 'pakd-pack-card', tins: tins, pouches_per_tin: pouches_per_tin, base_price: base_price, once: v.price, sub: sub, popular_label: block.settings.popular_label, is_popular: is_popular, available: val.available -%}
+          <button type="button" class="pakd-pack{% if val.selected %} is-selected{% endif %}{% if is_popular %} is-popular{% endif %}" role="radio" aria-checked="{% if val.selected %}true{% else %}false{% endif %}" data-pack-value="{{ val.name | escape }}" data-pouches="{{ card_pouches }}" data-pack-name="{{ val.name | escape }}{% if pack_label != blank %} ({{ pack_label | escape }}){% endif %}"{% unless val.available %} aria-disabled="true"{% endunless %}>
+            {%- render 'pakd-pack-card', tins: tins, pouches_per_tin: pouches_per_tin, base_price: base_price, once: v.price, sub: sub, popular_label: block.settings.popular_label, is_popular: is_popular, available: val.available, pack_label: pack_label -%}
           </button>
         {%- endfor -%}
       {%- else -%}
@@ -201,9 +230,18 @@
             if block.settings.popular_value != blank and label_value == block.settings.popular_value
               assign is_popular = true
             endif
+            assign pack_label = ''
+            for pair in pack_names
+              assign kv = pair | split: ':'
+              assign k = kv.first | strip
+              if k == label_value
+                assign pack_label = kv.last | strip
+              endif
+            endfor
+            assign card_pouches = pouches_per_tin | times: tins
           -%}
-          <button type="button" class="pakd-pack{% if forloop.first %} is-selected{% endif %}{% if is_popular %} is-popular{% endif %}" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" data-demo>
-            {%- render 'pakd-pack-card', tins: tins, pouches_per_tin: pouches_per_tin, base_price: base_price, once: once, sub: sub, popular_label: block.settings.popular_label, is_popular: is_popular, available: true -%}
+          <button type="button" class="pakd-pack{% if forloop.first %} is-selected{% endif %}{% if is_popular %} is-popular{% endif %}" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" data-demo data-pouches="{{ card_pouches }}" data-pack-name="{{ label_value | escape }}{% if pack_label != blank %} ({{ pack_label | escape }}){% endif %}">
+            {%- render 'pakd-pack-card', tins: tins, pouches_per_tin: pouches_per_tin, base_price: base_price, once: once, sub: sub, popular_label: block.settings.popular_label, is_popular: is_popular, available: true, pack_label: pack_label -%}
           </button>
         {%- endfor -%}
       {%- endif -%}
@@ -269,6 +307,17 @@
   .pakd-switch__select-el:focus-visible { outline: 2px solid var(--pakd-primary, #0077FF); outline-offset: 1px; }
   .pakd-switch__select svg { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; }
   .pakd-switch__perks { font-size: 12.5px; color: var(--pakd-support, #2D5778); }
+
+  /* Training picker */
+  .pakd-train { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 14px; background: var(--pakd-ice, #EAF6FD); }
+  .pakd-train__q { margin: 0; font-size: 14px; font-weight: 700; }
+  .pakd-train__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pakd-train__chip { font: inherit; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 999px; border: 1.5px solid var(--pakd-line, #D6E9F5); background: #fff; color: var(--pakd-ink, #0A2540); cursor: pointer; }
+  .pakd-train__chip:hover { border-color: #9cc9ec; }
+  .pakd-train__chip[aria-pressed='true'] { background: var(--pakd-ink, #0A2540); border-color: var(--pakd-ink, #0A2540); color: #fff; }
+  .pakd-train__chip:focus-visible { outline: 3px solid rgba(0, 119, 255, .35); outline-offset: 2px; }
+  .pakd-train__result { margin: 0; font-size: 13px; line-height: 1.4; color: var(--pakd-ink, #0A2540); }
+  .pakd-pack__label { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--pakd-primary, #0077FF); }
 
   /* Pack cards */
   .pakd-packs__heading { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--pakd-support, #2D5778); }
@@ -377,7 +426,46 @@
       return true;
     };
 
+    // "How often do you train?": pick the smallest pack that covers one delivery period
+    const recommend = (chip) => {
+      const packs = chip.closest('pakd-live-block.pakd-packs');
+      const box = chip.closest('.pakd-train');
+      const need = Number(chip.dataset.need);
+      const cards = Array.from(packs.querySelectorAll('.pakd-pack:not([aria-disabled="true"])'))
+        .filter((c) => c.dataset.pouches)
+        .sort((a, b) => Number(a.dataset.pouches) - Number(b.dataset.pouches));
+      if (!cards.length) return;
+      const pick = cards.find((c) => Number(c.dataset.pouches) >= need) || cards[cards.length - 1];
+      const chips = Array.from(box.querySelectorAll('.pakd-train__chip'));
+      packs.dataset.trainChip = String(chips.indexOf(chip));
+      showTrain(packs, pick);
+      choosePack(pick);
+    };
+
+    // Paint the chosen chip + recommendation line (also re-applied after Horizon refreshes the block)
+    const showTrain = (packs, pick) => {
+      const box = packs.querySelector('.pakd-train');
+      const idx = Number(packs.dataset.trainChip);
+      if (!box || Number.isNaN(idx) || packs.dataset.trainChip === undefined) return;
+      const chips = Array.from(box.querySelectorAll('.pakd-train__chip'));
+      const chip = chips[idx];
+      if (!chip) return;
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      pick = pick || packs.querySelector('.pakd-pack.is-selected');
+      const out = box.querySelector('.pakd-train__result');
+      if (out && pick) {
+        out.textContent = (out.dataset.template || '')
+          .replace('[pack]', pick.dataset.packName || '')
+          .replace('[pouches]', pick.dataset.pouches)
+          .replace('[sessions]', chip.dataset.sessions)
+          .replace('[weeks]', box.dataset.weeks);
+        out.hidden = false;
+      }
+    };
+
     document.addEventListener('click', (event) => {
+      const chip = event.target.closest?.('pakd-live-block.pakd-packs .pakd-train__chip');
+      if (chip) return recommend(chip);
       const modeBtn = event.target.closest?.('pakd-live-block.pakd-packs [data-mode-btn]');
       if (modeBtn) return setMode(modeBtn.closest('pakd-live-block.pakd-packs'), modeBtn.dataset.modeBtn);
       const pack = event.target.closest?.('pakd-live-block.pakd-packs .pakd-pack');
@@ -396,7 +484,7 @@
     });
     // After Horizon swaps in fresh markup (new pack selected), keep the shopper's mode
     document.addEventListener('pakd:refresh', (event) => {
-      if (event.target.matches?.('pakd-live-block.pakd-packs')) { paint(event.target); pushToBuy(event.target); }
+      if (event.target.matches?.('pakd-live-block.pakd-packs')) { paint(event.target); pushToBuy(event.target); showTrain(event.target); }
     }, true);
 
     const init = () => document.querySelectorAll('pakd-live-block.pakd-packs').forEach((p) => { paint(p); pushToBuy(p); });
@@ -425,6 +513,14 @@
     { "type": "range", "id": "pouches", "label": "Pouches per tin", "min": 1, "max": 60, "step": 1, "default": 20 },
     { "type": "text", "id": "popular_value", "label": "Most popular pack", "default": "5 Tins", "info": "The pack value to tag, e.g. 5 Tins. Leave blank for none." },
     { "type": "text", "id": "popular_label", "label": "Most popular tag", "default": "Most popular" },
+    { "type": "text", "id": "pack_names", "label": "Pack names", "info": "Pack value: name, separated by commas. Leave blank for none.", "default": "1 Tin: Try it, 3 Tins: Training Week, 5 Tins: Training Block, 10 Tins: Full Season" },
+    { "type": "header", "content": "How often do you train? picker" },
+    { "type": "checkbox", "id": "show_picker", "label": "Show the training picker", "default": true },
+    { "type": "text", "id": "picker_heading", "label": "Question", "default": "How often do you train?" },
+    { "type": "text", "id": "picker_options", "label": "Options", "info": "Label: sessions per week, separated by commas.", "default": "1–2 a week: 2, 3–4 a week: 4, 5+ a week: 6" },
+    { "type": "range", "id": "pouches_per_session", "label": "Pouches per session", "min": 1, "max": 4, "step": 1, "default": 1, "info": "Keep within the daily maximum on your label." },
+    { "type": "range", "id": "picker_weeks", "label": "Weeks covered", "min": 1, "max": 12, "step": 1, "unit": "wk", "default": 4, "info": "Match your subscription delivery frequency." },
+    { "type": "text", "id": "picker_result", "label": "Recommendation", "info": "[pack], [pouches], [sessions] and [weeks] are filled in.", "default": "We'd go with [pack]: [pouches] pouches covers about [sessions] sessions over [weeks] weeks." },
     { "type": "header", "content": "Draft preview (before real packs and plans exist)" },
     { "type": "checkbox", "id": "preview_in_editor", "label": "Show sample numbers in draft previews", "default": true },
     { "type": "range", "id": "demo_sub_percent", "label": "Sample subscribe saving", "min": 5, "max": 30, "step": 1, "unit": "%", "default": 15 },
