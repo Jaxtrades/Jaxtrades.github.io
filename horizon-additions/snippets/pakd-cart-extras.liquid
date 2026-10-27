@@ -8,7 +8,52 @@
 -%}
 {%- case position -%}
   {%- when 'top' -%}
-    {%- if threshold != blank and threshold > 0 -%}
+    {%- liquid
+      # Count tins: pakd.tins on the variant, else the number at the start of the "Pack" option (e.g. "5 Tins"), else 1
+      assign tin_total = 0
+      for item in cart.items
+        assign per = item.variant.metafields.pakd.tins.value
+        if per == blank
+          assign per = 1
+          for opt in item.options_with_values
+            if opt.name == 'Pack'
+              assign n = opt.value | split: ' ' | first | plus: 0
+              if n > 0
+                assign per = n
+              endif
+            endif
+          endfor
+        endif
+        assign tin_total = per | times: item.quantity | plus: tin_total
+      endfor
+    -%}
+    {%- assign ship_tins = settings.pakd_cart_free_ship_tins | default: 0 -%}
+    {%- if ship_tins > 0 -%}
+      {%- liquid
+        assign ship_need = ship_tins | minus: tin_total
+        assign ship_need_text = ship_need | append: ''
+        assign ship_word = 'tins'
+        if ship_need == 1
+          assign ship_word = 'tin'
+        endif
+        assign ship_pct = tin_total | times: 100 | divided_by: ship_tins
+        if ship_pct > 100
+          assign ship_pct = 100
+        endif
+      -%}
+      <div class="pakd-cart-ship{% if ship_need <= 0 %} is-done{% endif %}">
+        <p class="pakd-cart-ship__text">
+          {%- if ship_need > 0 -%}
+            {{ settings.pakd_cart_free_ship_tins_msg | replace: '[n]', ship_need_text | replace: '[tins]', ship_word }}
+          {%- else -%}
+            {{ settings.pakd_cart_free_ship_done }}
+          {%- endif -%}
+        </p>
+        <div class="pakd-cart-ship__bar" role="progressbar" aria-label="Progress to free shipping" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ ship_pct }}">
+          <span style="width: {{ ship_pct }}%"></span>
+        </div>
+      </div>
+    {%- elsif threshold != blank and threshold > 0 -%}
       {%- liquid
         assign goal = threshold | times: 100
         assign remaining = goal | minus: cart.total_price
@@ -16,11 +61,12 @@
         if pct > 100
           assign pct = 100
         endif
+        assign remaining_text = remaining | money
       -%}
       <div class="pakd-cart-ship{% if remaining <= 0 %} is-done{% endif %}">
         <p class="pakd-cart-ship__text">
           {%- if remaining > 0 -%}
-            {{ settings.pakd_cart_free_ship_msg | replace: '[amount]', remaining | money }}
+            {{ settings.pakd_cart_free_ship_msg | replace: '[amount]', remaining_text }}
           {%- else -%}
             {{ settings.pakd_cart_free_ship_done }}
           {%- endif -%}
@@ -33,23 +79,6 @@
 
     {%- if settings.pakd_gw_enabled -%}
       {%- liquid
-        # Count tins: pakd.tins on the variant, else the number at the start of the "Pack" option (e.g. "5 Tins"), else 1
-        assign tin_total = 0
-        for item in cart.items
-          assign per = item.variant.metafields.pakd.tins.value
-          if per == blank
-            assign per = 1
-            for opt in item.options_with_values
-              if opt.name == 'Pack'
-                assign n = opt.value | split: ' ' | first | plus: 0
-                if n > 0
-                  assign per = n
-                endif
-              endif
-            endfor
-          endif
-          assign tin_total = per | times: item.quantity | plus: tin_total
-        endfor
         assign min_tins = settings.pakd_gw_min_tins
         assign need = min_tins | minus: tin_total
         assign need_text = need | append: ''

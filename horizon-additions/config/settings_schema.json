@@ -2135,6 +2135,23 @@
         "content": "Free shipping progress"
       },
       {
+        "type": "range",
+        "id": "pakd_cart_free_ship_tins",
+        "label": "Free shipping from (tins)",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "default": 0,
+        "info": "Set to 0 to use the dollar threshold below instead. Must match your free shipping discount (Discounts > Free shipping on 3+ tins)."
+      },
+      {
+        "type": "text",
+        "id": "pakd_cart_free_ship_tins_msg",
+        "label": "Message (tins)",
+        "info": "[n] becomes the tins still needed.",
+        "default": "Add [n] more [tins] for free shipping"
+      },
+      {
         "type": "number",
         "id": "pakd_cart_free_ship",
         "label": "Free shipping threshold (AUD, whole dollars)",
